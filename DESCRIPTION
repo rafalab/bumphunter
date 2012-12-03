@@ -1,0 +1,16 @@
+Package: bumphunter
+Version: 0.0.19
+Title: Bump Hunter
+Description: Tools for finding bumps in genomic data
+Author: Rafael A. Irizarry, Martin Aryee, Hector Corrada Bravo, Kasper D. Hansen, Harris A. Jaffee
+Maintainer: Rafael A. Irizarry <rafa@jhu.edu>
+Depends: IRanges, GenomicRanges, foreach, iterators, methods, iterators
+Suggests: limma, RUnit, BiocGenerics, doParallel
+Imports: matrixStats, limma, itertools, doRNG
+Collate: AllGenerics.R annotateNearest.R dummyData.R
+        limmaForPermutations.R regionFinder.R regionMatch.R smooth.R
+        bumphunter.R
+License: Artistic-2.0
+LazyData: yes
+biocViews: DNAMethylation, Epigenetics, Infrastructure,
+        MultipleComparisons
