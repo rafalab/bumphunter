@@ -1,0 +1,343 @@
+* 623d30f Updated URL for gencode
+* 0dbe5eb bump x.y.z versions to odd y after creation of RELEASE_3_8 branch
+* 066c6d7 bump x.y.z versions to even y prior to creation of RELEASE_3_8 branch
+* 050feb5 bump x.y.z versions to odd y after creation of RELEASE_3_7 branch
+* fb71b19 bump x.y.z versions to even y prior to creation of RELEASE_3_7 branch
+* 7fb069b bump x.y.z versions to odd y after creation of RELEASE_3_6 branch
+* c9d8e7a bump x.y.z versions to even y prior to creation of RELEASE_3_6 branch
+*   2bb28cb erge with bioconductor for release
+|\  
+| * 020a788 increment version number for bugfix
+| * 99a9b97 v1.17.2 -- Adds supported for TxDb objects with gene ids from ENSEMBL/GENCODE
+| * 6aa342c Merge with Bioconductor devel brach
+| * 883eb6b whitespace change; checking permissions
+| * 455927c bump x.y.z versions to odd y after creation of 3_5 branch
+| * 5f54225 bump x.y.z versions to even y prior to creation of 3_5 branch
+| * 322f193 bump x.y.z versions to odd 'y' after creation of 3_4 branch
+| * 3979c47 bump x.y.z versions to even 'y' prior to creation of 3_4 branch
+| * d599261 species() is defunct. Use organism() instead.
+| * 99a679b bump version after creating 3.3 branch
+| * 0e8f26e Bump versions prior to creation of 3.3 branch
+| * 8a43d18 v1.11.5 -- fixes https://github.com/ririzarr/bumphunter/issues/7
+| * 873bb0e Dummy edit and version bump. Testing git mirror
+| * d42eb52 t() implicit S4 generic and its methods are now defined in S4Vectors
+| * 743277c Version was previously bumped to 1.11.0 and then (after more than one build cycle) was DECREMENTED back to 1.9.z. Version numbers cannot be decremented as there is no way for users to install the resulting package (R will always install the most recent version). Bumping the version to 1.11.2. Do NOT decrement it again, please.
+| * 00f7790 elementLengths was renamed -> elementNROWS in S4Vectors (new name reflects TRUE semantic, old name will be deprecated soon)
+| * 0bded0b Commit made by the Bioconductor Git-SVN bridge.
+| * 9259b4d Commit made by the Bioconductor Git-SVN bridge.
+| * a251741 Commit made by the Bioconductor Git-SVN bridge.
+| * b63a6e6 Bumped version number of all packages after creation of 3.2 branch.
+| * 3de38da Bumped versions of all packages prior to creating 3.2 branch.
+| * 5d48461 resync with "split" methods moving from IRanges to S4Vectors
+| * 81b47e1 use makeTxDbFromUCSC() instead of makeTranscriptDbFromUCSC()
+| * 8a5b7a4 Bump versions in trunk after creation of 3.1 branch.
+| * 2e6a599 Bump versions prior to creating 3.1 branch.
+| * b3bf8de Commit made by the Bioconductor Git-SVN bridge.
+| * 9e582d9 Commit made by the Bioconductor Git-SVN bridge.
+| * 1ac0402 Commit made by the Bioconductor Git-SVN bridge.
+| * d4144da Commit made by the Bioconductor Git-SVN bridge.
+| * c250b5c Commit made by the Bioconductor Git-SVN bridge. Consists of 1 commit.
+| * 0431e2a Commit made by the Bioconductor Git-SVN bridge. Consists of 2 commits.
+| * eb64096 Commit made by the Bioconductor Git-SVN bridge. Consists of 1 commit.
+| * 14c6925 Commit made by the Bioconductor Git-SVN bridge. Consists of 1 commit.
+| * 316df70 Bumping versions after creating 3.0 release branch.
+| * 81d4c81 Bump package versions prior to creating the 3.0 branch.
+| * 0f06fc8 fix a typo......
+| * 41eb770 Commit made by the Bioconductor Git-SVN bridge. Consists of 1 commit.
+| * ffe0c2b Improvements to known_transcripts, now exported, and data/TT, now a list containing the txdb and org packageDescriptions used to make it. matchGenes now accepts, and passes to the internal nearestgene(), the arguments 'coding_only' and 'reference'.
+| * 32959d8 Fixed matchGenes man page typo.
+| * 0bd7779 follow Rle move from IRanges to S4Vectors
+| * 6c6b467 Updated Rafa's maintainer email
+| * dc7e7dc Testing Git-SVN bridge
+| * 60893ac resync with latest changes in S4Vectors/IRanges/GenomicRanges/GenomeInfoDb
+| * 39b3629 minor cosmetic change
+| * b3ca714 minor change. up the version
+| * 6bf9381 adding functionality so user can supply permutations
+| * 7afdf8a adding warning
+| * bae81b1 Second version bump after creating 2.14 release branch.
+| * 442c89d First version bump prior to creating 2.14 branch.
+| * 6fb601d modify to new biocViews to DESCRIPTION file
+| * a0b9db0 ran tools::resaveRdaFiles
+| * 7048658 In cases of multiple refseq ids for a given gene, the Refseq/annotation value is now a multi-word string.
+| * 65bec30 resaved rda to make it smaller
+| * 9ddbf17 nearestgene now loads TT into the local environment. known_transcripts, and consequently matchGenes, was yielding mostly NA for the refseq/annotation column (noticed by Andrew Jaffe, who also provide the fix).
+| * 929a80a fixed NAMESPACE issues
+| * 6e5f647 extensive additions to NAMESPACE
+| * b287b81 further use of parallel computing in bumphunterEngine
+| * 8cedd2a Rle instead of rle, thanks to M. Lawrence
+| * ba08cd3 bump version after release branch has been created
+| * f88f3bc bump versions prior to creating BioC 2.13 branch
+| * ceca235 fixing some issues reported by R-devel re. NAMESPACE; also fixed a man page
+| * 9b3c487 fixed bug in .getModT, which is not used elsewhere in bumphunter
+| * a4bb483 fixed man page error leading to warnings in R CMD check
+| * 34664f4 Simplified the use of fuzzy.match2; makes annotation of "inside" queries faster
+| * f1df3b0 added boundedClusterMaker
+| * 0cdff56 speedup of fwer computations using foreach
+| * 9220a7a Documenting new behavior of regionMatch for queries without matching subject
+| * 96ab7af Used to stop on NAs from nearest.  These now lead to NA rows in the output.
+| * 53db35d .matchGenes() was not passing the 'all' value to the children of the mclapply, so they took the default, FALSE.  The children also need 'queries' and 'Tx', set from the call to nearestgene(), when 'all' is TRUE.  mc.cores (i.e. whether or not the mclapply is actually parallel or serial) is irrelevant to this situation.
+| * 97d8f3f an additional verbose message
+| * a2fdbe6 added class to output of bumphunter
+| * ec63bc4 hopefully final fix to windows
+| * d83781f comitted from subdir; more bugfixes related to foreach on Windows
+| * 5bcfa23 more bugfixes related to foreach on Windows
+| * fe26d45 updated NEWS
+| * 2dcbaf9 added closeSockets
+| * 05bd52a trying to fix the R CMD check problem in example(bumphunter)
+| * 13dd96a changes for the new (3.0) 'Hits' value of distanceToNearest
+| * 1b6ec12 forgot to svn add a man page
+| * bd65184 fixed a greater or equal issue; added some locfit man pages
+| * 6ac3a82 foreach 'fixes'
+| * 7405f7f some fixes so it now checks without error
+| * 8da2ef9 fixed message typo
+| * 238f61d fixed re-ordering bug in smoother()
+| * f564dd5 RI: FIxed bug in bumphunter. smoother was missing a ... Also added pickCutoff=FALSE and made cutoff null. User has to decide. Alos smooth is FALSE.
+| * c9a2f6b added locfitByCluster to NAMESPACE
+| * 7c6a791 changed defaults for locfitByCluster
+| * 29b2558 added locfitByCluster
+| * 3fe1c28 RI: some changes
+| * bd6e781 minor printout fix
+| * ae60873 RI: some changes
+| * 8c971d8 RI: untested changes to bumphunter
+| * 3ecd112 Bump y in version x.y.z to odd number in devel
+| * 1ed3da4 bump y of x.y.z version number for BioC 2.12 release
+| * 18f41de Fixed the case where D$chr is a factor.
+| * b311e26 formatting fix
+| * bedf2f9 fixed Windows problem
+| * 76dbcae fixed work-around again
+| * 4dcc430 simplified my work-around
+| * 7ac2c29 bugfix to fuzzy.match2()
+| * 4ac2a4b suppressed warning from IRanges::distance
+| * b2d8463 matchGenes bugfixes
+| * 25c4ab6 Depends R >= 2.10 because data/TT.rda saved with compress="xz" Bumped version to 0.99.33
+| * c8c6671 Compressed TT.rda
+| * 8a54455 Added data/TT.rda
+| * ceb7224 more refining
+| * 7e71a80 ?matchGenes fleshed out
+| * 23c5527 changed version to 0.99.31
+| * e224be5 matchGenes now semi-deprecated, functionality absorbed into annotateNearest
+| * 9784240 Bugfix: Weights were previously ignored when smoothing beta
+| * d31d3a1 Updated the unit test rdas
+| * c736c82 This man page is not ready.
+| * 21b8224 Made the binding of 'subMat' explicit, again.
+| * 479d83b RI: upping version
+| * 370db09 RI: fixed clobber
+| * a8040d6 More clean up of %dorng% constructs, and started a matchGenes help page.
+| * 976acd4 RI: made some major changes to bumphunterEngine
+| * ee97172 Fix to getSegments, which was treating assumeSorted backwards.
+| * 7c6405c RI: upped version
+| * e932337 RI: fixed bug in bumphunter. the order of tab was wrong: area instead of -area
+| * 1ff99b3 Added 2 man pages and bumped the version.
+| * d6f86c2 Changed the annotateNearest argument pointMatch=FALSE to annotate=TRUE. Various file additions and deletions.
+| * 9e4c5d3 added cutoff printout to bumphunter engine if verbose=TRUE
+| * 2773960 version bump to standard format for new package.
+| * 2d1c130 Adds bumphunter to the repos.
+* 1d4bfd0 modifications to DESCRIPTION recommended by BiocCheck
+*   77ed014 Merge pull request #21 from sampoll/bugfix
+|\  
+| * ad2802a The rest of the wrapper for nearest
+| * 73b33da Implemented wrapper for nearest
+| * 2288d71 separating branches
+| * 2e0cb13 turned on .verbose in foreach
+|/  
+*   8ae30a7 Merge pull request #17 from lcolladotor/master
+|\  
+| * 84c6657 v1.17.2 -- Adds supported for TxDb objects with gene ids from ENSEMBL/GENCODE
+|/  
+*   01bb151 Merge pull request #16 from sampoll/devel
+|\  
+| *   718d3d8 Merge with Bioconductor devel brach
+| |\  
+| |/  
+|/|   
+* |   031c450 Merge pull request #13 from kdkorthauer/patch-1
+|\ \  
+| * | 6d86b99 Smoothing weights should be inverse stdev
+|/ /  
+* | 17eac01 Version bump
+* |   6c4c64f Merge branch 'lcolladotor-master'
+|\ \  
+| * \   1582a5e Merge branch 'master' of https://github.com/lcolladotor/bumphunter into lcolladotor-master
+| |\ \  
+|/ / /  
+| * | 4093a62 v1.9.5 -- fixes https://github.com/ririzarr/bumphunter/issues/7
+* | | cc73459 Version bump
+* | | a534917 Restoring Herve's edited NAMESPACE. See 8ef9de
+* | |   bc33e60 Fixed merge conflict
+|\ \ \  
+| |/ /  
+|/| |   
+* | | 4460617 Commit made by the Bioconductor Git-SVN bridge.
+* | | 5997810 bumping version after bug fix
+* | | a095c53 bumping version after bug fix
+* | |   ef57690 Merge pull request #5 from andrewejaffe/patch-2
+|\ \ \  
+| * | | a6a16a5 Update bumphunter.R
+|/ / /  
+* | | b734879 Commit made by the Bioconductor Git-SVN bridge.
+* | | 19fafb2 Commit made by the Bioconductor Git-SVN bridge.
+* | | 84b07f9 Commit made by the Bioconductor Git-SVN bridge.
+* | | 66d8255 Commit made by the Bioconductor Git-SVN bridge.
+* | | 73998bf Create README.md
+* | |   95137e4 Merge pull request #3 from lcolladotor/master
+|\ \ \  
+| * | | 37d10e7 v1.7.6 -- fixed https://github.com/ririzarr/bumphunter/issues/4
+| * | |   cbf10cd Merged @martinaryee changes + misc
+| |\ \ \  
+| |/ / /  
+|/| | |   
+* | | | 5435801 Fixed Martin's last name and bumped version
+* | | | ce7bb86 locfitByCluster no longer fails if all coefficients in a cluster are NA
+| * | | 3a8cee1 Suggest org.Cf.eg.db for Cf tests
+| * | | f277fa5 Added tests for annotation functions
+| * | | cf02fa1 Fixed some bugs from version 1.7.3
+|/ / /  
+* | | 0094806 Many changes to matchGenes functions. Updated matchGenes, annotateNearest and added annotateTranscripts. Removed old unnecessary functions
+* | | 93614d0 adding citation
+* | | 5c973f5 adding citation
+* | | c8c2108 fixed hcb's last name bumpung version
+* | | e55d0a3 rai: fixing hcb's name
+* | | 6985a8f Commit made by the Bioconductor Git-SVN bridge.
+* | | 447e8de Commit made by the Bioconductor Git-SVN bridge.
+* | | 528d117 Revert "Commit made by the Bioconductor Git-SVN bridge."
+* | | 2311407 Commit made by the Bioconductor Git-SVN bridge.
+* | |   cae1854 Merge branch 'master' of github.com:ririzarr/bumphunter
+|\ \ \  
+| * | | 2cda83b a meaningless commit to test the bridge
+| * | | 4231e26 Cleaned up DESCRIPTION
+| * | | 653baec RI: Adding Shan as author to bumphunter
+| * | | eaa3172 RI: small change to help file
+| * | | 2a8f660 RI: changes to bootrap implementation. fixing errors nad improving efficiency
+| * | | 062544b RAI: getBootEst to .getBootEst
+| * | | fff572d RAI: tin change to Rd file
+| * | | cbd9911 RI: bringin back print.bumps which was accidentally erased
+| * | | aa93aef RA: adding bootstrap approch to bumphunter
+* | | | 1d36c2b Commit made by the Bioconductor Git-SVN bridge.
+|/ / /  
+* | | 1525d3f Commit made by the Bioconductor Git-SVN bridge.
+* | | adb2e73 Commit made by the Bioconductor Git-SVN bridge.
+* | | 7db78b7 Commit made by the Bioconductor Git-SVN bridge.
+* | | d9cdaec setting up git-svn bridge
+ / /  
+| * b403a19 bump x.y.z versions to odd y after creation of 3_5 branch
+| * 6b7ea76 bump x.y.z versions to even y prior to creation of 3_5 branch
+| * 515c9c4 bump x.y.z versions to odd 'y' after creation of 3_4 branch
+| * 2b6ea74 bump x.y.z versions to even 'y' prior to creation of 3_4 branch
+| * 2f31d42 species() is defunct. Use organism() instead.
+| * 1843965 bump version after creating 3.3 branch
+| * fffb4d4 Bump versions prior to creation of 3.3 branch
+| * c02969b v1.11.5 -- fixes https://github.com/ririzarr/bumphunter/issues/7
+|/  
+* a4b05a8 Dummy edit and version bump. Testing git mirror
+* 8ef9ded t() implicit S4 generic and its methods are now defined in S4Vectors
+* 597c958 Version was previously bumped to 1.11.0 and then (after more than one build cycle) was DECREMENTED back to 1.9.z. Version numbers cannot be decremented as there is no way for users to install the resulting package (R will always install the most recent version). Bumping the version to 1.11.2. Do NOT decrement it again, please.
+* 1ea89e3 elementLengths was renamed -> elementNROWS in S4Vectors (new name reflects TRUE semantic, old name will be deprecated soon)
+* 29c49c7 Commit made by the Bioconductor Git-SVN bridge.
+* c8bb6e4 Commit made by the Bioconductor Git-SVN bridge.
+* c37881b Commit made by the Bioconductor Git-SVN bridge.
+* 69f4de4 Bumped version number of all packages after creation of 3.2 branch.
+* d95aaf1 Bumped versions of all packages prior to creating 3.2 branch.
+* 0dd0daf resync with "split" methods moving from IRanges to S4Vectors
+* e8653ac use makeTxDbFromUCSC() instead of makeTranscriptDbFromUCSC()
+* 777d668 Bump versions in trunk after creation of 3.1 branch.
+* 4ab1adf Bump versions prior to creating 3.1 branch.
+* 8b42328 Commit made by the Bioconductor Git-SVN bridge.
+* e7ce5f0 Commit made by the Bioconductor Git-SVN bridge.
+* bd8b303 Commit made by the Bioconductor Git-SVN bridge.
+* 1d96eb2 Commit made by the Bioconductor Git-SVN bridge.
+* 41fb890 Commit made by the Bioconductor Git-SVN bridge. Consists of 1 commit.
+* 4237689 Commit made by the Bioconductor Git-SVN bridge. Consists of 2 commits.
+* 9c37e80 Commit made by the Bioconductor Git-SVN bridge. Consists of 1 commit.
+* a886719 Commit made by the Bioconductor Git-SVN bridge. Consists of 1 commit.
+* d6e9c3d Bumping versions after creating 3.0 release branch.
+* 3767889 Bump package versions prior to creating the 3.0 branch.
+* 4522182 fix a typo......
+* 1ca5b33 Commit made by the Bioconductor Git-SVN bridge. Consists of 1 commit.
+* f858df9 Improvements to known_transcripts, now exported, and data/TT, now a list containing the txdb and org packageDescriptions used to make it. matchGenes now accepts, and passes to the internal nearestgene(), the arguments 'coding_only' and 'reference'.
+* 0ffe8f2 Fixed matchGenes man page typo.
+* da0e62e follow Rle move from IRanges to S4Vectors
+* 9b0dd46 Updated Rafa's maintainer email
+* b18a371 Testing Git-SVN bridge
+* e23edce resync with latest changes in S4Vectors/IRanges/GenomicRanges/GenomeInfoDb
+* b9c5612 minor cosmetic change
+* ed3bbf0 minor change. up the version
+* 0a2f919 adding functionality so user can supply permutations
+* e0d93ee adding warning
+* 1232dd0 Second version bump after creating 2.14 release branch.
+* 8da746e First version bump prior to creating 2.14 branch.
+* 6eeb68c modify to new biocViews to DESCRIPTION file
+* 1e8f01b ran tools::resaveRdaFiles
+* 493ad2b In cases of multiple refseq ids for a given gene, the Refseq/annotation value is now a multi-word string.
+* 399ef37 resaved rda to make it smaller
+* fe76bf6 nearestgene now loads TT into the local environment. known_transcripts, and consequently matchGenes, was yielding mostly NA for the refseq/annotation column (noticed by Andrew Jaffe, who also provide the fix).
+* fdd5e7c fixed NAMESPACE issues
+* 734127e extensive additions to NAMESPACE
+* faae488 further use of parallel computing in bumphunterEngine
+* 2b46fb0 Rle instead of rle, thanks to M. Lawrence
+* eeb01da bump version after release branch has been created
+* 3155c96 bump versions prior to creating BioC 2.13 branch
+* 25a18c9 fixing some issues reported by R-devel re. NAMESPACE; also fixed a man page
+* fae3adf fixed bug in .getModT, which is not used elsewhere in bumphunter
+* 77b39cf fixed man page error leading to warnings in R CMD check
+* 3d94840 Simplified the use of fuzzy.match2; makes annotation of "inside" queries faster
+* 97ecefe added boundedClusterMaker
+* 695ee3a speedup of fwer computations using foreach
+* 9720e9c Documenting new behavior of regionMatch for queries without matching subject
+* a75975a Used to stop on NAs from nearest.  These now lead to NA rows in the output.
+* 8d9c927 .matchGenes() was not passing the 'all' value to the children of the mclapply, so they took the default, FALSE.  The children also need 'queries' and 'Tx', set from the call to nearestgene(), when 'all' is TRUE.  mc.cores (i.e. whether or not the mclapply is actually parallel or serial) is irrelevant to this situation.
+* f14ea2c an additional verbose message
+* ba2d11f added class to output of bumphunter
+* 7e020f0 hopefully final fix to windows
+* df977eb comitted from subdir; more bugfixes related to foreach on Windows
+* 5133c35 more bugfixes related to foreach on Windows
+* a737173 updated NEWS
+* e663a99 added closeSockets
+* e79e53f trying to fix the R CMD check problem in example(bumphunter)
+* 75009d6 changes for the new (3.0) 'Hits' value of distanceToNearest
+* 5b7af01 forgot to svn add a man page
+* 874932f fixed a greater or equal issue; added some locfit man pages
+* 1c93c8a foreach 'fixes'
+* 84a9245 some fixes so it now checks without error
+* 5820e5d fixed message typo
+* 741b784 fixed re-ordering bug in smoother()
+* c320beb RI: FIxed bug in bumphunter. smoother was missing a ... Also added pickCutoff=FALSE and made cutoff null. User has to decide. Alos smooth is FALSE.
+* 6997296 added locfitByCluster to NAMESPACE
+* 0f1b838 changed defaults for locfitByCluster
+* b4d8cb7 added locfitByCluster
+* 9dc26d3 RI: some changes
+* 40ef558 minor printout fix
+* c9d7f70 RI: some changes
+* 26b859c RI: untested changes to bumphunter
+* 1721ee5 Bump y in version x.y.z to odd number in devel
+* b31122f bump y of x.y.z version number for BioC 2.12 release
+* 1a7d9c6 Fixed the case where D$chr is a factor.
+* 4caee24 formatting fix
+* 9b7f1b1 fixed Windows problem
+* ab82852 fixed work-around again
+* 4023933 simplified my work-around
+* 12dc6de bugfix to fuzzy.match2()
+* 65fdcf4 suppressed warning from IRanges::distance
+* 0456158 matchGenes bugfixes
+* ffeaa35 Depends R >= 2.10 because data/TT.rda saved with compress="xz" Bumped version to 0.99.33
+* 4f68dbf Compressed TT.rda
+* 7f90441 Added data/TT.rda
+* 47c07e5 more refining
+* 9cdfc77 ?matchGenes fleshed out
+* c0d616a changed version to 0.99.31
+* 8bc19ed matchGenes now semi-deprecated, functionality absorbed into annotateNearest
+* ce842cc Bugfix: Weights were previously ignored when smoothing beta
+* aa65d0a Updated the unit test rdas
+* ed12c1e This man page is not ready.
+* 674e3bf Made the binding of 'subMat' explicit, again.
+* 932c3bd RI: upping version
+* 9a76551 RI: fixed clobber
+* 824abd2 More clean up of %dorng% constructs, and started a matchGenes help page.
+* 9c12b95 RI: made some major changes to bumphunterEngine
+* 20fc8b0 Fix to getSegments, which was treating assumeSorted backwards.
+* a3b1897 RI: upped version
+* 8ebf133 RI: fixed bug in bumphunter. the order of tab was wrong: area instead of -area
+* 8f08acd Added 2 man pages and bumped the version.
+* 851748d Changed the annotateNearest argument pointMatch=FALSE to annotate=TRUE. Various file additions and deletions.
+* ce6e871 added cutoff printout to bumphunter engine if verbose=TRUE
+* 7db68c5 version bump to standard format for new package.
+* bac0488 Adds bumphunter to the repos.
