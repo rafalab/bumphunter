@@ -1,0 +1,269 @@
+%\VignetteIndexEntry{The bumphunter user's guide}
+%\VignetteDepends{bumphunter}
+%\VignetteDepends{doParallel}
+%\VignettePackage{bumphunter}
+\documentclass[12pt]{article}
+<<options,echo=FALSE,results=hide>>=
+options(width=70)
+@ 
+\SweaveOpts{eps=FALSE,echo=TRUE}
+\usepackage{times}
+\usepackage{color,hyperref}
+\usepackage{fullpage}
+\usepackage[numbers]{natbib}
+\definecolor{darkblue}{rgb}{0.0,0.0,0.75}
+\hypersetup{colorlinks,breaklinks,
+            linkcolor=darkblue,urlcolor=darkblue,
+            anchorcolor=darkblue,citecolor=darkblue}
+
+\newcommand{\Rcode}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\texttt{#1}}}
+\newcommand{\software}[1]{\textsf{#1}}
+\newcommand{\R}{\software{R}}
+\newcommand{\bold}[1]{\textbf{#1}} % Fix for R bibentry
+
+\title{The bumphunter user's guide}
+\author{Kasper Daniel Hansen \texttt{khansen@jhsph.edu} 
+  \and 
+  Martin Aryee \texttt{aryee.martin@mgh.harvard.edu}
+  \and
+  Rafael A. Irizarry \texttt{rafa@jhu.edu}
+}
+\date{Modified: November 23, 2012.  Compiled: \today}
+\begin{document}
+\setlength{\parskip}{1\baselineskip}
+\setlength{\parindent}{0pt}
+
+\maketitle
+
+\section*{Introduction}
+
+This package implements the statistical procedure described in \cite{Jaffe:2012} (with some small
+modifications).  Notably, batch effect removal needs additional code.
+
+For any given type of data, it is usually necessary to make a number of choices and/or
+transformations before the bump hunting methodology is ready to be applied.  Typically, these
+modifications resides in other packages.  Examples are \Rpackage{charm} (for CHARM-like methylation
+microarrays), \Rpackage{bsseq} (for whole-genome bisulfite sequencing data) and \Rpackage{minfi}
+(for Illumina 450k methylation arrays).  In some cases (specifically \Rpackage{bsseq}) only parts of
+the methodology as implemented in the \Rpackage{bumphunter} package is applied, although the
+conceptual approach is still build on bump hunting.
+
+In other words, this package is mostly intended for developers wishing to adapt the general
+methodology to their specific applications.
+
+The core of the package is encapsulated in the \Rcode{bumphunter} method which uses the underlying
+\Rcode{bumphunterEngine} to do the heavy lifting.  However, \Rcode{bumphunterEngine} consists of a
+number of useful functions that does much of the specific tasks involved in bump hunting.  This
+document attempts to describe the overall workflow as well as the specific functions.  The relevant
+functions are \Rcode{clusterMaker}, \Rcode{getSegments}, \Rcode{findRegions}.
+
+
+<<libload>>=
+library(bumphunter)
+@ 
+
+Note that this package is written with genomic data as an illustrative example but most of it is
+easily generalizable to other data types.
+
+\subsection*{Other functions}
+
+Most of the \Rpackage{bumphunter} package is code for bump hunting.  But we also include a number of
+convenience functions we have found useful, which are not necessarily part of the bump hunting
+exercise.  At the time of writing, this include \Rcode{annotateNearest}.
+
+\section*{The Statistical Model}
+
+The bump hunter methodology is meant to work on data with several biological replicates, similar to
+the \Rcode{lmFit} function in \Rpackage{limma}.  While the package is written using genomic data as
+an illustrative example, most of it is generalizable to other data types (with some one-dimensional
+location information).
+
+We assume we have data $Y_{ij}$ where $i$ represents (biological) replicate and $l_j$ represents
+genomic location.  The use of $j$ and $l_j$ is a convenience notation, allowing us to discuss the
+``next'' observation $j+1$ which may be some distance $l{j+1} - l_j$ away.  Note that we assume in
+this notation that all replicates have been observed at the same set of genomic locations.
+
+The basic statistical model is the following:
+\begin{displaymath}
+Y_{ij} = \beta_0(l_j) + \beta_1(l_j) X_j + \varepsilon_{ij}
+\end{displaymath}
+with $i$ representing subject, $l_j$ representing the $j$th location, $X_j$ is the covariate of interest (for
+example $X_j=1$ for cases and $X_j=0$ otherwise), $\varepsilon_{ij}$ is measurement error, $\beta_0(l)$ is
+a baseline function, and $\beta_1(l)$ is the parameter of interest, which is a function of
+location.  We assume that $\beta_1(l)$ will be equal to zero over most of the genome, and we want to
+identify stretched where $\beta_1(l) \neq 0$, which we call \emph{bumps}.
+
+We want to share information between nearby locations, typically through some form of smoothing.
+
+\section*{Creating clusters}
+
+For many genomic applications the locations are clustered.  Each cluster is a distinct unit where
+the model fitting will be done separately, and each cluster does not depend on the data, only on the
+locations $l_j$.  Typically there is some maximal distance, and we do not want to smooth between
+observations separated by more than this distance.  The choice of distance is very application dependent.
+
+``Clusters'' are simply groups of locations such that two consecutive locations in the cluster are
+separated by less than some distance \Rcode{maxGap}.  For genomic applications, the biggest possible
+clusters are chromosomes.
+
+The function \Rcode{clusterMaker} defines such grouping locations.
+
+Example: We first generate an example of typical genomic locations
+<<clustermakerdata>>=
+pos <- list(pos1=seq(1,1000,35), 
+            pos2=seq(2001,3000,35), 
+            pos3=seq(1,1000,50))
+chr <- rep(paste0("chr",c(1,1,2)), times = sapply(pos,length))
+pos <- unlist(pos, use.names=FALSE)
+@ 
+
+Now we run the function to obtain the three clusters from the positions. We use the default gap of
+300 base pairs (bps), i.e. any two points more than 300 bps away are put in a new cluster. Also,
+locations from different chromosomes are separated.
+
+<<clustermaker>>=
+cl <- clusterMaker(chr, pos, maxGap = 300)
+table(cl)
+@ 
+
+The output is an indexing variable telling us which cluster each location belongs to.  Locations on
+different chromosomes are always on different clusters.
+
+
+Note that data from the first chromosome has been split into two clusters:
+<<clusterplot,fig=TRUE,width=6,height=3>>=
+ind <- which(chr=="chr1")
+plot(pos[ind], rep(1,length(ind)), col=cl[ind],
+     xlab="locations", ylab="")
+@ 
+
+\section*{Breaking into segments}
+
+The function \Rcode{getSegments} is used to find segments that are positive, near zero, and
+negative.  Specifically we have a vector of numbers $\theta_j$ with each number associated with a
+genomic location $l_j$ (thinks either test statistics or estimates of $\beta_i(l)$).  A segment is a
+list of consecutive locations such that all $\theta_l$ in the segment are either ``positive'', ``near zero'' or
+``negative''.  In order to define ``positive'' etc we need a \Rcode{cutoff} which is one number $L$ (in
+which case ``near zero'' is $[-L,L]$) or two numbers $L,U$ (in which case ``near zero'' is $[L;
+U]$).  
+
+
+Example: we are going to create a simulated $\beta_1(l)$ with a couple of real bumps.
+<<simulatedbumps>>=
+Indexes <- split(seq_along(cl), cl)
+beta1 <- rep(0, length(pos))
+for(i in seq(along=Indexes)){
+    ind <- Indexes[[i]]
+    x <- pos[ind]
+    z <- scale(x, median(x), max(x)/12)
+    beta1[ind] <- i*(-1)^(i+1)*pmax(1-abs(z)^3,0)^3 ##multiply by i to vary size
+}
+@ 
+
+We now find bumps of this functions by
+
+<<getSegments>>=
+segs <- getSegments(beta1, cl, cutoff=0.05)
+@ 
+
+Now we can make, for example, a plot of all the positive bumps
+
+<<plotSegments,fig=TRUE,width=7,height=4>>=
+par(mfrow=c(1,2))
+for(ind in segs$upIndex){
+    index <- which(cl==cl[ind[1]])
+    plot(pos[index], beta1[index],
+         xlab=paste("position on", chr[ind[1]]),
+         ylab="beta1")
+    points(pos[ind], beta1[ind], pch=16, col=2)
+    abline(h = 0.05, col = "blue")
+}
+@ 
+
+This function is used by regionFinder which is described next.
+
+\section*{regionFinder}
+
+This function packages up the results of \Rcode{getSegments} into a table of regions with the
+location and characteristics of bumps. 
+<<regionFinder>>=
+tab <- regionFinder(beta1, chr, pos, cl, cutoff=0.05)
+tab
+@ 
+
+In the plot in the preceding section we show two of these regions in red.
+
+Note that \Rcode{regionFinder} and \Rcode{getSegments} do not really contain any statistical model.
+All it does is finding regions based on segmenting a vector $\theta_j$ associated with genomic
+locations $l_j$.
+
+\section*{Bumphunting}
+
+\Rcode{Bumphunter} is a more complicated function.  In addition to \Rcode{regionFinder} and
+\Rcode{clusterMaker} it also implements a statistical model as well as permutation testing to assess
+uncertainty.
+
+We start by creating a simulated data set of 10 cases and 10 controls (recall that \Rcode{beta1} was
+defined above).
+
+<<simulationOfReps>>=
+beta0 <- 3*sin(2*pi*pos/720)
+X <- cbind(rep(1,20), rep(c(0,1), each=10))
+error <- matrix(rnorm(20*length(beta1), 0, 1), ncol=20)
+y <- t(X[,1])%x%beta0 + t(X[,2])%x%beta1 + error
+@ 
+
+Now we can run \Rcode{bumphunter}
+<<bumphunter>>=
+tab <- bumphunter(y, X, chr, pos, cl, cutoff=.5)
+names(tab)
+tab$table
+@ 
+
+Briefly, the \Rcode{bumphunter} function fits a linear model for each location (like \Rcode{lmFit} from the
+\Rpackage{limma} package), focusing on one specific column (coefficient) of the design matrix.  This
+coefficient of interest is optionally smoothed.  Subsequently, a permutation test is formed for this
+specific coefficient.
+
+\section*{Faster bumphunting with multiple cores}
+
+\Rcode{bumphunter} can be speeded up by using multiple cores.  We use the \Rcode{foreach} package
+which allows different parallel "back-ends" that will distribute the computation across multiple
+cores in a single machine, or across multiple machines in a cluster.  The most straight-forward
+usage, illustrated below, involves multiple cores on a single machine.  See the \Rcode{foreach}
+documentation for more complex use cases, as well as the packages \Rcode{doParallel} and
+\Rcode{doSNOW} (among others).  Finally, we use \Rcode{doRNG} to ensure reproducibility of setting
+the seed within the parallel computations.
+
+In order to use the \Rcode{foreach} package we need to register a backend, in this case a multicore
+machine with 2 cores.
+
+<<load-foreach>>=
+library(doParallel)
+registerDoParallel(cores = 2)
+@
+
+\Rcode{bumphunter} will now automatically use this backend
+
+<<parallel-bumphunter>>=
+tab <- bumphunter(y, X, chr, pos, cl, cutoff=.5, B=250, verbose = TRUE)
+@ 
+
+\bibliographystyle{plain}
+\bibliography{bumphunter} 
+
+\section*{SessionInfo}
+
+<<sessionInfo,results=tex,eval=TRUE,echo=FALSE>>=
+toLatex(sessionInfo())
+@ 
+
+\end{document}
+
+% Local Variables:
+% eval: (add-hook 'LaTeX-mode-hook '(lambda () (if (string= (buffer-name) "bumphunter.Rnw") (setq fill-column 100))))
+% LocalWords: LocalWords bisulfite methylation methylated CpG CpGs DMR
+% LocalWords: DMRs differentially
+% End:
+

@@ -1,0 +1,19 @@
+importFrom(foreach, "%dopar%", foreach, getDoParName, getDoParRegistered,
+           getDoParWorkers, registerDoSEQ)
+importFrom(iterators, iter)
+importFrom(itertools, isplitVector)
+importFrom(stats, model.matrix, rnorm)
+importFrom(doRNG, "%dorng%", doRNGversion, registerDoRNG)
+importClassesFrom(methods, matrix)
+import(matrixStats)
+importMethodsFrom(IRanges, "%in%", as.list, cbind, "colnames<-", diff,
+                  end, ifelse, intersect, lapply, mean, median, ncol,
+                  nearest, nrow, order, quantile, ranges, rank, rbind,
+                  runmed, sapply, split, start, table, unlist, which,
+                  which.min)
+importMethodsFrom(GenomicRanges, seqnames, sort)
+
+export(bumphunter, bumphunterEngine, clusterMaker, dummyData,
+       getSegments, loessByCluster, regionFinder,
+       annotateNearest, runmedByCluster, smoother)
+exportMethods(bumphunter)

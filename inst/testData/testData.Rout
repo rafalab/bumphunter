@@ -1,0 +1,113 @@
+
+R Under development (unstable) (2012-11-21 r61136) -- "Unsuffered Consequences"
+Copyright (C) 2012 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+Platform: x86_64-apple-darwin12.2.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(bumphunter)
+Loading required package: IRanges
+Loading required package: BiocGenerics
+Loading required package: parallel
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:parallel’:
+
+    clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
+    clusterExport, clusterMap, parApply, parCapply, parLapply,
+    parLapplyLB, parRapply, parSapply, parSapplyLB
+
+The following object is masked from ‘package:stats’:
+
+    xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, cbind, colnames, duplicated, eval, Filter, Find,
+    get, intersect, lapply, Map, mapply, mget, order, paste, pmax,
+    pmax.int, pmin, pmin.int, Position, rbind, Reduce, rep.int,
+    rownames, sapply, setdiff, table, tapply, union, unique
+
+Loading required package: GenomicRanges
+Loading required package: foreach
+Loading required package: iterators
+>   
+> ## Generate dummy data
+> set.seed(123)
+> dat <- dummyData()
+> ## matplot(dat$pos, dat$mat, type="l", col=c(rep("red", n1), rep("blue", n2)), lty=1)
+> ## save(dat, file = "../unitTests/dat.rda")
+> 
+> ## loessByCluster      
+> loessSmoothed <- loessByCluster(cluster=dat$cluster, y=dat$mat[,1],
++                               bpSpan = 1000, minNum=7, minInSpan=5, maxSpan=1)
+> save(loessSmoothed, file="../unitTests/loessSmoothed.rda")
+> 
+> ## runmedByCluster
+> runmedSmoothed <- runmedByCluster(cluster=dat$cluster, y=dat$mat[,1],  k=5, endrule="constant")
+> save(runmedSmoothed, file="../unitTests/runmedSmoothed.rda")
+> 
+> ## bumphunter test 1
+> set.seed(123)
+> bumpsTest1 <- bumphunter (dat$mat, design=dat$design, chr=dat$chr, pos=dat$pos, cluster=dat$cluster,
++                           coef=2, cutoffQ=0.9, smooth=TRUE, B=500,
++                           verbose=TRUE, smoothFunction=loessByCluster)
+bumphunterEngine: Using a single core (backend: doSEQ, version: 1.4.0)
+bumphunterEngine: Computing coefficients.
+bumphunterEngine: Smoothing coefficients.
+Loading required package: pkgmaker
+Loading required package: digest
+Loading required package: stringr
+Loading required package: codetools
+
+Attaching package: ‘pkgmaker’
+
+The following object is masked from ‘package:IRanges’:
+
+    new2
+
+The following object is masked from ‘package:utils’:
+
+    cite
+
+bumphunterEngine: Finding regions.
+bumphunterEngine: Performing 500 permutations.
+bumphunterEngine: Computing marginal permutation p-values.
+bumphunterEngine: Smoothing permutation coefficients.
+bumphunterEngine: Computing regions for each permutation.
+> save(bumpsTest1, file="../unitTests/bumpsTest1.rda")
+> 
+> ## bumphunter test 2: chr unspecified
+> set.seed(123)
+> bumpsTest2 <- bumphunter (dat$mat, design=dat$design, pos=dat$pos, cluster=dat$cluster,
++                           coef=2, cutoffQ=0.9, maxGap=500, smooth=TRUE, B=500,
++                           verbose=TRUE, smoothFunction=loessByCluster)
+bumphunterEngine: Using a single core (backend: doSEQ, version: 1.4.0)
+bumphunterEngine: Computing coefficients.
+bumphunterEngine: Smoothing coefficients.
+bumphunterEngine: Finding regions.
+bumphunterEngine: Performing 500 permutations.
+bumphunterEngine: Computing marginal permutation p-values.
+bumphunterEngine: Smoothing permutation coefficients.
+bumphunterEngine: Computing regions for each permutation.
+> save(bumpsTest2, file="../unitTests/bumpsTest2.rda")
+> 
+> 
+> 
+> proc.time()
+   user  system elapsed 
+ 11.443   0.165  11.596 
