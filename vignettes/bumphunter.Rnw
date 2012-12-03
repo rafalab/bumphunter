@@ -3,9 +3,9 @@
 %\VignetteDepends{doParallel}
 %\VignettePackage{bumphunter}
 \documentclass[12pt]{article}
-<<options,echo=FALSE,eval=TRUE,results=hide>>=
+<<options,echo=FALSE,results=hide>>=
 options(width=70)
-@
+@ 
 \SweaveOpts{eps=FALSE,echo=TRUE}
 \usepackage{times}
 \usepackage{color,hyperref}
@@ -23,8 +23,8 @@ options(width=70)
 \newcommand{\bold}[1]{\textbf{#1}} % Fix for R bibentry
 
 \title{The bumphunter user's guide}
-\author{Kasper Daniel Hansen \texttt{khansen@jhsph.edu}
-  \and
+\author{Kasper Daniel Hansen \texttt{khansen@jhsph.edu} 
+  \and 
   Martin Aryee \texttt{aryee.martin@mgh.harvard.edu}
   \and
   Rafael A. Irizarry \texttt{rafa@jhu.edu}
@@ -39,9 +39,7 @@ options(width=70)
 \section*{Introduction}
 
 This package implements the statistical procedure described in \cite{Jaffe:2012} (with some small
-modifications).  Notably, batch effect removal 
-and the application of the bootstrap to linear models of Efron and
-Tibshirani  \cite{bootstrap} need additional code.
+modifications).  Notably, batch effect removal needs additional code.
 
 For any given type of data, it is usually necessary to make a number of choices and/or
 transformations before the bump hunting methodology is ready to be applied.  Typically, these
@@ -63,7 +61,7 @@ functions are \Rcode{clusterMaker}, \Rcode{getSegments}, \Rcode{findRegions}.
 
 <<libload>>=
 library(bumphunter)
-@
+@ 
 
 Note that this package is written with genomic data as an illustrative example but most of it is
 easily generalizable to other data types.
@@ -98,7 +96,6 @@ identify stretched where $\beta_1(l) \neq 0$, which we call \emph{bumps}.
 
 We want to share information between nearby locations, typically through some form of smoothing.
 
-
 \section*{Creating clusters}
 
 For many genomic applications the locations are clustered.  Each cluster is a distinct unit where
@@ -114,12 +111,12 @@ The function \Rcode{clusterMaker} defines such grouping locations.
 
 Example: We first generate an example of typical genomic locations
 <<clustermakerdata>>=
-pos <- list(pos1=seq(1,1000,35),
-            pos2=seq(2001,3000,35),
+pos <- list(pos1=seq(1,1000,35), 
+            pos2=seq(2001,3000,35), 
             pos3=seq(1,1000,50))
 chr <- rep(paste0("chr",c(1,1,2)), times = sapply(pos,length))
 pos <- unlist(pos, use.names=FALSE)
-@
+@ 
 
 Now we run the function to obtain the three clusters from the positions. We use the default gap of
 300 base pairs (bps), i.e. any two points more than 300 bps away are put in a new cluster. Also,
@@ -128,7 +125,7 @@ locations from different chromosomes are separated.
 <<clustermaker>>=
 cl <- clusterMaker(chr, pos, maxGap = 300)
 table(cl)
-@
+@ 
 
 The output is an indexing variable telling us which cluster each location belongs to.  Locations on
 different chromosomes are always on different clusters.
@@ -139,7 +136,7 @@ Note that data from the first chromosome has been split into two clusters:
 ind <- which(chr=="chr1")
 plot(pos[ind], rep(1,length(ind)), col=cl[ind],
      xlab="locations", ylab="")
-@
+@ 
 
 \section*{Breaking into segments}
 
@@ -149,7 +146,7 @@ genomic location $l_j$ (thinks either test statistics or estimates of $\beta_i(l
 list of consecutive locations such that all $\theta_l$ in the segment are either ``positive'', ``near zero'' or
 ``negative''.  In order to define ``positive'' etc we need a \Rcode{cutoff} which is one number $L$ (in
 which case ``near zero'' is $[-L,L]$) or two numbers $L,U$ (in which case ``near zero'' is $[L;
-U]$).
+U]$).  
 
 
 Example: we are going to create a simulated $\beta_1(l)$ with a couple of real bumps.
@@ -162,13 +159,13 @@ for(i in seq(along=Indexes)){
     z <- scale(x, median(x), max(x)/12)
     beta1[ind] <- i*(-1)^(i+1)*pmax(1-abs(z)^3,0)^3 ##multiply by i to vary size
 }
-@
+@ 
 
 We now find bumps of this functions by
 
 <<getSegments>>=
 segs <- getSegments(beta1, cl, cutoff=0.05)
-@
+@ 
 
 Now we can make, for example, a plot of all the positive bumps
 
@@ -182,18 +179,18 @@ for(ind in segs$upIndex){
     points(pos[ind], beta1[ind], pch=16, col=2)
     abline(h = 0.05, col = "blue")
 }
-@
+@ 
 
 This function is used by regionFinder which is described next.
 
 \section*{regionFinder}
 
 This function packages up the results of \Rcode{getSegments} into a table of regions with the
-location and characteristics of bumps.
+location and characteristics of bumps. 
 <<regionFinder>>=
 tab <- regionFinder(beta1, chr, pos, cl, cutoff=0.05)
 tab
-@
+@ 
 
 In the plot in the preceding section we show two of these regions in red.
 
@@ -215,39 +212,19 @@ beta0 <- 3*sin(2*pi*pos/720)
 X <- cbind(rep(1,20), rep(c(0,1), each=10))
 error <- matrix(rnorm(20*length(beta1), 0, 1), ncol=20)
 y <- t(X[,1])%x%beta0 + t(X[,2])%x%beta1 + error
-@
+@ 
 
 Now we can run \Rcode{bumphunter}
 <<bumphunter>>=
 tab <- bumphunter(y, X, chr, pos, cl, cutoff=.5)
-tab
 names(tab)
 tab$table
-@
+@ 
 
 Briefly, the \Rcode{bumphunter} function fits a linear model for each location (like \Rcode{lmFit} from the
 \Rpackage{limma} package), focusing on one specific column (coefficient) of the design matrix.  This
-coefficient of interest is optionally smoothed.  Subsequently, a
-permutation can be used to test is formed for this
+coefficient of interest is optionally smoothed.  Subsequently, a permutation test is formed for this
 specific coefficient.
-
-The simplest way to use permutations to create a null distribution is to
-set \Rcode{B}. If the number of samples is large this can be set to a
-large number, such as 1000. Note that this will be slow and we have
-therefore provided parallelization capabilities. In cases were the user
-wants to define the permutations, for example cases in which all
-possible permutations can be enumerated, these can be supplied via the \Rcode{permutation}
-argument. 
-
-Note that the function permits the matrix \Rcode{X} to have more than
-two columns. This can be useful for those wanting to fit models that
-try to adjust for confounders, such as age and sex. However, when
-\Rcode{X} has columns other than those representing an intercept term and
-the covariate of interest, the permutation test approach is not
-recommended. The function will run but give a warning.
-A method based on the bootstrap for linear models of Efron and
-Tibshirani  \cite{bootstrap} may be more appropriate but this is not currently
-implemented. 
 
 \section*{Faster bumphunting with multiple cores}
 
@@ -271,25 +248,16 @@ registerDoParallel(cores = 2)
 
 <<parallel-bumphunter>>=
 tab <- bumphunter(y, X, chr, pos, cl, cutoff=.5, B=250, verbose = TRUE)
-tab
-@
+@ 
 
 \bibliographystyle{plain}
-\bibliography{bumphunter}
+\bibliography{bumphunter} 
 
-\section*{Cleanup}
-
-This is a cleanup step for the vignette on Windows; typically not needed for users.
-
-<<closeConnetions,results=hide>>=
-bumphunter:::foreachCleanup()
-@
- 
 \section*{SessionInfo}
 
 <<sessionInfo,results=tex,eval=TRUE,echo=FALSE>>=
 toLatex(sessionInfo())
-@
+@ 
 
 \end{document}
 

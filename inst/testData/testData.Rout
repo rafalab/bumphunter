@@ -1,7 +1,8 @@
 
-R version 3.0.1 Patched (2013-06-03 r62859) -- "Good Sport"
-Copyright (C) 2013 The R Foundation for Statistical Computing
-Platform: x86_64-apple-darwin12.3.0 (64-bit)
+R Under development (unstable) (2012-11-21 r61136) -- "Unsuffered Consequences"
+Copyright (C) 2012 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+Platform: x86_64-apple-darwin12.2.0 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -36,29 +37,20 @@ The following object is masked from ‘package:stats’:
 
 The following objects are masked from ‘package:base’:
 
-    anyDuplicated, append, as.data.frame, as.vector, cbind, colnames,
-    duplicated, eval, Filter, Find, get, intersect, lapply, Map,
-    mapply, match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
-    Position, rank, rbind, Reduce, rep.int, rownames, sapply, setdiff,
-    sort, table, tapply, union, unique, unlist
+    anyDuplicated, cbind, colnames, duplicated, eval, Filter, Find,
+    get, intersect, lapply, Map, mapply, mget, order, paste, pmax,
+    pmax.int, pmin, pmin.int, Position, rbind, Reduce, rep.int,
+    rownames, sapply, setdiff, table, tapply, union, unique
 
 Loading required package: GenomicRanges
-Loading required package: XVector
 Loading required package: foreach
 Loading required package: iterators
-Loading required package: locfit
-locfit 1.5-9.1 	 2013-03-22
-
-Attaching package: ‘locfit’
-
-The following object is masked from ‘package:GenomicRanges’:
-
-    left, right
-
 >   
 > ## Generate dummy data
 > set.seed(123)
 > dat <- dummyData()
+> ## matplot(dat$pos, dat$mat, type="l", col=c(rep("red", n1), rep("blue", n2)), lty=1)
+> ## save(dat, file = "../unitTests/dat.rda")
 > 
 > ## loessByCluster      
 > loessSmoothed <- loessByCluster(cluster=dat$cluster, y=dat$mat[,1],
@@ -72,13 +64,15 @@ The following object is masked from ‘package:GenomicRanges’:
 > ## bumphunter test 1
 > set.seed(123)
 > bumpsTest1 <- bumphunter (dat$mat, design=dat$design, chr=dat$chr, pos=dat$pos, cluster=dat$cluster,
-+                           coef=2, cutoff=0.28, smooth=TRUE, B=500,
++                           coef=2, cutoffQ=0.9, smooth=TRUE, B=500,
 +                           verbose=TRUE, smoothFunction=loessByCluster)
-bumphunterEngine: Using a single core (backend: doSEQ, version: 1.4.1)
+bumphunterEngine: Using a single core (backend: doSEQ, version: 1.4.0)
 bumphunterEngine: Computing coefficients.
 bumphunterEngine: Smoothing coefficients.
 Loading required package: pkgmaker
-Loading required package: registry
+Loading required package: digest
+Loading required package: stringr
+Loading required package: codetools
 
 Attaching package: ‘pkgmaker’
 
@@ -86,34 +80,34 @@ The following object is masked from ‘package:IRanges’:
 
     new2
 
+The following object is masked from ‘package:utils’:
+
+    cite
+
+bumphunterEngine: Finding regions.
 bumphunterEngine: Performing 500 permutations.
 bumphunterEngine: Computing marginal permutation p-values.
 bumphunterEngine: Smoothing permutation coefficients.
-bumphunterEngine: cutoff: 0.28
-bumphunterEngine: Finding regions.
 bumphunterEngine: Computing regions for each permutation.
-bumphunterEngine: Estimating p-values and FWER.
 > save(bumpsTest1, file="../unitTests/bumpsTest1.rda")
 > 
 > ## bumphunter test 2: chr unspecified
 > set.seed(123)
 > bumpsTest2 <- bumphunter (dat$mat, design=dat$design, pos=dat$pos, cluster=dat$cluster,
-+                           coef=2, cutoff=0.28, maxGap=500, smooth=TRUE, B=500,
++                           coef=2, cutoffQ=0.9, maxGap=500, smooth=TRUE, B=500,
 +                           verbose=TRUE, smoothFunction=loessByCluster)
-bumphunterEngine: Using a single core (backend: doSEQ, version: 1.4.1)
+bumphunterEngine: Using a single core (backend: doSEQ, version: 1.4.0)
 bumphunterEngine: Computing coefficients.
 bumphunterEngine: Smoothing coefficients.
+bumphunterEngine: Finding regions.
 bumphunterEngine: Performing 500 permutations.
 bumphunterEngine: Computing marginal permutation p-values.
 bumphunterEngine: Smoothing permutation coefficients.
-bumphunterEngine: cutoff: 0.28
-bumphunterEngine: Finding regions.
 bumphunterEngine: Computing regions for each permutation.
-bumphunterEngine: Estimating p-values and FWER.
 > save(bumpsTest2, file="../unitTests/bumpsTest2.rda")
 > 
 > 
 > 
 > proc.time()
    user  system elapsed 
-  9.171   0.123   9.283 
+ 11.443   0.165  11.596 

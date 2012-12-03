@@ -15,7 +15,7 @@ getSegments(x, f = NULL, cutoff = quantile(abs(x), 0.99),
   \item{x}{A numeric vector.}
   \item{f}{A factor used to pre-divide \code{x} into pieces. Each
     piece is then segmented based on the cutoff.  Setting this to
-    \code{NULL} says that there is no pre-division.  Often,
+    \code{NULL} assumes that there are no pre-division.  Often,
     \code{\link{clusterMaker}} is used to define this factor.}
   \item{cutoff}{a numeric vector of length either 1 or 2.  If length is
     1, U (see details) will be cutoff and L will be -cutoff.  Otherwise

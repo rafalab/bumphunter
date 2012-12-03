@@ -41,13 +41,15 @@ This function is typically called by \code{\link{smoother}}, which is in
 \value{
   \item{fitted }{The smoothed data values}
   \item{smoothed }{A boolean vector indicating whether a given position was smoothed}
+  \item{spans }{The span used by the loess smoother. One per cluster.}
+  \item{clusterL }{The number of locations in each cluster.}
   \item{smoother }{always set to \sQuote{loess}.}
 }
 \author{
 Rafael A. Irizarry
 }
 \seealso{
-\code{\link{smoother}}, \code{\link{runmedByCluster}}, \code{\link{locfitByCluster}}
+\code{\link{smoother}}, \code{\link{runmedByCluster}}
 }
 \examples{
 dat <- dummyData()

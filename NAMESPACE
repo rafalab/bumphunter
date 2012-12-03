@@ -1,36 +1,19 @@
 importFrom(foreach, "%dopar%", foreach, getDoParName, getDoParRegistered,
-           getDoParWorkers, registerDoSEQ, getDoParVersion)
+           getDoParWorkers, registerDoSEQ)
 importFrom(iterators, iter)
-importFrom(stats, model.matrix, preplot, rnorm)
-importFrom(doRNG, "%dorng%")
-importFrom(methods, is)
+importFrom(itertools, isplitVector)
+importFrom(stats, model.matrix, rnorm)
+importFrom(doRNG, "%dorng%", doRNGversion, registerDoRNG)
 importClassesFrom(methods, matrix)
 import(matrixStats)
-import(BiocGenerics)
-import(S4Vectors)
-importMethodsFrom(IRanges, as.list, as.matrix,
-                  diff, distance, distanceToNearest,
-                  end, mean,
-                  median, nearest, quantile, ranges, reduce,
-                  resize, runmed, start,
-                  which, which.min, width)
-importFrom(IRanges, CharacterList, IRanges)
-importFrom(GenomeInfoDb, seqnames)
-importFrom(GenomicRanges, GRanges, makeGRangesFromDataFrame)
-importMethodsFrom(GenomicRanges, sort)
-importFrom(locfit, locfit)
-importFrom(locfit, lp)
-importFrom(utils, data, packageDescription)
-importFrom(parallel, mclapply, stopCluster)
-importFrom(GenomicFeatures, exonsBy, cdsBy, transcriptsBy)
-importFrom(AnnotationDbi, mappedkeys)
-importMethodsFrom(AnnotationDbi, mapIds)
+importMethodsFrom(IRanges, "%in%", as.list, cbind, "colnames<-", diff,
+                  end, ifelse, intersect, lapply, mean, median, ncol,
+                  nearest, nrow, order, quantile, ranges, rank, rbind,
+                  runmed, sapply, split, start, table, unlist, which,
+                  which.min)
+importMethodsFrom(GenomicRanges, seqnames, sort)
 
-export(bumphunter, bumphunterEngine, clusterMaker, boundedClusterMaker,
-       dummyData, getSegments, 
-       regionFinder,
-       annotateNearest, annotateTranscripts, matchGenes,
-       loessByCluster, runmedByCluster, smoother,
-       locfitByCluster)
+export(bumphunter, bumphunterEngine, clusterMaker, dummyData,
+       getSegments, loessByCluster, regionFinder,
+       annotateNearest, runmedByCluster, smoother)
 exportMethods(bumphunter)
-S3method(print,bumps)

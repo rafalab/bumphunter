@@ -40,17 +40,31 @@ getSegments <- function(x, f = NULL, cutoff=quantile(abs(x), 0.99), assumeSorted
         cutoff <- c(-cutoff, cutoff)
     cutoff <- sort(cutoff)
 
+<<<<<<< HEAD
     reordered <- FALSE
     if(!assumeSorted && is.unsorted(f)) {
 	od <- order(f)
 	x <- x[od]
 	f <- f[od]
 	reordered <- TRUE
+=======
+    if(assumeSorted) {
+        needReorder <- is.unsorted(f)
+        if(needReorder) {
+            od <- order(f)
+            x <- x[od]
+            f <- f[od]
+        }
+>>>>>>> 2d1c130... Adds bumphunter to the repos.
     }
         
     if(verbose) message("getSegments: segmenting")
     Indexes <- split(seq(along=x), f)
+<<<<<<< HEAD
     direction <- as.integer(greaterOrEqual(x, cutoff[2]))
+=======
+    direction <- as.integer(x >= cutoff[2])
+>>>>>>> 2d1c130... Adds bumphunter to the repos.
     direction[x <= cutoff[1]] <- -1L
 
     ## We now need to convert f into cid
@@ -66,7 +80,11 @@ getSegments <- function(x, f = NULL, cutoff=quantile(abs(x), 0.99), assumeSorted
     names(res[[2]]) <- NULL
     names(res[[3]]) <- NULL
 
+<<<<<<< HEAD
     if(reordered) {
+=======
+    if(assumeSorted && needReorder) {
+>>>>>>> 2d1c130... Adds bumphunter to the repos.
         res <- lapply(res, function(sp) lapply(sp, function(xx) od[xx]))
     }
     res
@@ -94,9 +112,14 @@ clusterMaker <- function(chr, pos, assumeSorted = FALSE, maxGap=300){
 }
 
 ##you can pass cutoff through the ...
+<<<<<<< HEAD
 regionFinder <- function(x, chr, pos, cluster=NULL, y=x, summary=mean,
                          ind=seq(along=x),order=TRUE, oneTable=TRUE,
                          maxGap=300, cutoff=quantile(abs(x), 0.99),
+=======
+regionFinder <- function(x, chr, pos, cluster=NULL, y=x, summary=mean, ind=seq(along=x),
+                         order=TRUE, oneTable=TRUE, maxGap=300, cutoff=quantile(abs(x), 0.99),
+>>>>>>> 2d1c130... Adds bumphunter to the repos.
                          assumeSorted = FALSE, verbose = TRUE){
     if(any(is.na(x[ind]))){
         warning("NAs found and removed. ind changed.")
@@ -110,6 +133,7 @@ regionFinder <- function(x, chr, pos, cluster=NULL, y=x, summary=mean,
     
     res <- vector("list",2)
     for(i in 1:2){
+<<<<<<< HEAD
       res[[i]]<-
         data.frame(chr=sapply(Indexes[[i]],function(Index) chr[ind[Index[1]]]),
                    start=sapply(Indexes[[i]],function(Index) min(pos[ind[Index]])),
@@ -123,6 +147,18 @@ regionFinder <- function(x, chr, pos, cluster=NULL, y=x, summary=mean,
 
       res[[i]]$L <- res[[i]]$indexEnd - res[[i]]$indexStart+1
       res[[i]]$clusterL <- sapply(Indexes[[i]], function(Index) clusterN[ind[Index]][1])
+=======
+        res[[i]] <- data.frame(chr = sapply(Indexes[[i]], function(Index) chr[ind[Index[1]]]),
+                               start = sapply(Indexes[[i]], function(Index) min(pos[ind[Index]])),
+                               end = sapply(Indexes[[i]], function(Index) max(pos[ind[Index]])),
+                               value = sapply(Indexes[[i]], function(Index) summary(y[ind[Index]])),
+                               area = sapply(Indexes[[i]], function(Index) abs(sum(y[ind[Index]]))),
+                               cluster = sapply(Indexes[[i]], function(Index) cluster[ind[Index]][1]),
+                               indexStart = sapply(Indexes[[i]], function(Index) min(ind[Index])),
+                               indexEnd = sapply(Indexes[[i]], function(Index) max(ind[Index])))
+        res[[i]]$L <- res[[i]]$indexEnd - res[[i]]$indexStart+1
+        res[[i]]$clusterL <- sapply(Indexes[[i]], function(Index) clusterN[ind[Index]][1])
+>>>>>>> 2d1c130... Adds bumphunter to the repos.
     }
     names(res) <- c("up","dn")
     if(order & !oneTable){
@@ -135,6 +171,7 @@ regionFinder <- function(x, chr, pos, cluster=NULL, y=x, summary=mean,
     }
     return(res)
 }
+<<<<<<< HEAD
 
 boundedClusterMaker <- function(chr, pos, assumeSorted = FALSE,
                                 maxClusterWidth = 1500, maxGap = 500) {
@@ -164,3 +201,5 @@ boundedClusterMaker <- function(chr, pos, assumeSorted = FALSE,
     clusterIDs
 }
 
+=======
+>>>>>>> 2d1c130... Adds bumphunter to the repos.

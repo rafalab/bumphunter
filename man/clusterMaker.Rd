@@ -1,6 +1,5 @@
 \name{clusterMaker}
 \alias{clusterMaker}
-\alias{boundedClusterMaker}
 \title{
   Make clusters of genomic locations based on distance
 }
@@ -13,8 +12,6 @@
 
 \usage{
 clusterMaker(chr, pos, assumeSorted = FALSE, maxGap = 300)
-boundedClusterMaker(chr, pos, assumeSorted = FALSE,
-                    maxClusterWidth = 1500, maxGap = 500)
 }
 
 \arguments{
@@ -27,8 +24,6 @@ boundedClusterMaker(chr, pos, assumeSorted = FALSE,
     of the function slightly.} 
   \item{maxGap}{An integer. Genomic locations within maxGap from each other are
     placed into the same cluster.}
-  \item{maxClusterWidth}{An integer. A cluster large than this width is
-    broken into subclusters.}
 }
 
 \details{
@@ -52,7 +47,7 @@ boundedClusterMaker(chr, pos, assumeSorted = FALSE,
 }
 
 \author{
-  Rafael A. Irizarry, Hector Corrada Bravo
+  Rafael A. Irizarry 
 }
 
 \examples{
@@ -63,5 +58,4 @@ o <- order(chr, pos)
 chr <- chr[o]
 pos <- pos[o]
 regionID <- clusterMaker(chr, pos)
-regionID2 <- boundedClusterMaker(chr, pos)
 }
