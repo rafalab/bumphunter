@@ -54,18 +54,12 @@ Rafael A. Irizarry and Martin J. Aryee
 }
 
 \examples{
-dat <- dummyData()
+  dat <- dummyData()
 
-# Enable parallelization
-require(doParallel)
-registerDoParallel(cores = 2)
-
-## loessByCluster
-smoothed <- smoother(y=dat$mat[,1], cluster=dat$cluster, smoothFunction=loessByCluster, 
+  ## loessByCluster
+  smoothed <- smoother(y=dat$mat[,1], cluster=dat$cluster, smoothFunction=loessByCluster, 
                        bpSpan = 1000, minNum=7, minInSpan=5, maxSpan=1)
-## runmedByCluster
-smoothed <- smoother(y=dat$mat[,1], cluster=dat$cluster, smoothFunction=runmedByCluster, 
-                     k=5, endrule="constant")
-# cleanup, for Windows
-bumphunter:::foreachCleanup()
+  ## runmedByCluster
+  smoothed <- smoother(y=dat$mat[,1], cluster=dat$cluster, smoothFunction=runmedByCluster, 
+                       k=5, endrule="constant")
 }

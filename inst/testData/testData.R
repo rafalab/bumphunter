@@ -3,6 +3,8 @@ library(bumphunter)
 ## Generate dummy data
 set.seed(123)
 dat <- dummyData()
+## matplot(dat$pos, dat$mat, type="l", col=c(rep("red", n1), rep("blue", n2)), lty=1)
+## save(dat, file = "../unitTests/dat.rda")
 
 ## loessByCluster      
 loessSmoothed <- loessByCluster(cluster=dat$cluster, y=dat$mat[,1],
@@ -16,14 +18,14 @@ save(runmedSmoothed, file="../unitTests/runmedSmoothed.rda")
 ## bumphunter test 1
 set.seed(123)
 bumpsTest1 <- bumphunter (dat$mat, design=dat$design, chr=dat$chr, pos=dat$pos, cluster=dat$cluster,
-                          coef=2, cutoff=0.28, smooth=TRUE, B=500,
+                          coef=2, cutoffQ=0.9, smooth=TRUE, B=500,
                           verbose=TRUE, smoothFunction=loessByCluster)
 save(bumpsTest1, file="../unitTests/bumpsTest1.rda")
 
 ## bumphunter test 2: chr unspecified
 set.seed(123)
 bumpsTest2 <- bumphunter (dat$mat, design=dat$design, pos=dat$pos, cluster=dat$cluster,
-                          coef=2, cutoff=0.28, maxGap=500, smooth=TRUE, B=500,
+                          coef=2, cutoffQ=0.9, maxGap=500, smooth=TRUE, B=500,
                           verbose=TRUE, smoothFunction=loessByCluster)
 save(bumpsTest2, file="../unitTests/bumpsTest2.rda")
 

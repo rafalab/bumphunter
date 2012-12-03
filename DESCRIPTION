@@ -1,42 +1,16 @@
 Package: bumphunter
-Version: 1.17.3
+Version: 0.0.19
 Title: Bump Hunter
 Description: Tools for finding bumps in genomic data
-Authors@R: c(person(c("Rafael", "A."), "Irizarry", role = c("cre","aut"), email
-    = "rafa@jimmy.harvard.edu"), person("Martin", "Aryee", role = "aut"),
-    person(c("Kasper", "Daniel"), "Hansen", role = "aut"), person(c("Hector",
-    "Corrada"), "Bravo", role = "aut"), person("Shan", "Andrews", role =
-    "ctb"), person(c("Andrew", "E."), "Jaffe", role = "ctb"), person("Harris",
-    "Jaffee", role = "ctb"), person("Leonardo", "Collado-Torres", role="ctb"))
-Depends:
-    R (>= 3.4),
-    S4Vectors (>= 0.9.25),
-    IRanges (>= 2.3.23),
-    GenomeInfoDb,
-    GenomicRanges,
-    foreach,
-    iterators,
-    methods,
-    parallel,
-    locfit
-Suggests:
-    testthat,
-    RUnit,
-    doParallel,
-    org.Hs.eg.db,
-    TxDb.Hsapiens.UCSC.hg19.knownGene
-Imports:
-    matrixStats,
-    limma,
-    doRNG,
-    BiocGenerics,
-    utils,
-    GenomicFeatures,
-    AnnotationDbi,
-    stats
+Author: Rafael A. Irizarry, Martin Aryee, Hector Corrada Bravo, Kasper D. Hansen, Harris A. Jaffee
+Maintainer: Rafael A. Irizarry <rafa@jhu.edu>
+Depends: IRanges, GenomicRanges, foreach, iterators, methods, iterators
+Suggests: limma, RUnit, BiocGenerics, doParallel
+Imports: matrixStats, limma, itertools, doRNG
+Collate: AllGenerics.R annotateNearest.R dummyData.R
+        limmaForPermutations.R regionFinder.R regionMatch.R smooth.R
+        bumphunter.R
 License: Artistic-2.0
 LazyData: yes
-URL: https://github.com/ririzarr/bumphunter
 biocViews: DNAMethylation, Epigenetics, Infrastructure,
-    MultipleComparison
-RoxygenNote: 6.0.1
+        MultipleComparisons
