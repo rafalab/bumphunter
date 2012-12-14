@@ -1,33 +1,4 @@
-dataframe_to_GRanges <- function(D) {
-        require(GenomicRanges)
-        if (is(D, "GRanges"))
-                return(D)
-        names <- names(D)
-        seqnames <- if ("chr" %in% names) {
-                tmp <- D$chr
-                if (is.character(tmp))
-                        tmp
-                else
-                        # the 'chr' variable may be numeric
-                        paste("chr", tmp, sep="")
-            }
-            else
-                D$seqnames
-        ranges <- if ("start" %in% names)
-                IRanges(start=D$start, end=D$end)
-
-        strands <- if("strand" %in% names) D$strand else "*"
-        GRanges(seqnames=seqnames, ranges=ranges, strand=strands)
-}
-
-dataframe_to_IRanges <- function(D) {
-        require(IRanges)
-        if (is(D, "IRanges"))
-                return(D)
-        IRanges(start=D$start, end=D$end)
-}
-
-annotateNearest <- function(x, subject, pointMatch=FALSE, ...) {
+annotateNearest <- function(x, subject, annotate=TRUE, ...) {
 
     if (class(x) == "data.frame") {
 	names <- names(x)
@@ -53,11 +24,7 @@ annotateNearest <- function(x, subject, pointMatch=FALSE, ...) {
 	type[2] <- 2
     type <- prod(type)
     if(is.na(type) || type==2)
-	stop("annotatNearest: arguments must be both IRanges or GRanges")
-    if (type==1)
-	require(IRanges)
-    else
-	require(GenomicRanges)
+	stop("arguments must be both IRanges or GRanges")
 
     ret <- matrix(NA, nrow=length(x), ncol=7)
     colnames(ret) <- c("dist", "matchIndex", "type", "amountOverlap",
@@ -66,14 +33,14 @@ annotateNearest <- function(x, subject, pointMatch=FALSE, ...) {
     dots <- list(...)
     names.dots <- names(dots)
     if ("select" %in% names.dots && dots$select == "all")
-	stop("regionMatch: select=\"all\" not supported (yet)")
+	stop("select=\"all\" not supported (yet)")
     if (type==1 && "ignore.strand" %in% names.dots)
-	stop("regionMatch: cannot specify 'ignore.strand' with IRanges")
+	stop("cannot specify 'ignore.strand' with IRanges")
 
 #cat("calling nearest... ")
     NN <- nearest(x, subject, ...)
     if (any(is.na(NN)))
-	stop("regionMatch: nearest returned NAs")
+	stop("nearest returned NAs")
 #cat("Done\n")
 
     ret[,"matchIndex"] <- NN
@@ -101,7 +68,7 @@ annotateNearest <- function(x, subject, pointMatch=FALSE, ...) {
     i <- ret$type == "disjointL"
     ret$dist[i] <- y.start[i] - x.end[i]
 
-    if (pointMatch)
+    if (!annotate)
 	return(as.matrix(ret[, c("dist", "matchIndex")]))
 
     i <- ret$type == "overlapR"
@@ -128,3 +95,6 @@ annotateNearest <- function(x, subject, pointMatch=FALSE, ...) {
     
     ret
 }
+
+# for pointMatch
+regionMatch <- annotateNearest
