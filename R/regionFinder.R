@@ -40,13 +40,12 @@ getSegments <- function(x, f = NULL, cutoff=quantile(abs(x), 0.99), assumeSorted
         cutoff <- c(-cutoff, cutoff)
     cutoff <- sort(cutoff)
 
-    if(assumeSorted) {
-        needReorder <- is.unsorted(f)
-        if(needReorder) {
-            od <- order(f)
-            x <- x[od]
-            f <- f[od]
-        }
+    reordered <- FALSE
+    if(!assumeSorted && is.unsorted(f)) {
+	od <- order(f)
+	x <- x[od]
+	f <- f[od]
+	reordered <- TRUE
     }
         
     if(verbose) message("getSegments: segmenting")
@@ -67,7 +66,7 @@ getSegments <- function(x, f = NULL, cutoff=quantile(abs(x), 0.99), assumeSorted
     names(res[[2]]) <- NULL
     names(res[[3]]) <- NULL
 
-    if(assumeSorted && needReorder) {
+    if(reordered) {
         res <- lapply(res, function(sp) lapply(sp, function(xx) od[xx]))
     }
     res

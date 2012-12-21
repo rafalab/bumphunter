@@ -1,18 +1,9 @@
-# defaults to hg19, i.e.
-#	TxDb.Hsapiens.UCSC.hg19.knownGene
-# and
-#	org.Hs.eg.db
+# hg19 only
 known_transcripts <- function() {
-
-	# the org package should be implied by the tx_db package, e.g.
-	#	tx_db = "TxDb.Hsapiens.UCSC.hg19.knownGene"
-	#	species = strsplit(tx_db, split=".", fixed=TRUE)[[1]][2]
-	#	paste("org", substr(species, 1, 2), "eg", "db", sep=".")
-
 	package = "TxDb.Hsapiens.UCSC.hg19.knownGene"
 
 cat("loading the knownGene database\n")
-	require(package=package, character.only=TRUE) || stop('need package: ', package)
+	library(package=package, character.only=TRUE)
 	the_db = get(package)
 
 cat("... ")
@@ -59,7 +50,7 @@ cat("coding by transcript\n")
 	
 cat("entrez ids to gene symbol and refseq id\n")
 	# Get the symbols associated with the entrez ids
-	require(org.Hs.eg.db) || stop("need package org.Hs.eg.db")
+	library(org.Hs.eg.db)
 
 	map = org.Hs.egSYMBOL
 	symbols = unlist(as.list(org.Hs.egSYMBOL[mappedkeys(map)]))
