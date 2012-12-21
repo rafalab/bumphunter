@@ -152,7 +152,7 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
     tab$perRunRate <- rate1
     tab$areaRate <- rate4
     tab$areaPerRunRate <- rate3
-    tab <- tab[order(tab$perRunRate,tab$area),]
+    tab <- tab[order(tab$perRunRate,-tab$area),]
     return(list(table=tab, fitted=beta, pvaluesMarginal=pvs, null=list(value=V,length=L)))
 }
 
