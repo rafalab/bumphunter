@@ -75,7 +75,8 @@ bumphunterEngine(mat, design, chr = NULL, pos, cluster = NULL, coef = 2,
 \details{
 This function performs the bumphunting approach described by Jaffe et
 al. International Journal of Epidemiology (2012). The main output is a
-table of candidate regions with p-values assigned.
+table of candidate regions with permutation-based family-wide error
+  rates (FWER) and p-values assigned.
 
 The general idea is that for each genomic location we have a value for
 several individuals. We also have covariates for each individual and
@@ -91,11 +92,13 @@ Uncertainty is assessed via permutations. Each of the B permutations
 will produce an estimated \sQuote{null profile} from which we can define
 \sQuote{null candidate regions}. For each observed candidate region we
 determine how many null regions are \sQuote{more extreme} (longer and
-higher average value). The \sQuote{rate} is the number of permutations
-runs that had at least one region as extreme as the observed. The
-\sQuote{perRunRate} is the average (per permutation) number of null
-regions that are more extreme. We provide the same using area as a
-number summary for the regions.
+higher average value). The \sQuote{p.value} is the percent of candidate
+regions obtained from the permutations that as extreme as the observed
+region. These p-values should be
+interpreted with care as the theoretical proporties are not well understood.
+The \sQuote{fwer} is the proportion of permutations that had at least on
+regio as extreme as the observed region. We compute p.values and FWER
+for the area of the regions (as opposed to length and value as a pair) as well.
 
 Parallelization is implemented through the foreach package.
 }
