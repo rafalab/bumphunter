@@ -5,7 +5,7 @@ Fuzzy Matching of Genomic Locations
 }
 
 \description{
-  Finds the nearest locations in a table of genomic targets
+  Finds the nearest locations in a given table of genomic targets
 }
 
 \usage{
@@ -14,8 +14,9 @@ pointMatch(object1, object2, col1=2, col2=2, verbose)
 
 \arguments{
   \item{object1}{A \code{data.frame} holding the query positions in column
-\code{col1}, annotated by chromosome in \code{chr}.}
-  \item{object2}{As \code{object1}, but with \code{col2} and \code{chr} columns.}
+\code{col1}, on the chromosomes given in the \code{chr} column.}
+  \item{object2}{As \code{object1}, but holding the target positions in
+the \code{col2} and \code{chr} columns.}
   \item{col1}{The column in \code{object1} holding the query positions.}
   \item{col2}{The column in \code{object2} holding the target positions.}
   \item{verbose}{For backward compatibility; ignored.}
