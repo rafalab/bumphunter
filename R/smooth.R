@@ -8,10 +8,16 @@ smoother <- function(y, x=NULL, cluster, weights=NULL,
     Indexes <- split(seq(along=cluster), cluster)
     ## Split Indexes into chunks that will be distributed among the workers
     IndexesChunks <- lapply(as.list(isplitVector(Indexes, chunks=cores)), unlist) # not super-elegant
-    ret <- foreach(idx=IndexesChunks, .packages = "bumphunter") %dorng% {
+
+    # make binding of 'idx' explicit
+    foreach_object <- foreach(idx=IndexesChunks, .packages = "bumphunter")
+    foreach_argname <- foreach_object$argnames[1]
+    ret <- foreach_object %dorng% {
+	idx <- get(foreach_argname)
         smoothFunction(y=y[idx,], x=x[idx], cluster=cluster[idx],
                        weights=weights[idx,], verbose=verbose, ...)
     }
+
     attributes(ret)[["rng"]] <- NULL
     ## Paste together results from different workers
     ret <- reduceIt(ret)
