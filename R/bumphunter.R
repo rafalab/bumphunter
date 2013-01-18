@@ -109,13 +109,15 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
   
   if (verbose) message("bumphunterEngine: Computing regions for each permutation.")
   chunksize <- ceiling(B/workers)
-  nulltabs <- foreach(subMat=iter(permBeta, by="col", chunksize=chunksize),
-                      .combine="c", .packages = "bumphunter") %dorng% {
-                        apply(subMat, 2, regionFinder, chr=chr,
-                              pos=pos,
-                              cluster=cluster,
-                              cutoff=cutoff, ind=Index, verbose=FALSE)
-                      }
+  # make binding of 'subMat' explicit
+  foreach_object <- foreach(subMat=iter(permBeta, by="col", chunksize=chunksize),
+	.combine="c", .packages = "bumphunter")
+  foreach_argname <- foreach_object$argnames[1]
+  nulltabs <- foreach_object %dorng% { 
+	subMat <- get(foreach_argname)
+	apply(subMat, 2, regionFinder, chr=chr, pos=pos, cluster=cluster,
+		cutoff=cutoff, ind=Index, verbose=FALSE)
+  }
   attributes(nulltabs)[["rng"]] <- NULL
 
   if (verbose) message("bumphunterEngine: Estimating p-values and FWER.")
