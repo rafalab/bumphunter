@@ -109,17 +109,13 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
   
   if (verbose) message("bumphunterEngine: Computing regions for each permutation.")
   chunksize <- ceiling(B/workers)
-
-  # make binding of 'subMat' explicit
-  foreach_object <- foreach(subMat=iter(permBeta, by="col", chunksize=chunksize),
-                      .combine="c", .packages = "bumphunter")
-  foreach_argname <- foreach_object$argnames[1]
-  nulltabs <- foreach_object %dorng% {
-		subMat <- get(foreach_argname)	
-		apply(subMat, 2, regionFinder, chr=chr, pos=pos, cluster=cluster,
-			cutoff=cutoff, ind=Index, verbose=FALSE)
-		}
-
+  nulltabs <- foreach(subMat=iter(permBeta, by="col", chunksize=chunksize),
+                      .combine="c", .packages = "bumphunter") %dorng% {
+                        apply(subMat, 2, regionFinder, chr=chr,
+                              pos=pos,
+                              cluster=cluster,
+                              cutoff=cutoff, ind=Index, verbose=FALSE)
+                      }
   attributes(nulltabs)[["rng"]] <- NULL
 
   if (verbose) message("bumphunterEngine: Estimating p-values and FWER.")
@@ -146,68 +142,26 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
   }
   ##This is like a FWER
   rate1 <- rowMeans(tots>0)
-
-  ###Now compute pvalues by assuming everything is exchangeable
+  
+  ##Now compute pvalues by assuming everything is exchangeable
   pvalues1 <- rowSums(tots)/sum(sapply(nulltabs,nrow))
 
-    precision <- sqrt(.Machine$double.eps)
-    sumGreaterOrEqual <- rowSums(abs(permRawBeta) >= abs(as.vector(rawBeta)) |
-                                 abs(abs(permRawBeta) - abs(as.vector(rawBeta))) <= precision)
-    pvs <- (sumGreaterOrEqual + 1L) / (B + 1L)
-    
-    if(smooth){
-        if(verbose) message("bumphunterEngine: Smoothing permutation coefficients.")
-        permBeta <- smoother(y=permRawBeta, x=pos, cluster=cluster, weights=weights,
-                            smoothFunction=smoothFunction, verbose=subverbose)$fitted
-    } else permBeta <- permRawBeta
-    
-    if (verbose) message("bumphunterEngine: Computing regions for each permutation.")
-    chunksize <- ceiling(B/workers)
+  tots2 <- sapply(seq(along=A), function(i) {
+    sapply(tab$area, function(x) { sum(A[[i]]>=x[1]) })
+  })
+  if (is.vector(tots2)) {
+    tots2 <- matrix(tots2, nrow=1)
+  }
+  rate2 <- rowMeans(tots2>0)
+  pvalues2 <- rowSums(tots2)/sum(sapply(nulltabs,nrow))
+ 
+  tab$p.value <- pvalues1
+  tab$fwer <- rate1
 
-    # some ugliness to avoid no-visible-binding for the variable 'subMat'
-    foreach_object <- foreach(subMat=iter(permBeta, by="col", chunksize=chunksize),
-		.combine="c", .packages = "bumphunter")
-    nulltabs <- foreach_object %dorng% {
-	subMat <- get(foreach_object$argnames[1])
-	apply(subMat, 2, regionFinder, chr=chr, pos=pos, cluster=cluster,
-		cutoff=cutoff, ind=Index, verbose=FALSE)
-    }
+  tab$p.valueArea <- pvalues2
+  tab$fwerArea <- rate2
 
-    attributes(nulltabs)[["rng"]] <- NULL
-    
-    L <- V <- A <- as.list(rep(0, B))
-    for(i in 1:B) {
-        nulltab <- nulltabs[[i]]
-        if (nrow(nulltab)>0) { 
-            L[[i]] <- nulltab$L
-            V[[i]] <- nulltab$value
-            A[[i]] <- nulltab$area
-        }
-    }
-    tots <- sapply(seq(along=V), function(i) {
-        apply(cbind(tab$L,abs(tab$value)), 1, function(x) {
-            sum(L[[i]]>=x[1] & abs(V[[i]])>=x[2])
-        })
-    })
-    if (is.vector(tots)) {
-        tots <- matrix(tots, nrow=1)
-    }
-    rate1 <- rowMeans(tots>0)
-    rate2 <- rowSums(tots)/B
-    tots2 <- sapply(seq(along=A), function(i) {
-        sapply(tab$area, function(x) { sum(A[[i]]>=x[1]) })
-    })
-    if (is.vector(tots2)) {
-        tots2 <- matrix(tots2, nrow=1)
-    }
-    rate3 <- rowMeans(tots2>0)
-    rate4 <- rowSums(tots2)/B
-    
-    tab$rate <- rate2
-    tab$perRunRate <- rate1
-    tab$areaRate <- rate4
-    tab$areaPerRunRate <- rate3
-    tab <- tab[order(tab$perRunRate,-tab$area),]
-    return(list(table=tab, fitted=beta, pvaluesMarginal=pvs, null=list(value=V,length=L)))
+  tab <- tab[order(tab$fwer,-tab$area),]
+  return(list(table=tab, fitted=beta, pvaluesMarginal=pvs, null=list(value=V,length=L)))
 }
 
