@@ -48,12 +48,21 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
   if(B>0 & B< workers) stop("B must be bigger than workers (or 0)")
   
   if(verbose) message("bumphunterEngine: Computing coefficients.")
-  rawBeta <- .getEstimate(mat = mat, design = design, coef = coef) 
+  
+  if(useWeights & smooth){
+      tmp <- .getEstimate(mat=mat, design=design, coef=coef, full=TRUE)
+      rawBeta <- tmp$coef
+      weights <- tmp$sigma
+      rm(tmp)
+  } else{
+      rawBeta <- .getEstimate(mat=mat, design=design, coef=coef, full=FALSE)
+      weights <- NULL
+  }
   
   if(smooth){
     if(verbose) message("bumphunterEngine: Smoothing coefficients.")
-    beta <- smoother(y=rawBeta, x=pos, cluster=cluster,
-                     smoothFunction=smoothFunction, verbose=subverbose,...) ##weights come latter
+    beta <- smoother(y=rawBeta, x=pos, cluster=cluster, weights=weights,
+                     smoothFunction=smoothFunction, verbose=subverbose,...) 
     Index <- which(beta$smoothed)
     beta <- beta$fitted
   } else {
