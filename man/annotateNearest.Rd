@@ -1,6 +1,7 @@
 \name{annotateNearest}
 \alias{annotateNearest}
 \alias{regionMatch}
+\alias{matchGenes}
 \title{
 Annotate Nearest
 }
@@ -12,25 +13,52 @@ Annotate Nearest
 
 \usage{
 annotateNearest(x, subject, annotate=TRUE, ...)
+
+matchGenes(x, build, ...)
 }
 
 \arguments{
   \item{x}{An \code{IRanges} or \code{GenomicRanges} object, or a
     \code{data.frame} with columns for \code{start}, \code{end},
     and, optionally, \code{chr} or \code{seqnames}.}
-  \item{subject}{Object of the same class as \code{x}.}
+  \item{subject}{For \code{annotateNearest} to operate in
+    \code{matchGenes} mode, a single word indicating the desired
+    species/build; this is currently limited to \code{hg19}.
+    Otherwise, an object of the same class as \code{x}.}
   \item{annotate}{Whether to annotate the result.}
+  \item{build}{For example, \code{hg19}.}
   \item{\dots}{Options passed to \code{nearest}.}
 }
 
 \details{
-A wrapper for \code{nearest(select="arbitrary")} with annotation of
-the result.
+The name \code{matchGenes} is provided for backward compatibility.
+\code{annotateNearest} is a wrapper for \code{nearest(select="arbitrary")}
+with annotation of the result.
 }
 
 \value{
   
-A data frame with columns \code{c("dist", "matchIndex", "type",
+For \code{matchGenes}, a data frame with columns \code{c("name",
+  "annotation", "description", "region", "distance", "subregion",
+  "insidedistance", "exonnumber", "nexons", "UTR", "strand", "geneL",
+  "codingL")} unless \code{all} is \code{TRUE}, in which case there
+  are two additional columns at the beginning holding the query index
+  and nearest transcript name.
+\item{name}{}
+\item{annotation}{}
+\item{description}{}
+\item{region}{}
+\item{distance}{}
+\item{subregion}{}
+\item{insidedistance}{}
+\item{exonnumber}{}
+\item{nexons}{}
+\item{UTR}{}
+\item{strand}{}
+\item{geneL}{}
+\item{codingL}{}
+
+Otherwise, a data frame with columns \code{c("dist", "matchIndex", "type",
   "amountOverlap", "insideDist", "size1", "size2")} unless
   \code{annotate} is \code{FALSE}, in which case the first two columns,
   only, are returned as an integer matrix. 
