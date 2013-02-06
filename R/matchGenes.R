@@ -5,7 +5,12 @@
 # "-pe local N" with N >= mc.cores.  We do not verify.
 
 	#species="human",build="hg18",r=0,up=50000000,down=50000000,
-matchGenes <- function(object,promoterDist=2500,verbose=TRUE, all=FALSE,
+
+#matchGenes <- function(object,promoterDist=2500,verbose=TRUE, all=FALSE,
+
+# 'matchGenes' now defined in annotateNearest.R
+matchGenes_ <- function(object, build="hg19",
+		promoterDist=2500,verbose=TRUE, all=FALSE,
 		genes=NULL, nexons=NULL, EXONS=NULL, job=0, mc.cores=1) {
 
  if(is.null(genes)) {
