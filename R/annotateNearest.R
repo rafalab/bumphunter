@@ -1,5 +1,12 @@
 annotateNearest <- function(x, subject, annotate=TRUE, ...) {
 
+    # matchGenes
+    if (class(subject) == "character") {
+	if (subject != "hg19")
+		stop("matchGenes: only 'hg19' supported for now")
+	return(matchGenes_(object=x, build=subject, ...))
+    }
+
     if (class(x) == "data.frame") {
 	names <- names(x)
 	if ("chr" %in% names || "seqnames" %in% names) {
@@ -96,5 +103,8 @@ annotateNearest <- function(x, subject, annotate=TRUE, ...) {
     ret
 }
 
-# for pointMatch
+# for use by pointMatch
 regionMatch <- annotateNearest
+
+# for backward compatibility
+matchGenes <- function(x, build, ...) annotateNearest(x=x, subject=build, ...)
