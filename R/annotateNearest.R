@@ -4,7 +4,7 @@ annotateNearest <- function(x, subject, annotate=TRUE, ...) {
     if (class(subject) == "character") {
 	if (subject != "hg19")
 		stop("matchGenes: only 'hg19' supported for now")
-	return(matchGenes_(object=x, build=subject, ...))
+	return(.matchGenes(object=x, build=subject, ...))
     }
 
     if (class(x) == "data.frame") {

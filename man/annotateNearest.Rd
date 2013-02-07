@@ -37,42 +37,57 @@ with annotation of the result.
 }
 
 \value{
-  
-For \code{matchGenes}, a data frame with columns \code{c("name",
-  "annotation", "description", "region", "distance", "subregion",
-  "insidedistance", "exonnumber", "nexons", "UTR", "strand", "geneL",
-  "codingL")} unless \code{all} is \code{TRUE}, in which case there
-  are two additional columns at the beginning holding the query index
-  and nearest transcript name.
-\item{name}{}
-\item{annotation}{}
-\item{description}{}
-\item{region}{}
-\item{distance}{}
-\item{subregion}{}
-\item{insidedistance}{}
-\item{exonnumber}{}
-\item{nexons}{}
-\item{UTR}{}
-\item{strand}{}
-\item{geneL}{}
-\item{codingL}{}
 
-Otherwise, a data frame with columns \code{c("dist", "matchIndex", "type",
+Normally, a data frame with columns \code{c("dist", "matchIndex", "type",
   "amountOverlap", "insideDist", "size1", "size2")} unless
   \code{annotate} is \code{FALSE}, in which case the first two columns,
-  only, are returned as an integer matrix. 
+  only, are returned as an integer matrix.
+
+For matchGenes or matchGenes mode, with \code{all} unset or \code{FALSE},
+  a data frame with one row for each query and with columns \code{c("name",
+  "annotation", "description", "region", "distance", "subregion",
+  "insidedistance", "exonnumber", "nexons", "UTR", "strand", "geneL", "codingL")}.
+  The first column is the _gene_ nearest the query, by virtue of owning the
+  transcript nearest the query.  Note that this nearest transcript (name),
+  per se, does not exist in the result.  If \code{all} is \code{TRUE}, then each
+  row of the previous result is expanded into perhaps multiple rows, reflecting
+  multiple (equally) nearest transcripts for a given query.  In this case, two
+  new columns at the beginning hold the query index and nearest transcript name.
+  The nearest gene to a given query (in column 3) may or may not be unique.
+  
 \item{dist}{Signed distance to the nearest target. Queries downstream
   from (i.e. past) their nearest target are given a negative distance.}
 \item{matchIndex}{The index of the nearest target.}
 \item{type}{one of \code{c("inside", "cover", "disjoint", "overlap")}.}
 \item{amountOverlap}{The width of the overlap region, if any.}
-\code{insideDist}{When a query is contained in its nearest target, the
-  signed minimum of the distances "target start to query start" and
-  "query end to target end". The former is taken positive, and the latter,
+\item{insideDist}{When a query is contained in its nearest target, the
+  signed minimum of the two distances target-start-to-query-start and
+  query-end-to-target-end. The former is taken positive, and the latter,
   which wins in ties, negative. \code{dist} will be \code{0} in this case.}
 \item{size1}{equals \code{width(x)}.}
 \item{size2}{equals \code{width(subject)}.}
+
+\item{name}{nearest gene}
+\item{annotation}{RefSeq ID}
+\item{description}{a factor with levels \code{c("upstream", "promoter",
+	"overlaps 5'", "inside intron", "inside exon", "covers exon(s)",
+	"overlaps exon upstream", "overlaps exon downstream",
+	"overlaps two exons", "overlaps 3'", "close to 3'", "downstream",
+	"covers")}}
+\item{region}{a factor with levels \code{c("upstream", "promoter", "overlaps 5'",
+	"inside", "overlaps 3'", "close to 3'", "downstream", "covers")}}
+\item{distance}{distance before 5' end of gene}
+\item{subregion}{a factor with levels \code{c("inside intron", "inside exon",
+	"covers exon(s)", "overlaps exon upstream", "overlaps exon downstream",
+	"overlaps two exons")}}
+\item{insidedistance}{distance past 5' end of gene}
+\item{exonnumber}{which exon}
+\item{nexons}{number of exons}
+\item{UTR}{a factor with levels \code{c("inside transcription region", "5' UTR",
+	"overlaps 5' UTR", "3'UTR", "overlaps 3'UTR", "covers transcription region")}}
+\item{strand}{"+" or "-"}
+\item{geneL}{the gene length}
+\item{codingL}{the coding length}
 
 }
 

@@ -8,8 +8,9 @@
 
 #matchGenes <- function(object,promoterDist=2500,verbose=TRUE, all=FALSE,
 
+# this code no longer exported
 # 'matchGenes' now defined in annotateNearest.R
-matchGenes_ <- function(object, build="hg19",
+.matchGenes <- function(object, build="hg19",
 		promoterDist=2500,verbose=TRUE, all=FALSE,
 		genes=NULL, nexons=NULL, EXONS=NULL, job=0, mc.cores=1) {
 
