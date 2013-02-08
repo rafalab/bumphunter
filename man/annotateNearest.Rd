@@ -27,13 +27,26 @@ matchGenes(x, build, ...)
     Otherwise, an object of the same class as \code{x}.}
   \item{annotate}{Whether to annotate the result.}
   \item{build}{For example, \code{hg19}.}
-  \item{\dots}{Options passed to \code{nearest}.}
+  \item{\dots}{For \code{matchGenes} or \code{matchGenes} mode,
+	\code{promoterDist} (default \code{2500}), \code{verbose}
+	(\code{TRUE}), \code{all} (\code{FALSE}), and \code{mc.cores}
+	(\code{1}).  \code{mc.cores} is crucial for parallelizing
+	the annotation process, assuming the hardware facilities.
+	But note that the default is NOT \code{getOption("mc.cores", 2L)},
+	yet, which leaves the explicit decision to the user.
+	\code{up} and \code{down} limits on the nearest gene location
+	are planned but not implemented yet.  Otherwise, options for
+	\code{nearest}, except that \code{all} is not implemented yet
+	and is currently rejected.}
 }
 
 \details{
 The name \code{matchGenes} is provided for backward compatibility.
-\code{annotateNearest} is a wrapper for \code{nearest(select="arbitrary")}
-with annotation of the result.
+The preferred call is to \code{nearest} with \code{subject} set to
+the build name.
+\code{annotateNearest} and \code{matchGenes} are basically wrappers
+for \code{nearest(select="arbitrary")} with specialized annotation
+of the result.
 }
 
 \value{
