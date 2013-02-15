@@ -16,6 +16,6 @@ namely those with Entrez ID gene identifiers associated.
   even on minus strands where their "start" and "end" meanings are
   reversed.  Similarly with the exons.
 }
-\source{the result of \code{known_transcripts()}
+\source{the result of \code{bumphunter:::known_transcripts()}
 }
 \keyword{hg19, known transcripts}
