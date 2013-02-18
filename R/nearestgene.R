@@ -31,7 +31,7 @@ cat("finding nearest transcripts...\n")
     query.hits <- queryHits(n)
     q <- q[query.hits]
     d <- distance(q, N, ignore.strand=ignore.strand)
-    strand <- as.vector(strand(N))
+    strand <- as.character(strand(N))
     negatives <- (strand=="+" & end(N) < start(q)) | (strand=="-" & end(q) < start(N))
     d[negatives] <- -d[negatives]
     list(q=query.hits, N=N, d=d)
@@ -42,7 +42,7 @@ cat("finding nearest transcripts...\n")
     # normal distance (unsigned)
     d <- distance(q, N, ignore.strand=ignore.strand)
     # signed distance, reflecting strand
-    strand <- as.vector(strand(N))
+    strand <- as.character(strand(N))
     negatives <- (strand=="+" & end(N) < start(q)) | (strand=="-" & end(q) < start(N))
     d[negatives] <- -d[negatives]
     list(N=N, d=d)
