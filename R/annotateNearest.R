@@ -107,4 +107,4 @@ annotateNearest <- function(x, subject, annotate=TRUE, ...) {
 regionMatch <- annotateNearest
 
 # for backward compatibility
-matchGenes <- function(x, build, ...) annotateNearest(x=x, subject=build, ...)
+matchGenes <- function(x, build="hg19", ...) annotateNearest(x=x, subject=build, ...)
