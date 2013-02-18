@@ -27,8 +27,14 @@
   nexons <- metadata$Nexons
   EXONS <- metadata$Exons	# a CompressedIRangesList
   zero <- integer(length(NN))	# for place-holders
-  starts <- object$start
-  ends <- object$end
+  if (is(object, "data.frame")) {
+	starts <- object$start
+	ends <- object$end
+  }
+  else {	# GRanges
+	starts <- start(object)
+	ends <- end(object)
+  }
   if (all) {
 	queries <- X$q
 	times <- rle(queries)$lengths
@@ -36,8 +42,8 @@
 	ends <- rep(ends, times)
   }
   genes <- data.frame(zero, zero, starts, ends, zero,
-	as.vector(metadata$Gene), as.vector(metadata$Refseq), zero,
-	as.vector(strand(NN)), start(NN), end(NN),
+	as.character(metadata$Gene), as.character(metadata$Refseq), zero,
+	as.character(strand(NN)), start(NN), end(NN),
 	metadata$CSS, metadata$CSE, stringsAsFactors=FALSE)
   rm(NN, X)
  }
