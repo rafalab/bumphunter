@@ -30,7 +30,7 @@ cat("finding nearest transcripts...\n")
     N <- TT[subjectHits(n)]
     query.hits <- queryHits(n)
     q <- q[query.hits]
-    d <- distance(q, N, ignore.strand=ignore.strand)
+    d <- suppressWarnings(distance(q, N, ignore.strand=ignore.strand))
     strand <- as.character(strand(N))
     negatives <- (strand=="+" & end(N) < start(q)) | (strand=="-" & end(q) < start(N))
     d[negatives] <- -d[negatives]
@@ -40,7 +40,7 @@ cat("finding nearest transcripts...\n")
     n <- nearest(x=q, subject=TT, ignore.strand=ignore.strand)
     N <- TT[n]
     # normal distance (unsigned)
-    d <- distance(q, N, ignore.strand=ignore.strand)
+    d <- suppressWarnings(distance(q, N, ignore.strand=ignore.strand))
     # signed distance, reflecting strand
     strand <- as.character(strand(N))
     negatives <- (strand=="+" & end(N) < start(q)) | (strand=="-" & end(q) < start(N))
