@@ -11,7 +11,7 @@
 # this code no longer exported
 # 'matchGenes' now defined in annotateNearest.R
 .matchGenes <- function(object, build="hg19",
-		promoterDist=2500,verbose=TRUE, all=FALSE,
+		promoterDist=2500, verbose=TRUE, all=FALSE,
 		genes=NULL, nexons=NULL, EXONS=NULL, job=0, mc.cores=1) {
 
  if(is.null(genes)) {
