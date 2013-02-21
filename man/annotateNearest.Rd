@@ -36,8 +36,8 @@ matchGenes(x, build, ...)
 	yet, which leaves the explicit decision to the user.
 	\code{up} and \code{down} limits on the nearest gene location
 	are planned but not implemented yet.  Otherwise, options for
-	\code{nearest}, except that \code{all} is not implemented yet
-	and is currently rejected.}
+	\code{nearest}, except that \code{select="all"} is not
+	implemented yet and is currently rejected.}
 }
 
 \details{
