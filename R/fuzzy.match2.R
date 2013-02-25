@@ -36,6 +36,8 @@ fuzzy.match2 <- function(x, M) {
 	     else
 		IRanges(start=x, end=x)
 
+	x <- start(X)	# also equals end(X)
+
 	Y <- if (is(M, "IRanges"))
 		M
 	     else
@@ -73,8 +75,8 @@ fuzzy.match2 <- function(x, M) {
 	#
 	# So we use brute force:
 
-	following <- X > end(N)
-	preceding <- X < start(N)
+	following <- x > end(N)
+	preceding <- x < start(N)
 
 	# convert to real distances (if necessary based on this test case)
 	if (suppressWarnings(distance(IRanges(1,1), IRanges(2,2))) == 0) {
