@@ -63,19 +63,18 @@ fuzzy.match2 <- function(x, M) {
 	N <- Y[n]		# nearest ranges
 	d <- D$distance		# unsigned distance (see above)
 
+	# These don't work right any more:
 	#following <- X>N
 	#preceding <- X<N
+	#
 	#  There appears to be a bug in IRanges here, such as
 	#  > IRanges(1,1) < IRanges(1,2)
 	#  [1] TRUE
 	#
 	# So we use brute force:
 
-	following <- !is.na(sapply(seq(along=X), function(i)
-		follow(X[i], N[i])))
-
-	preceding <- !is.na(sapply(seq(along=X), function(i)
-		precede(X[i], N[i])))
+	following <- X > end(N)
+	preceding <- X < start(N)
 
 	# convert to real distances (if necessary based on this test case)
 	if (suppressWarnings(distance(IRanges(1,1), IRanges(2,2))) == 0) {
