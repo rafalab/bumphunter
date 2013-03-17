@@ -1,5 +1,5 @@
 Package: bumphunter
-Version: 0.99.33
+Version: 0.99.34
 Title: Bump Hunter
 Description: Tools for finding bumps in genomic data
 Author: Rafael A. Irizarry, Martin Aryee, Hector Corrada Bravo, Kasper D. Hansen, Harris A. Jaffee
@@ -9,7 +9,7 @@ Suggests: limma, RUnit, BiocGenerics, doParallel, org.Hs.eg.db, TxDb.Hsapiens.UC
 Imports: matrixStats, limma, itertools, doRNG
 Collate: AllGenerics.R annotateNearest.R dummyData.R
 	limmaForPermutations.R regionFinder.R smooth.R
-        bumphunter.R 
+        bumphunter.R
 	nearestgene.R fuzzy.match2.R matchGenes.R pointMatch.R known_transcripts.R
 	dataframe_to.R
 License: Artistic-2.0
