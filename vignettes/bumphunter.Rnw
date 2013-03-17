@@ -260,7 +260,7 @@ This is a cleanup step for the vignette on Windows; typically not needed for use
 <<closeConnetions,results=hide>>=
 allCon <- showConnections()
 socketCon <- as.integer(rownames(allCon)[allCon[, "class"] == "sockconn"])
-sapply(socketCon, function(ii) { print(ii); close.connection(getConnection(ii)) })
+sapply(socketCon, function(ii) close.connection(getConnection(ii)) )
 @
 
 \section*{SessionInfo}
