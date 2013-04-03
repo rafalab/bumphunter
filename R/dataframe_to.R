@@ -5,10 +5,10 @@ dataframe_to_GRanges <- function(D) {
 	names <- names(D)
 	seqnames <- if ("chr" %in% names) {
 		tmp <- D$chr
-		if (is.character(tmp))
+		if (is.factor(tmp) || is.character(tmp))
 			tmp
 		else
-			# the 'chr' variable may be numeric
+			# allow numeric
 			paste("chr", tmp, sep="")
 	    }
 	    else
