@@ -1,8 +1,8 @@
 setMethod("bumphunter", signature(object = "matrix"),
           function(object, design, chr=NULL, pos, cluster=NULL,
-                   coef=2, cutoff=NULL, cutoffQ=0.975,
-                   maxGap=500, smooth=TRUE, smoothFunction=loessByCluster,
-                   useWeights=TRUE, B=100, verbose=TRUE, ...){
+                   coef=2, cutoff=NULL, cutoffQ=0.99,
+                   maxGap=500, smooth=FALSE, smoothFunction=loessByCluster,
+                   useWeights=FALSE, B=1000, verbose=TRUE, ...){
               if(missing(design)) stop("design must be specified")
               if(missing(pos)) stop("If object is a matrix, pos must be specified")
               bumphunterEngine(object, design=design, chr=chr, pos,
@@ -15,14 +15,20 @@ setMethod("bumphunter", signature(object = "matrix"),
             })
 
 bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
-                             coef=2, cutoff=NULL, cutoffQ=0.975,
-                             maxGap=500, smooth=TRUE,
+                             coef=2, cutoff=NULL, pickCutoff=FALSE,
+                             cutoffQ=0.99,
+                             maxGap=500, smooth=FALSE,
                              smoothFunction=loessByCluster,
-                             useWeights=TRUE, B=100, verbose=TRUE, ...){
+                             useWeights=FALSE, B=1000, verbose=TRUE, ...){
   if(!is.matrix(mat))
     stop("'mat' must be a matrix.")
   if(ncol(mat) != nrow(design))
     stop("Number of columns of data matrix must match number of rows of design matrix")
+  if(is.null(cutoff) & !pickCutoff) stop("Must pick a cutoff")
+  if(is.null(cutoff) & pickCutoff & B<1) stop("Must do at least one permution to pick a cutoff")
+  if(!is.null(cutoff) & pickCutoff)
+                             warning("cutoff was supplied so ignoring pickCutoff=TRUE")
+  
   if (!getDoParRegistered())
     registerDoSEQ()
   workers <- getDoParWorkers()
@@ -58,8 +64,8 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
       rawBeta <- .getEstimate(mat=mat, design=design, coef=coef, full=FALSE)
       weights <- NULL
   }
-  
-  if(smooth){
+
+   if(smooth){
     if(verbose) message("bumphunterEngine: Smoothing coefficients.")
     beta <- smoother(y=rawBeta, x=pos, cluster=cluster, weights=weights,
                      smoothFunction=smoothFunction, verbose=subverbose,...) 
@@ -68,18 +74,6 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
   } else {
     beta <- rawBeta
     Index <- seq(along=beta)
-  }
-  
-  if(is.null(cutoff))
-    cutoff <- quantile(abs(beta), cutoffQ, na.rm=TRUE)
-  if(verbose) message(sprintf("bumphunterEngine cutoff: %s", round(cutoff,3)))
-  
-  if(verbose) message("bumphunterEngine: Finding regions.")
-  tab <- regionFinder(x=beta, chr=chr, pos=pos, cluster=cluster,
-                      cutoff=cutoff, ind=Index, verbose=FALSE)
-  if (nrow(tab)==0) {
-    if (verbose) message ("bumphunterEngine: No bumps found!")
-    return(list(table=NA, fitted=beta, pvaluesMarginal=NA))
   }
   
   if (verbose) message("bumphunterEngine: Performing ", B, " permutations.")
@@ -106,7 +100,7 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
   
   precision <- sqrt(.Machine$double.eps)
   sumGreaterOrEqual <- rowSums(abs(permRawBeta) >= abs(as.vector(rawBeta)) |
-                               abs(abs(permRawBeta) - abs(as.vector(rawBeta))) <= precision)
+                               abs(abs(permRawBeta)-abs(as.vector(rawBeta)))<=precision)
   pvs <- (sumGreaterOrEqual + 1L) / (B + 1L)
   
   if(smooth){
@@ -115,6 +109,19 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
                          smoothFunction=smoothFunction,
                          verbose=subverbose)$fitted
   } else permBeta <- permRawBeta
+  
+  if(is.null(cutoff))
+    cutoff <- quantile(abs(permBeta), cutoffQ, na.rm=TRUE)
+  if(verbose) message(sprintf("bumphunterEngine cutoff: %s", round(cutoff,3)))
+  
+  if(verbose) message("bumphunterEngine: Finding regions.")
+  tab <- regionFinder(x=beta, chr=chr, pos=pos, cluster=cluster,
+                      cutoff=cutoff, ind=Index, verbose=FALSE)
+  if (nrow(tab)==0) {
+    if (verbose) message ("bumphunterEngine: No bumps found!")
+    return(list(table=NA, fitted=beta, pvaluesMarginal=NA))
+  }
+  
   
   if (verbose) message("bumphunterEngine: Computing regions for each permutation.")
   chunksize <- ceiling(B/workers)
