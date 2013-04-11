@@ -112,7 +112,7 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
   
   if(is.null(cutoff))
     cutoff <- quantile(abs(permBeta), cutoffQ, na.rm=TRUE)
-  if(verbose) message(sprintf("bumphunterEngine cutoff: %s", round(cutoff,3)))
+  if(verbose) message(sprintf("bumphunterEngine: cutoff: %s", round(cutoff,3)))
   
   if(verbose) message("bumphunterEngine: Finding regions.")
   tab <- regionFinder(x=beta, chr=chr, pos=pos, cluster=cluster,
