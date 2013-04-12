@@ -1,18 +1,19 @@
 setMethod("bumphunter", signature(object = "matrix"),
           function(object, design, chr=NULL, pos, cluster=NULL,
-                   coef=2, cutoff=NULL, cutoffQ=0.99,
+                   coef=2, cutoff=NULL, pickCutoff=FALSE, cutoffQ=0.99,
                    maxGap=500, smooth=FALSE, smoothFunction=locfitByCluster,
                    useWeights=FALSE, B=1000, verbose=TRUE, ...){
-              if(missing(design)) stop("design must be specified")
-              if(missing(pos)) stop("If object is a matrix, pos must be specified")
-              bumphunterEngine(object, design=design, chr=chr, pos,
-                               cluster=cluster,
-                               coef=coef,cutoff=cutoff,cutoffQ=cutoffQ,
-                               maxGap=maxGap,smooth=smooth,
-                               smoothFunction=smoothFunction,
-                               useWeights=useWeights,
-                               B=B, verbose=verbose, ...)
-            })
+            if(missing(design)) stop("design must be specified")
+            if(missing(pos)) stop("If object is a matrix, pos must be specified")
+            bumphunterEngine(object, design=design, chr=chr, pos,
+                             cluster=cluster,
+                             coef=coef,cutoff=cutoff,pickCutoff=pickCutoff,
+                             cutoffQ=cutoffQ,
+                             maxGap=maxGap,smooth=smooth,
+                             smoothFunction=smoothFunction,
+                             useWeights=useWeights,
+                             B=B, verbose=verbose, ...)
+          })
 
 bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
                              coef=2, cutoff=NULL, pickCutoff=FALSE,
@@ -56,16 +57,16 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
   if(verbose) message("bumphunterEngine: Computing coefficients.")
   
   if(useWeights & smooth){
-      tmp <- .getEstimate(mat=mat, design=design, coef=coef, full=TRUE)
-      rawBeta <- tmp$coef
-      weights <- tmp$sigma
-      rm(tmp)
+    tmp <- .getEstimate(mat=mat, design=design, coef=coef, full=TRUE)
+    rawBeta <- tmp$coef
+    weights <- tmp$sigma
+    rm(tmp)
   } else{
-      rawBeta <- .getEstimate(mat=mat, design=design, coef=coef, full=FALSE)
-      weights <- NULL
+    rawBeta <- .getEstimate(mat=mat, design=design, coef=coef, full=FALSE)
+    weights <- NULL
   }
-
-   if(smooth){
+  
+  if(smooth){
     if(verbose) message("bumphunterEngine: Smoothing coefficients.")
     beta <- smoother(y=rawBeta, x=pos, cluster=cluster, weights=weights,
                      smoothFunction=smoothFunction, verbose=subverbose,...) 
@@ -76,52 +77,56 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
     Index <- seq(along=beta)
   }
   
-  if (verbose) message("bumphunterEngine: Performing ", B, " permutations.")
+  if(B>0){
+    if (verbose) message("bumphunterEngine: Performing ", B, " permutations.")
   
-  if (B==0) {
-    return(list(table=tab, fitted=beta, pvaluesMarginal=NA))
+  
+    if(useWeights & smooth){
+      tmp <- .getEstimate(mat, design, coef, B, full=TRUE)
+      permRawBeta <- tmp$coef
+      weights <- tmp$sigma
+      rm(tmp)
+    } else{
+      permRawBeta <- .getEstimate(mat, design, coef, B, full=FALSE)
+      weights <- NULL
+    }
+    
+    ## Get individual p-values based on permutation of samples
+    ## For each permutation we consider whether the absolute value of
+    ## the observed beta is 
+    ##
+    if(verbose) message("bumphunterEngine: Computing marginal permutation p-values.")
+    
+    precision <- sqrt(.Machine$double.eps)
+    sumGreaterOrEqual <- rowSums(abs(permRawBeta) >= abs(as.vector(rawBeta)) |
+                                 abs(abs(permRawBeta)-abs(as.vector(rawBeta)))<=precision)
+    pvs <- (sumGreaterOrEqual + 1L) / (B + 1L)
+    
+    if(smooth){
+      if(verbose) message("bumphunterEngine: Smoothing permutation coefficients.")
+      permBeta <- smoother(y=permRawBeta, x=pos, cluster=cluster, weights=weights,
+                           smoothFunction=smoothFunction,
+                           verbose=subverbose,...)$fitted
+    } else permBeta <- permRawBeta
+    
+    if(is.null(cutoff))
+      cutoff <- quantile(abs(permBeta), cutoffQ, na.rm=TRUE)
+    if(verbose) message(sprintf("bumphunterEngine cutoff: %s", round(cutoff,3)))
+
   }
-  
-  if(useWeights & smooth){
-    tmp <- .getEstimate(mat, design, coef, B, full=TRUE)
-    permRawBeta <- tmp$coef
-    weights <- tmp$sigma
-    rm(tmp)
-  } else{
-    permRawBeta <- .getEstimate(mat, design, coef, B, full=FALSE)
-    weights <- NULL
-  }
-  
-  ## Get individual p-values based on permutation of samples
-  ## For each permutation we consider whether the absolute value of
-  ## the observed beta is 
-  ##
-  if(verbose) message("bumphunterEngine: Computing marginal permutation p-values.")
-  
-  precision <- sqrt(.Machine$double.eps)
-  sumGreaterOrEqual <- rowSums(abs(permRawBeta) >= abs(as.vector(rawBeta)) |
-                               abs(abs(permRawBeta)-abs(as.vector(rawBeta)))<=precision)
-  pvs <- (sumGreaterOrEqual + 1L) / (B + 1L)
-  
-  if(smooth){
-    if(verbose) message("bumphunterEngine: Smoothing permutation coefficients.")
-    permBeta <- smoother(y=permRawBeta, x=pos, cluster=cluster, weights=weights,
-                         smoothFunction=smoothFunction,
-                         verbose=subverbose)$fitted
-  } else permBeta <- permRawBeta
-  
-  if(is.null(cutoff))
-    cutoff <- quantile(abs(permBeta), cutoffQ, na.rm=TRUE)
-  if(verbose) message(sprintf("bumphunterEngine cutoff: %s", round(cutoff,3)))
-  
+  ###Done with permutations
+
   if(verbose) message("bumphunterEngine: Finding regions.")
   tab <- regionFinder(x=beta, chr=chr, pos=pos, cluster=cluster,
                       cutoff=cutoff, ind=Index, verbose=FALSE)
   if (nrow(tab)==0) {
     if (verbose) message ("bumphunterEngine: No bumps found!")
-    return(list(table=NA, fitted=beta, pvaluesMarginal=NA))
+    return(list(table=NA, coef=rawBeta, fitted=beta, pvaluesMarginal=NA))
   }
   
+  if (B<1) {
+    return(list(table=tab, coef=rawBeta, fitted=beta, pvaluesMarginal=NA))
+  }
   
   if (verbose) message("bumphunterEngine: Computing regions for each permutation.")
   chunksize <- ceiling(B/workers)
@@ -187,6 +192,6 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
   tab$fwerArea <- rate2
 
   tab <- tab[order(tab$fwer,-tab$area),]
-  return(list(table=tab, fitted=beta, pvaluesMarginal=pvs, null=list(value=V,length=L)))
+  return(list(table=tab, coef=rawBeta, fitted=beta, pvaluesMarginal=pvs, null=list(value=V,length=L)))
 }
 
