@@ -94,8 +94,9 @@ clusterMaker <- function(chr, pos, assumeSorted = FALSE, maxGap=300){
 }
 
 ##you can pass cutoff through the ...
-regionFinder <- function(x, chr, pos, cluster=NULL, y=x, summary=mean, ind=seq(along=x),
-                         order=TRUE, oneTable=TRUE, maxGap=300, cutoff=quantile(abs(x), 0.99),
+regionFinder <- function(x, chr, pos, cluster=NULL, y=x, summary=mean,
+                         ind=seq(along=x),order=TRUE, oneTable=TRUE,
+                         maxGap=300, cutoff=quantile(abs(x), 0.99),
                          assumeSorted = FALSE, verbose = TRUE){
     if(any(is.na(x[ind]))){
         warning("NAs found and removed. ind changed.")
@@ -109,16 +110,19 @@ regionFinder <- function(x, chr, pos, cluster=NULL, y=x, summary=mean, ind=seq(a
     
     res <- vector("list",2)
     for(i in 1:2){
-        res[[i]] <- data.frame(chr = sapply(Indexes[[i]], function(Index) chr[ind[Index[1]]]),
-                               start = sapply(Indexes[[i]], function(Index) min(pos[ind[Index]])),
-                               end = sapply(Indexes[[i]], function(Index) max(pos[ind[Index]])),
-                               value = sapply(Indexes[[i]], function(Index) summary(y[ind[Index]])),
-                               area = sapply(Indexes[[i]], function(Index) abs(sum(y[ind[Index]]))),
-                               cluster = sapply(Indexes[[i]], function(Index) cluster[ind[Index]][1]),
-                               indexStart = sapply(Indexes[[i]], function(Index) min(ind[Index])),
-                               indexEnd = sapply(Indexes[[i]], function(Index) max(ind[Index])))
-        res[[i]]$L <- res[[i]]$indexEnd - res[[i]]$indexStart+1
-        res[[i]]$clusterL <- sapply(Indexes[[i]], function(Index) clusterN[ind[Index]][1])
+      res[[i]]<-
+        data.frame(chr=sapply(Indexes[[i]],function(Index) chr[ind[Index[1]]]),
+                   start=sapply(Indexes[[i]],function(Index) min(pos[ind[Index]])),
+                   end=sapply(Indexes[[i]], function(Index) max(pos[ind[Index]])),
+                   value=sapply(Indexes[[i]],function(Index)summary(y[ind[Index]])),
+                   area=sapply(Indexes[[i]],function(Index)abs(sum(y[ind[Index]]))),
+                   cluster=sapply(Indexes[[i]],function(Index)cluster[ind[Index]][1]),
+                   indexStart=sapply(Indexes[[i]], function(Index) min(ind[Index])),
+                   indexEnd = sapply(Indexes[[i]], function(Index) max(ind[Index])),
+                   stringsAsFactors=FALSE)
+
+      res[[i]]$L <- res[[i]]$indexEnd - res[[i]]$indexStart+1
+      res[[i]]$clusterL <- sapply(Indexes[[i]], function(Index) clusterN[ind[Index]][1])
     }
     names(res) <- c("up","dn")
     if(order & !oneTable){
