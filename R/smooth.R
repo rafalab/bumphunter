@@ -26,7 +26,7 @@ smoother <- function(y, x=NULL, cluster, weights=NULL,
 }
 
 locfitByCluster <- function(y, x = NULL, cluster, weights = NULL,
-                            minNum = 7, bpSpan = 1000, minInSpan = 5,
+                            minNum = 7, bpSpan = 1000, minInSpan = 0,
                             verbose = TRUE) {
     ## Depends on limma
     ## bpSpan is in basepairs
