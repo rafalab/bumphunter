@@ -25,6 +25,47 @@ smoother <- function(y, x=NULL, cluster, weights=NULL,
     return(ret)  
 }
 
+locfitByCluster <- function(y, x = NULL, cluster, weights = NULL,
+                            minNum = 7, bpSpan = 1000, minInSpan = 5,
+                            verbose = TRUE) {
+    ## Depends on limma
+    ## bpSpan is in basepairs
+    ## assumed x are ordered
+    ## if y is vector change to matrix
+    if(is.null(dim(y)))
+        y <- matrix(y, ncol = 1) 
+    if(!is.null(weights) && is.null(dim(weights)))
+        weights <- matrix(weights, ncol = 1)
+    if(is.null(x))
+        x <- seq(along = y)
+    if(is.null(weights))
+        weights <- matrix(1, nrow = nrow(y), ncol = ncol(y))
+    Indexes <- split(seq(along = cluster), cluster)
+    clusterL <- sapply(Indexes, length)
+    smoothed <- rep(TRUE, nrow(y))
+    
+    for(i in seq(along=Indexes)) {
+        if(verbose) if(i %% 1e4 == 0) cat(".")
+        Index <- Indexes[[i]]
+        if(clusterL[i] >= minNum) {
+            nn <- minInSpan / length(Index)
+            for(j in 1:ncol(y)) {
+                sdata <- data.frame(pos = x[Index],
+                                    y = y[Index, j],
+                                    weights = weights[Index,j])
+                fit <- locfit(y ~ lp(pos, nn = nn, h = bpSpan), data = sdata,
+                              weights = weights, family = "gaussian", maxk = 10000)
+                pp <- preplot(fit, where = "data", band = "local",
+                              newdata = data.frame(pos = x[Index]))
+                y[Index, j] <- pp$trans(pp$fit)
+            }
+        } else {
+            y[Index,] <- NA
+            smoothed[Index] <- FALSE
+        }
+    }                
+    return(list(fitted=y, smoothed=smoothed, clusterL=clusterL, smoother="locfit"))
+}
 
 loessByCluster <- function(y, x=NULL, cluster, weights= NULL,
                          bpSpan = 1000, minNum=7, minInSpan=5,
