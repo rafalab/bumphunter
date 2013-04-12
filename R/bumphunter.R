@@ -1,7 +1,7 @@
 setMethod("bumphunter", signature(object = "matrix"),
           function(object, design, chr=NULL, pos, cluster=NULL,
                    coef=2, cutoff=NULL, cutoffQ=0.99,
-                   maxGap=500, smooth=FALSE, smoothFunction=loessByCluster,
+                   maxGap=500, smooth=FALSE, smoothFunction=locfitByCluster,
                    useWeights=FALSE, B=1000, verbose=TRUE, ...){
               if(missing(design)) stop("design must be specified")
               if(missing(pos)) stop("If object is a matrix, pos must be specified")
@@ -112,7 +112,7 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
   
   if(is.null(cutoff))
     cutoff <- quantile(abs(permBeta), cutoffQ, na.rm=TRUE)
-  if(verbose) message(sprintf("bumphunterEngine: cutoff: %s", round(cutoff,3)))
+  if(verbose) message(sprintf("bumphunterEngine cutoff: %s", round(cutoff,3)))
   
   if(verbose) message("bumphunterEngine: Finding regions.")
   tab <- regionFinder(x=beta, chr=chr, pos=pos, cluster=cluster,
