@@ -16,5 +16,5 @@ importMethodsFrom(GenomicRanges, seqnames, sort)
 export(bumphunter, bumphunterEngine, clusterMaker, dummyData,
        getSegments, loessByCluster, pointMatch, regionFinder,
        regionMatch, annotateNearest, runmedByCluster, smoother,
-       matchGenes)
+       matchGenes, locfitByCluster)
 exportMethods(bumphunter)
