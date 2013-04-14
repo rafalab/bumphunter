@@ -7,21 +7,49 @@ smoother <- function(y, x=NULL, cluster, weights=NULL,
     cores <- getDoParWorkers()
     Indexes <- split(seq(along=cluster), cluster)
     ## Split Indexes into chunks that will be distributed among the workers
-    IndexesChunks <- lapply(as.list(isplitVector(Indexes, chunks=cores)), unlist) # not super-elegant
-
+    ## IndexesChunks <- lapply(as.list(isplitVector(Indexes, chunks=cores)), unlist) # not super-elegant
+    baseSize <- length(Indexes) %/% cores
+    remain <- length(Indexes) %% cores
+    done <- 0L
+    IndexesChunks <- vector("list", length = cores)
+    for(ii in 1:cores) {
+        if(remain > 0) {
+            IndexesChunks[[ii]] <- done + 1:(baseSize + 1)
+            remain <- remain - 1L
+            done <- done + baseSize + 1L
+        } else {
+            IndexesChunks[[ii]] <- done + 1:baseSize
+            done <- done + baseSize
+        }
+    }
+    IndexesChunks <- lapply(IndexesChunks, function(idxes) {
+        do.call(c, unname(Indexes[idxes]))
+    })
     # make binding of 'idx' explicit
     foreach_object <- foreach(idx=IndexesChunks, .packages = "bumphunter")
     foreach_argname <- foreach_object$argnames[1]
+    ## fixing a re-ordering issue 
     ret <- foreach_object %dorng% {
 	idx <- get(foreach_argname)
-        smoothFunction(y=y[idx,], x=x[idx], cluster=cluster[idx],
-                       weights=weights[idx,], verbose=verbose, ...)
+        sm <- smoothFunction(y=y[idx,,drop=FALSE], x=x[idx], cluster=cluster[idx],
+                             weights=weights[idx,], verbose=verbose, ...)
+        c(sm, list(idx = idx))
     }
 
     attributes(ret)[["rng"]] <- NULL
     ## Paste together results from different workers
     ret <- reduceIt(ret)
+
+    ## Now fixing order issue
+    revOrder <- ret$idx
+    names(revOrder) <- seq_along(ret$idx)
+    revOrder <- sort(revOrder)
+    revOrder <- as.integer(names(revOrder))
+    
     ret$smoother <- ret$smoother[1]
+    ret$fitted <- ret$fitted[revOrder,]
+    ret$smoothed <- ret$smoothed[revOrder]
+    ret$idx <- NULL
     return(ret)  
 }
 
@@ -64,7 +92,7 @@ locfitByCluster <- function(y, x = NULL, cluster, weights = NULL,
             smoothed[Index] <- FALSE
         }
     }                
-    return(list(fitted=y, smoothed=smoothed, clusterL=clusterL, smoother="locfit"))
+    return(list(fitted=y, smoothed=smoothed, smoother="locfit"))
 }
 
 loessByCluster <- function(y, x=NULL, cluster, weights= NULL,
@@ -111,7 +139,7 @@ loessByCluster <- function(y, x=NULL, cluster, weights= NULL,
             smoothed[Index] <- FALSE
         }
     }
-    return(list(fitted=y, smoothed=smoothed, spans=spans, clusterL=clusterL, smoother="loess"))
+    return(list(fitted=y, smoothed=smoothed, smoother="loess"))
 }
 
 
@@ -144,7 +172,7 @@ runmedByCluster <- function(y, x=NULL, cluster, weights=NULL,
             smoothed[Index] <- FALSE
         }
     }
-    return(list(fitted=y, smoothed=smoothed, spans=spans, clusterL=clusterL, smoother="runmed"))
+    return(list(fitted=y, smoothed=smoothed, smoother="runmed"))
 }
 
 
