@@ -14,14 +14,14 @@
 }
 \usage{
 \S4method{bumphunter}{matrix}(object, design, chr=NULL, pos, cluster=NULL,
-           coef=2, cutoff=NULL, cutoffQ=0.975, maxGap=500, smooth=TRUE,
-           smoothFunction=loessByCluster, useWeights=TRUE, B=100, 
-           verbose=TRUE, ...)
+          coef=2, cutoff=NULL, pickCutoff = FALSE, pickCutoffQ = 0.99,
+          maxGap=500, smooth=FALSE, smoothFunction=locfitByCluster,
+          useWeights=FALSE, B=100, verbose=TRUE, ...)
 
-bumphunterEngine(mat, design, chr = NULL, pos, cluster = NULL, coef = 2,
-                 cutoff = NULL, cutoffQ = 0.975, maxGap = 500,
-                 smooth = TRUE, smoothFunction = loessByCluster,
-                 useWeights = TRUE, B = 100, verbose = TRUE, ...)
+bumphunterEngine(mat, design, chr = NULL, pos, cluster = NULL,
+                 coef = 2, cutoff = NULL, pickCutoff = FALSE, pickCutoffQ = 0.99,
+                 maxGap = 500, smooth = FALSE, smoothFunction = locfitByCluster,
+                 useWeights = FALSE, B = 100, verbose = TRUE, ...)
 }
 
 \arguments{
@@ -44,8 +44,6 @@ bumphunterEngine(mat, design, chr = NULL, pos, cluster = NULL, coef = 2,
     used as candidate regions.  It is possible to give two separate
     values (upper and lower bounds).  If one value is given, the lower
     bound is minus the value.}
-  \item{cutoffQ}{If cutoff is not provided then this quantile of the
-    estimated genomic profile will be used as a cutoff.}
   \item{maxGap}{
     If cluster is not provided this maximum location gap will be used to define cluster
     via the  \code{\link{clusterMaker}} function.}
@@ -126,7 +124,7 @@ require(doParallel)
 registerDoParallel()
 # Find bumps
 bumps <- bumphunter(dat$mat, design=dat$design, chr=dat$chr, pos=dat$pos,
-                    cluster=dat$cluster, coef=2, cutoffQ=0.9,
+                    cluster=dat$cluster, coef=2, cutoff= 0.28,
                     smooth=TRUE, B=250, verbose=TRUE, smoothFunction=loessByCluster)
 }
 
