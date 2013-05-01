@@ -31,7 +31,7 @@ smoother <- function(y, x=NULL, cluster, weights=NULL,
     ## fixing a re-ordering issue 
     ret <- foreach_object %dorng% {
 	idx <- get(foreach_argname)
-        sm <- smoothFunction(y=y[idx,,drop=FALSE], x=x[idx], cluster=cluster[idx],
+        sm <- smoothFunction(y=y[idx,], x=x[idx], cluster=cluster[idx],
                              weights=weights[idx,], verbose=verbose, ...)
         c(sm, list(idx = idx))
     }
@@ -47,7 +47,7 @@ smoother <- function(y, x=NULL, cluster, weights=NULL,
     revOrder <- as.integer(names(revOrder))
     
     ret$smoother <- ret$smoother[1]
-    ret$fitted <- ret$fitted[revOrder,]
+    ret$fitted <- ret$fitted[revOrder,,drop=FALSE]
     ret$smoothed <- ret$smoothed[revOrder]
     ret$idx <- NULL
     return(ret)  
@@ -85,7 +85,7 @@ locfitByCluster <- function(y, x = NULL, cluster, weights = NULL,
                               weights = weights, family = "gaussian", maxk = 10000)
                 pp <- preplot(fit, where = "data", band = "local",
                               newdata = data.frame(pos = x[Index]))
-                y[Index, j] <- pp$trans(pp$fit)
+                y[Index,j] <- pp$trans(pp$fit)
             }
         } else {
             y[Index,] <- NA
@@ -103,7 +103,7 @@ loessByCluster <- function(y, x=NULL, cluster, weights= NULL,
     ## assumed x are ordered
     ## if y is vector change to matrix
     if(is.null(dim(y)))
-        y <- matrix(y,ncol=1) ##need to change this to be more robust
+        y <- matrix(y, ncol=1) ##need to change this to be more robust
     if(!is.null(weights) && is.null(dim(weights)))
         weights <- matrix(weights,ncol=1)
     
@@ -127,7 +127,7 @@ loessByCluster <- function(y, x=NULL, cluster, weights= NULL,
                 ##this can be parallelized
                 for(j in 1:ncol(y)){
                     y[Index,j] <- limma::loessFit(y[Index,j], x[Index], span = span,
-                                                  weights = weights[Index,j])$fitted
+                              weights = weights[Index,j])$fitted
                 }
             } else{
                 y[Index,] <- NA
@@ -139,6 +139,7 @@ loessByCluster <- function(y, x=NULL, cluster, weights= NULL,
             smoothed[Index] <- FALSE
         }
     }
+    
     return(list(fitted=y, smoothed=smoothed, smoother="loess"))
 }
 
@@ -168,7 +169,7 @@ runmedByCluster <- function(y, x=NULL, cluster, weights=NULL,
                 y[Index,j] <- runmed(y[Index,j], k=k, endrule=endrule)
             }
         } else {
-            y[Index] <- NA
+            y[Index,] <- NA
             smoothed[Index] <- FALSE
         }
     }
