@@ -9,6 +9,8 @@
     vsv <- diag(crossprod(vv,sv))
     
     b <- (mat %*% crossprod(S, vv)) / vsv
+    if(!is.matrix(b))
+        b <- matrix(b, ncol = 1)
     if (full) {
         sy <- mat %*% S
         df.residual <- ncol(mat) - qa$rank - 1
