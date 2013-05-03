@@ -25,16 +25,23 @@ smoother <- function(y, x=NULL, cluster, weights=NULL,
     IndexesChunks <- lapply(IndexesChunks, function(idxes) {
         do.call(c, unname(Indexes[idxes]))
     })
-    # make binding of 'idx' explicit
-    foreach_object <- foreach(idx=IndexesChunks, .packages = "bumphunter")
-    foreach_argname <- foreach_object$argnames[1]
-    ## fixing a re-ordering issue 
-    ret <- foreach_object %dorng% {
-	idx <- get(foreach_argname)
+    idx <- NULL ## for R CMD check
+    ret <- foreach(idx = iter(IndexesChunks), .packages = "bumphunter") %dorng% {
         sm <- smoothFunction(y=y[idx,], x=x[idx], cluster=cluster[idx],
                              weights=weights[idx,], verbose=verbose, ...)
         c(sm, list(idx = idx))
-    }
+    }   
+    
+    # make binding of 'idx' explicit
+    ## foreach_object <- foreach(idx=IndexesChunks, .packages = "bumphunter")
+    ## foreach_argname <- foreach_object$argnames[1]
+    ## ## fixing a re-ordering issue 
+    ## ret <- foreach_object %dorng% {
+    ##     idx <- get(foreach_argname)
+    ##     sm <- smoothFunction(y=y[idx,], x=x[idx], cluster=cluster[idx],
+    ##                          weights=weights[idx,], verbose=verbose, ...)
+    ##     c(sm, list(idx = idx))
+    ## }
 
     attributes(ret)[["rng"]] <- NULL
     ## Paste together results from different workers
