@@ -20,7 +20,6 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
                              smoothFunction=locfitByCluster,
                              useWeights=FALSE, B=100, verbose=TRUE, ...){
     ## cutoff = c(L, U)
-
     if(!is.matrix(mat))
         stop("'mat' must be a matrix.")
     if(ncol(mat) != nrow(design))
@@ -95,12 +94,12 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
     
     if(B>0){
         if (verbose) message("bumphunterEngine: Performing ", B, " permutations.")
-        if(useWeights & smooth){
+        if(useWeights && smooth) {
             tmp <- bumphunter:::.getEstimate(mat, design, coef, B, full=TRUE)
             permRawBeta <- tmp$coef
             weights <- tmp$sigma
             rm(tmp)
-        } else{
+        } else {
             permRawBeta <- bumphunter:::.getEstimate(mat, design, coef, B, full=FALSE)
             weights <- NULL
         }
@@ -110,9 +109,7 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
         ## the observed beta is 
         if(verbose) message("bumphunterEngine: Computing marginal permutation p-values.")
         
-        precision <- sqrt(.Machine$double.eps)
-        sumGreaterOrEqual <- rowSums(abs(permRawBeta) >= abs(as.vector(rawBeta)) |
-                                     abs(abs(permRawBeta)-abs(as.vector(rawBeta)))<=precision)
+        sumGreaterOrEqual <- rowSums(greaterOrEqual(abs(permRawBeta), abs(as.vector(rawBeta))))
         pvs <- (sumGreaterOrEqual + 1L) / (B + 1L)
         
         if(smooth){
@@ -126,7 +123,7 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
             cutoff <- quantile(abs(permBeta), pickCutoffQ, na.rm=TRUE)
         if(verbose) message(sprintf("bumphunterEngine: cutoff: %s", round(cutoff,3)))
     } ## Done with permutations
-    
+
     if(verbose) message("bumphunterEngine: Finding regions.")
     tab <- regionFinder(x=beta, chr=chr, pos=pos, cluster=cluster,
                         cutoff=cutoff, ind=Index, verbose=FALSE)
@@ -161,9 +158,11 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
     ## for observed length and height
     ## compute the total compute total number of times
     ## it is seen in permutations
+    Lvalue <- cbind(tab$L, abs(tab$value))
     tots <- sapply(seq(along=V), function(i) {
-        apply(cbind(tab$L,abs(tab$value)), 1, function(x) {
-            sum(L[[i]]>=x[1] & abs(V[[i]])>=x[2])
+        apply(Lvalue, 1, function(x) {
+            sum(greaterOrEqual(L[[i]], x[1]) &
+                greaterOrEqual(abs(V[[i]]), x[2]))
         })
     })
     if (is.vector(tots)) {
@@ -173,10 +172,12 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
     rate1 <- rowMeans(tots>0)
     
     ## Now compute pvalues by assuming everything is exchangeable
-    pvalues1 <- rowSums(tots)/sum(sapply(nulltabs,nrow))
+    pvalues1 <- rowSums(tots) / sum(sapply(nulltabs,nrow))
     
     tots2 <- sapply(seq(along=A), function(i) {
-        sapply(tab$area, function(x) { sum(A[[i]]>=x[1]) })
+        sapply(tab$area, function(x) {
+            sum(greaterOrEqual(A[[i]], x[1]))
+        })
     })
     if (is.vector(tots2)) {
         tots2 <- matrix(tots2, nrow=1)

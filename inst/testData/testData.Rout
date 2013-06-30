@@ -1,5 +1,5 @@
 
-R version 3.0.0 Patched (2013-04-18 r62615) -- "Masked Marvel"
+R version 3.0.1 Patched (2013-06-03 r62859) -- "Good Sport"
 Copyright (C) 2013 The R Foundation for Statistical Computing
 Platform: x86_64-apple-darwin12.3.0 (64-bit)
 
@@ -36,13 +36,14 @@ The following object is masked from ‘package:stats’:
 
 The following objects are masked from ‘package:base’:
 
-    anyDuplicated, as.data.frame, cbind, colnames, duplicated, eval,
-    Filter, Find, get, intersect, lapply, Map, mapply, match, mget,
-    order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
-    rbind, Reduce, rep.int, rownames, sapply, setdiff, sort, table,
-    tapply, union, unique, unlist
+    anyDuplicated, append, as.data.frame, as.vector, cbind, colnames,
+    duplicated, eval, Filter, Find, get, intersect, lapply, Map,
+    mapply, match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rep.int, rownames, sapply, setdiff,
+    sort, table, tapply, union, unique, unlist
 
 Loading required package: GenomicRanges
+Loading required package: XVector
 Loading required package: foreach
 Loading required package: iterators
 Loading required package: locfit
@@ -73,7 +74,7 @@ The following object is masked from ‘package:GenomicRanges’:
 > bumpsTest1 <- bumphunter (dat$mat, design=dat$design, chr=dat$chr, pos=dat$pos, cluster=dat$cluster,
 +                           coef=2, cutoff=0.28, smooth=TRUE, B=500,
 +                           verbose=TRUE, smoothFunction=loessByCluster)
-bumphunterEngine: Using a single core (backend: doSEQ, version: 1.4.0)
+bumphunterEngine: Using a single core (backend: doSEQ, version: 1.4.1)
 bumphunterEngine: Computing coefficients.
 bumphunterEngine: Smoothing coefficients.
 Loading required package: pkgmaker
@@ -84,10 +85,6 @@ Attaching package: ‘pkgmaker’
 The following object is masked from ‘package:IRanges’:
 
     new2
-
-The following object is masked from ‘package:utils’:
-
-    packageName
 
 bumphunterEngine: Performing 500 permutations.
 bumphunterEngine: Computing marginal permutation p-values.
@@ -103,7 +100,7 @@ bumphunterEngine: Estimating p-values and FWER.
 > bumpsTest2 <- bumphunter (dat$mat, design=dat$design, pos=dat$pos, cluster=dat$cluster,
 +                           coef=2, cutoff=0.28, maxGap=500, smooth=TRUE, B=500,
 +                           verbose=TRUE, smoothFunction=loessByCluster)
-bumphunterEngine: Using a single core (backend: doSEQ, version: 1.4.0)
+bumphunterEngine: Using a single core (backend: doSEQ, version: 1.4.1)
 bumphunterEngine: Computing coefficients.
 bumphunterEngine: Smoothing coefficients.
 bumphunterEngine: Performing 500 permutations.
@@ -119,4 +116,4 @@ bumphunterEngine: Estimating p-values and FWER.
 > 
 > proc.time()
    user  system elapsed 
-  9.144   0.103   9.236 
+  9.171   0.123   9.283 
