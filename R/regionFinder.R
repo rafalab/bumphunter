@@ -50,7 +50,7 @@ getSegments <- function(x, f = NULL, cutoff=quantile(abs(x), 0.99), assumeSorted
         
     if(verbose) message("getSegments: segmenting")
     Indexes <- split(seq(along=x), f)
-    direction <- as.integer(x >= cutoff[2])
+    direction <- as.integer(greaterOrEqual(x, cutoff[2]))
     direction[x <= cutoff[1]] <- -1L
 
     ## We now need to convert f into cid
