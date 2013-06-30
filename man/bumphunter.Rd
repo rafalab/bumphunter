@@ -44,6 +44,10 @@ bumphunterEngine(mat, design, chr = NULL, pos, cluster = NULL,
     used as candidate regions.  It is possible to give two separate
     values (upper and lower bounds).  If one value is given, the lower
     bound is minus the value.}
+  \item{pickCutoff}{Should bumphunter attempt to pick a cutoff using the
+    permutation distribution?}
+  \item{pickCutoffQ}{The quantile used for picking the cutoff using the
+    permutation distribution.}
   \item{maxGap}{
     If cluster is not provided this maximum location gap will be used to define cluster
     via the  \code{\link{clusterMaker}} function.}
@@ -71,10 +75,11 @@ bumphunterEngine(mat, design, chr = NULL, pos, cluster = NULL,
 }
 }
 \details{
+
 This function performs the bumphunting approach described by Jaffe et
 al. International Journal of Epidemiology (2012). The main output is a
 table of candidate regions with permutation-based family-wide error
-  rates (FWER) and p-values assigned.
+rates (FWER) and p-values assigned.
 
 The general idea is that for each genomic location we have a value for
 several individuals. We also have covariates for each individual and
@@ -92,11 +97,11 @@ will produce an estimated \sQuote{null profile} from which we can define
 determine how many null regions are \sQuote{more extreme} (longer and
 higher average value). The \sQuote{p.value} is the percent of candidate
 regions obtained from the permutations that as extreme as the observed
-region. These p-values should be
-interpreted with care as the theoretical proporties are not well understood.
-The \sQuote{fwer} is the proportion of permutations that had at least on
-regio as extreme as the observed region. We compute p.values and FWER
-for the area of the regions (as opposed to length and value as a pair) as well.
+region. These p-values should be interpreted with care as the
+theoretical proporties are not well understood.  The \sQuote{fwer} is
+the proportion of permutations that had at least on regio as extreme as
+the observed region. We compute p.values and FWER for the area of the
+regions (as opposed to length and value as a pair) as well.
 
 Parallelization is implemented through the foreach package.
 }
@@ -110,11 +115,14 @@ A list with the following components:
 }
 
 \references{
-Jaffe AE, Murakami P, Lee H, Leek JT, Fallin MD, Feinberg AP, Irizarry RA (2012) Bump hunting to identify differentially methylated regions in epigenetic epidemiology studies. International Journal of Epidemiology 41(1):200-9.
+Jaffe AE, Murakami P, Lee H, Leek JT, Fallin MD, Feinberg AP, Irizarry
+RA (2012) Bump hunting to identify differentially methylated regions in
+epigenetic epidemiology studies. International Journal of Epidemiology
+41(1):200-9.
 }
 
 \author{
-Rafael A. Irizarry and Martin J. Aryee
+Rafael A. Irizarry, Martin J. Aryee and Kasper D. Hansen
 }
 
 \examples{
