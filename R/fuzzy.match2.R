@@ -58,12 +58,14 @@ fuzzy.match2 <- function(x, M) {
 	# when select="arbitrary" would have given the 1st.
 	# 2) x[i] has a unique nearest range
 
-	if (nrow(D) > length(X))	# double hits
-		D <- D[cumsum(rle(D$queryHits)$lengths),]
+	if (length(D) > length(X))	# double hits
+		D <- D[cumsum(rle(queryHits(D))$lengths),]
 
-	n <- D$subjectHits	# match indices
+	n <- subjectHits(D)	# match indices
 	N <- Y[n]		# nearest ranges
-	d <- D$distance		# unsigned distance (see above)
+
+	# unsigned distance (see above)
+	d <- elementMetadata(D)@listData$distance
 
 	# These don't work right any more:
 	#following <- X>N
