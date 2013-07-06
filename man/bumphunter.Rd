@@ -129,7 +129,7 @@ Rafael A. Irizarry, Martin J. Aryee and Kasper D. Hansen
 dat <- dummyData()
 # Enable parallelization
 require(doParallel)
-registerDoParallel()
+registerDoParallel(cores = 1)
 # Find bumps
 bumps <- bumphunter(dat$mat, design=dat$design, chr=dat$chr, pos=dat$pos,
                     cluster=dat$cluster, coef=2, cutoff= 0.28,
