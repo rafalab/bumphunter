@@ -129,10 +129,12 @@ Rafael A. Irizarry, Martin J. Aryee and Kasper D. Hansen
 dat <- dummyData()
 # Enable parallelization
 require(doParallel)
-registerDoParallel(cores = 1)
+registerDoParallel(cores = 2)
 # Find bumps
 bumps <- bumphunter(dat$mat, design=dat$design, chr=dat$chr, pos=dat$pos,
                     cluster=dat$cluster, coef=2, cutoff= 0.28,
                     smooth=TRUE, B=250, verbose=TRUE, smoothFunction=loessByCluster)
+# cleanup, for Windows
+bumphunter:::closeSockets()
 }
 
