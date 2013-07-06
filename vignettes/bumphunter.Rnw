@@ -258,9 +258,7 @@ tab <- bumphunter(y, X, chr, pos, cl, cutoff=.5, B=250, verbose = TRUE)
 This is a cleanup step for the vignette on Windows; typically not needed for users.
 
 <<closeConnetions,results=hide>>=
-allCon <- showConnections()
-socketCon <- as.integer(rownames(allCon)[allCon[, "class"] == "sockconn"])
-sapply(socketCon, function(ii) close.connection(getConnection(ii)) )
+bumphunter:::closeSockets()
 @
 
 \section*{SessionInfo}
