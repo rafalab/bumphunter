@@ -10,8 +10,9 @@ closeSockets <- function() {
 }
 
 foreachCleanup <- function() {
-    if (exists(".revoDoParCluster", where=doParallel:::.options) && !is.null(doParallel:::.revoDoParCluster)) {
-        stopCluster(doParallel:::.revoDoParCluster)
-        remove(".revoDoParCluster", where=doParallel:::.options)
+    if (exists(".revoDoParCluster", where=doParallel:::.options)) {
+        if(!is.null(doParallel:::.options$.revoDoParCluster))
+            stopCluster(doParallel:::.options$.revoDoParCluster)
+        remove(".revoDoParCluster", envir=doParallel:::.options)
     }
 }
