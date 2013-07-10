@@ -258,7 +258,7 @@ tab <- bumphunter(y, X, chr, pos, cl, cutoff=.5, B=250, verbose = TRUE)
 This is a cleanup step for the vignette on Windows; typically not needed for users.
 
 <<closeConnetions,results=hide>>=
-bumphunter:::closeSockets()
+bumphunter:::foreachCleanup()
 @
 
 \section*{SessionInfo}
