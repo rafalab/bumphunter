@@ -3,7 +3,7 @@
 %\VignetteDepends{doParallel}
 %\VignettePackage{bumphunter}
 \documentclass[12pt]{article}
-<<options,echo=FALSE,results=hide>>=
+<<options,echo=FALSE,eval=TRUE,results=hide>>=
 options(width=70)
 @
 \SweaveOpts{eps=FALSE,echo=TRUE}
