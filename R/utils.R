@@ -8,3 +8,10 @@ closeSockets <- function() {
     socketCon <- as.integer(rownames(allCon)[allCon[, "class"] == "sockconn"])
     sapply(socketCon, function(ii) close.connection(getConnection(ii)) )
 }
+
+foreachCleanup <- function() {
+    if (exists(".revoDoParCluster", where=doParallel:::.options) && !is.null(doParallel:::.revoDoParCluster)) {
+        stopCluster(doParallel:::.revoDoParCluster)
+        remove(".revoDoParCluster", where=doParallel:::.options)
+    }
+}
