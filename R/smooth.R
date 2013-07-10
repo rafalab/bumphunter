@@ -4,6 +4,9 @@ smoother <- function(y, x=NULL, cluster, weights=NULL,
         y <- matrix(y, ncol=1) ##need to change this to be more robust
     if(!is.null(weights) && is.null(dim(weights)))
         weights <- matrix(weights, ncol=1)
+    if (!getDoParRegistered())
+        registerDoSEQ()
+
     cores <- getDoParWorkers()
     Indexes <- split(seq(along=cluster), cluster)
     baseSize <- length(Indexes) %/% cores
