@@ -3,6 +3,7 @@
 \alias{bumphunter-methods}
 \alias{bumphunter,matrix-method}
 \alias{bumphunterEngine}
+\alias{print.bumps}
 \title{
   Bumphunter
 }
@@ -22,10 +23,12 @@ bumphunterEngine(mat, design, chr = NULL, pos, cluster = NULL,
                  coef = 2, cutoff = NULL, pickCutoff = FALSE, pickCutoffQ = 0.99,
                  maxGap = 500, smooth = FALSE, smoothFunction = locfitByCluster,
                  useWeights = FALSE, B = 100, verbose = TRUE, ...)
+\S3method{print}{bumps}(x, \ldots)
 }
 
 \arguments{
   \item{object}{An object of class matrix.}
+  \item{x}{An object of class \code{bumps}.}
   \item{mat}{A matrix with rows representing genomic locations and
     columns representing samples.} 
   \item{design}{Design matrix with rows representing samples and columns
@@ -107,11 +110,14 @@ Parallelization is implemented through the foreach package.
 }
 
 \value{
-A list with the following components:
-  \item{tab}{The table with candidate regions and annotation for these.}
-  \item{fitted}{The estimated genomic profile used to determine the
+An object of class \code{bumps} with the following components:
+\item{tab}{The table with candidate regions and annotation for these.}
+\item{coef}{The single loci coefficients.}
+\item{fitted}{The estimated genomic profile used to determine the
   regions.}
-  \item{pvaluesMarginal}{marginal p-value for each genomic location.}
+\item{pvaluesMarginal}{marginal p-value for each genomic location.}
+\item{null}{The null distribution.}
+\item{algorithm}{details on the algorithm.}
 }
 
 \references{
@@ -133,7 +139,9 @@ registerDoParallel(cores = 2)
 # Find bumps
 bumps <- bumphunter(dat$mat, design=dat$design, chr=dat$chr, pos=dat$pos,
                     cluster=dat$cluster, coef=2, cutoff= 0.28,
-                    smooth=TRUE, B=250, verbose=TRUE, smoothFunction=loessByCluster)
+                    smooth=TRUE, B=250, verbose=TRUE,
+                    smoothFunction=loessByCluster)
+bumps
 # cleanup, for Windows
 bumphunter:::foreachCleanup()
 }
