@@ -128,9 +128,12 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
     tab <- regionFinder(x=beta, chr=chr, pos=pos, cluster=cluster,
                         cutoff=cutoff, ind=Index, verbose=FALSE)
     if (nrow(tab)==0) {
-        if (verbose) message ("[bumphunterEngine] No bumps found!")
+        if (verbose) message("[bumphunterEngine] No bumps found!")
         return(list(table=NA, coef=rawBeta, fitted=beta, pvaluesMarginal=NA))
+    } else {
+        if (verbose) message(sprintf("[bumphunterEngine] Found %s bumps.", nrow(tab)))
     }
+
     
     if (B<1) {
         return(list(table=tab, coef=rawBeta, fitted=beta, pvaluesMarginal=NA))
