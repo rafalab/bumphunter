@@ -10,6 +10,7 @@
     locfit package through the function locfitByCluster.
     \item Added closeSockets for cleanup for doParallel on Windows.
     \item More bugfixes for windows; now using foreachCleanup().
+    \item Added a 'bumps' class and print method.
   }
 }
 

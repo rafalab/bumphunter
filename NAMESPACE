@@ -18,3 +18,4 @@ export(bumphunter, bumphunterEngine, clusterMaker, dummyData,
        regionMatch, annotateNearest, runmedByCluster, smoother,
        matchGenes, locfitByCluster)
 exportMethods(bumphunter)
+S3method(print,bumps)

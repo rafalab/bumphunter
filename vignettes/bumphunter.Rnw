@@ -217,6 +217,7 @@ y <- t(X[,1])%x%beta0 + t(X[,2])%x%beta1 + error
 Now we can run \Rcode{bumphunter}
 <<bumphunter>>=
 tab <- bumphunter(y, X, chr, pos, cl, cutoff=.5)
+tab
 names(tab)
 tab$table
 @
@@ -248,6 +249,7 @@ registerDoParallel(cores = 2)
 
 <<parallel-bumphunter>>=
 tab <- bumphunter(y, X, chr, pos, cl, cutoff=.5, B=250, verbose = TRUE)
+tab
 @
 
 \bibliographystyle{plain}
