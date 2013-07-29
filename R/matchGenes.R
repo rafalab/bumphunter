@@ -12,6 +12,7 @@
 # 'matchGenes' now defined in annotateNearest.R
 .matchGenes <- function(object, build="hg19",
 		promoterDist=2500, verbose=TRUE, all=FALSE,
+		queries=NULL, Tx=NULL,
 		genes=NULL, nexons=NULL, EXONS=NULL, job=0, mc.cores=1) {
 
  if(is.null(genes)) {
@@ -66,7 +67,9 @@
 		else
 			job = 0
 		II <- start:end
-		matchGenes(genes=genes[II,], nexons=nexons[II], EXONS=EXONS[II], job=job)
+		if (all)
+			queries = queries[II]
+		.matchGenes(genes=genes[II,], nexons=nexons[II], EXONS=EXONS[II], job=job, all=all, queries=queries, Tx=Tx[II])
 	}, mc.cores=mc.cores)
 	return(do.call(rbind, tmp))
  }
