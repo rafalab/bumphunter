@@ -33,10 +33,6 @@ annotateNearest <- function(x, subject, annotate=TRUE, ...) {
     if(is.na(type) || type==2)
 	stop("arguments must be both IRanges or GRanges")
 
-    ret <- matrix(NA, nrow=length(x), ncol=7)
-    colnames(ret) <- c("dist", "matchIndex", "type", "amountOverlap",
-	"insideDist", "size1", "size2")
-
     dots <- list(...)
     names.dots <- names(dots)
     if ("select" %in% names.dots && dots$select == "all")
@@ -44,15 +40,27 @@ annotateNearest <- function(x, subject, annotate=TRUE, ...) {
     if (type==1 && "ignore.strand" %in% names.dots)
 	stop("cannot specify 'ignore.strand' with IRanges")
 
-#cat("calling nearest... ")
+    # find nearests
     NN <- nearest(x, subject, ...)
-    if (any(is.na(NN)))
-	stop("nearest returned NAs")
-#cat("Done\n")
+    nearest_exists <- !is.na(NN)
 
-    ret[,"matchIndex"] <- NN
+    # full return value
+    Ret <- matrix(NA, nrow=length(NN), ncol=7)
+    colnames(Ret) <- c("dist", "matchIndex", "type", "amountOverlap",
+	"insideDist", "size1", "size2")
+    Ret <- data.frame(Ret, stringsAsFactors=FALSE)
+
+    # queries with a nearest target
+    x <- x[nearest_exists]
+    # corresponding nearest targets
+    y <- subject[NN[nearest_exists],]
+
+    # partial value for when nearest exists
+    ret <- matrix(NA, nrow=length(x), ncol=7)
+    colnames(ret) <- c("dist", "matchIndex", "type", "amountOverlap",
+	"insideDist", "size1", "size2")
+    ret[,"matchIndex"] <- NN[nearest_exists]
     ret <- data.frame(ret, stringsAsFactors=FALSE)
-    y <- subject[NN,]
 
     x.start <- start(x)
     y.start <- start(y)
@@ -75,8 +83,10 @@ annotateNearest <- function(x, subject, annotate=TRUE, ...) {
     i <- ret$type == "disjointL"
     ret$dist[i] <- y.start[i] - x.end[i]
 
-    if (!annotate)
-	return(as.matrix(ret[, c("dist", "matchIndex")]))
+    if (!annotate) {
+	Ret[nearest_exists,] <- ret
+	return(as.matrix(Ret[, c("dist", "matchIndex")]))
+    }
 
     i <- ret$type == "overlapR"
     ret$amountOverlap[i] <- -1L * (y.end[i] - x.start[i] + 1L)
@@ -100,7 +110,8 @@ annotateNearest <- function(x, subject, annotate=TRUE, ...) {
     ret$size1 <- x.end - x.start + 1L
     ret$size2 <- y.end - y.start + 1L
     
-    ret
+    Ret[nearest_exists,] <- ret
+    Ret
 }
 
 # for use by pointMatch
