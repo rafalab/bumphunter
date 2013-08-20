@@ -72,12 +72,12 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
     if(verbose) message("[bumphunterEngine] Computing coefficients.")
     
     if(useWeights & smooth){
-        tmp <- bumphunter:::.getEstimate(mat=mat, design=design, coef=coef, full=TRUE)
+        tmp <- .getEstimate(mat=mat, design=design, coef=coef, full=TRUE)
         rawBeta <- tmp$coef
         weights <- tmp$sigma
         rm(tmp)
     } else{
-        rawBeta <- bumphunter:::.getEstimate(mat=mat, design=design, coef=coef, full=FALSE)
+        rawBeta <- .getEstimate(mat=mat, design=design, coef=coef, full=FALSE)
         weights <- NULL
     }
   
@@ -95,12 +95,12 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
     if(B>0){
         if (verbose) message("[bumphunterEngine] Performing ", B, " permutations.")
         if(useWeights && smooth) {
-            tmp <- bumphunter:::.getEstimate(mat, design, coef, B, full=TRUE)
+            tmp <- .getEstimate(mat, design, coef, B, full=TRUE)
             permRawBeta <- tmp$coef
             weights <- tmp$sigma
             rm(tmp)
         } else {
-            permRawBeta <- bumphunter:::.getEstimate(mat, design, coef, B, full=FALSE)
+            permRawBeta <- .getEstimate(mat, design, coef, B, full=FALSE)
             weights <- NULL
         }
         
@@ -163,20 +163,37 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
     ## compute the total compute total number of times
     ## it is seen in permutations
     Lvalue <- cbind(tab$L, abs(tab$value))
-    tots <- sapply(seq(along=V), function(i) {
-        apply(Lvalue, 1, function(x) {
-            sum(greaterOrEqual(L[[i]], x[1]) &
-                greaterOrEqual(abs(V[[i]]), x[2]))
-        })
-    })
-    if (is.vector(tots)) {
-        tots <- matrix(tots, nrow=1)
-    }
-    ## This is like a FWER
-    rate1 <- rowMeans(tots>0)
+
+    chunksize <- ceiling(nrow(Lvalue)/workers)
+    tots <- foreach(subL=iter(Lvalue, by="row", chunksize=chunksize),
+                    .combine="cbind", .packages = "bumphunter") %dorng% {
+                        apply(subL,1,function(x) {
+                            res <- sapply(seq(along=V), function(i) {
+                                sum(bumphunter:::greaterOrEqual(L[[i]], x[1]) &
+                                    bumphunter:::greaterOrEqual(abs(V[[i]]), x[2]))
+                            })
+                            c(mean(res>0),sum(res))
+                        })
+                    }
+    attributes(tots)[["rng"]] <- NULL
+    rate1 <- tots[1,]
+    pvalues1 <- tots[2,] / sum(sapply(nulltabs,nrow))
+
+    ## ## Old tots, keep around since it is easier to read, for vectorizing
+    ## tots <- sapply(seq(along=V), function(i) {
+    ##     apply(Lvalue, 1, function(x) {
+    ##         sum(greaterOrEqual(L[[i]], x[1]) &
+    ##             greaterOrEqual(abs(V[[i]]), x[2]))
+    ##     })
+    ## })
+    ## if (is.vector(tots)) {
+    ##     tots <- matrix(tots, nrow=1)
+    ## }
+    ## ## This is like a FWER
+    ## rate1 <- rowMeans(tots>0)
     
-    ## Now compute pvalues by assuming everything is exchangeable
-    pvalues1 <- rowSums(tots) / sum(sapply(nulltabs,nrow))
+    ## ## Now compute pvalues by assuming everything is exchangeable
+    ## pvalues1 <- rowSums(tots) / sum(sapply(nulltabs,nrow))
     
     tots2 <- sapply(seq(along=A), function(i) {
         sapply(tab$area, function(x) {
