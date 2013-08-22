@@ -135,3 +135,32 @@ regionFinder <- function(x, chr, pos, cluster=NULL, y=x, summary=mean,
     }
     return(res)
 }
+
+boundedClusterMaker <- function(chr, pos, assumeSorted = FALSE,
+                                maxClusterWidth = 1500, maxGap = 500) {
+    nonaIndex <- which(!is.na(chr) & !is.na(pos))
+    Indexes <- split(nonaIndex, chr[nonaIndex])
+    clusterIDs <- rep(NA, length(chr))
+    LAST <- 0
+    for (i in seq(along = Indexes)) {
+        Index <- Indexes[[i]]
+        x <- pos[Index]
+        if (!assumeSorted) {
+            Index <- Index[order(x)]
+            x <- pos[Index]
+        }
+        y <- as.numeric(diff(x) > maxGap)
+        z <- cumsum(c(1, y))
+        startPosition <- tapply(x, list(z), min)
+        startPositions <- startPosition[as.character(z)]
+
+        offset <- x - startPositions
+        addToZ <- offset %/% maxClusterWidth
+        addToZ <- cumsum(addToZ * c(0, as.numeric(diff(addToZ) > 0)))
+        z <- z + addToZ
+        clusterIDs[Index] <- z + LAST
+        LAST <- max(z) + LAST
+    }
+    clusterIDs
+}
+

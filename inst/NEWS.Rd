@@ -16,6 +16,7 @@
     is missing from the subject). Previously this was taken to be
     mistaken input and a hard error raised.
     \item Speedup of fwer computations using foreach.
+    \item Added boundedClusterMaker.
   }
 }
 
