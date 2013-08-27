@@ -187,17 +187,21 @@
     if(S >= TS & E <= TE){
 
       ##INSIDE
+
+      ### call fuzzy.match2 just once
       #tmp1=fuzzy.match2(S,Exons)
       #tmp2=fuzzy.match2(E,Exons)
-      #tmp1=fuzzy.match2(x=S,z=Exons, x.sorted=TRUE, z.sorted=TRUE)
-      #tmp2=fuzzy.match2(x=E,z=Exons, x.sorted=TRUE, z.sorted=TRUE)
-      tmp1=fuzzy.match2(S,Exons)
-      tmp2=fuzzy.match2(E,Exons)
-      
-      m1=tmp1[1,1]
-      m2=tmp2[1,1]
-      exon1=tmp1[1,2]
-      exon2=tmp2[1,2]
+      tmp = fuzzy.match2(c(S,E), Exons)
+      #m1=tmp1[1,1]
+      m1 = tmp[1,1]
+      #m2=tmp2[1,1]
+      m2 = tmp[2,1]
+      #exon1=tmp1[1,2]
+      exon1 = tmp[1,2]
+      #exon2=tmp2[1,2]
+      exon2 = tmp[2,2]
+      ###
+
       m1m2Index=which.min(abs(c(m1,m2)))
       
       if(exon1==exon2 & m1==0 & m2==0){
