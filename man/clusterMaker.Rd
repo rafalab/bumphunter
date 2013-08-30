@@ -13,8 +13,8 @@
 
 \usage{
 clusterMaker(chr, pos, assumeSorted = FALSE, maxGap = 300)
-clusterMaker(chr, pos, assumeSorted = FALSE,
-             maxClusterWidth = 1500, maxGap = 300)
+boundedClusterMaker(chr, pos, assumeSorted = FALSE,
+                    maxClusterWidth = 1500, maxGap = 300)
 }
 
 \arguments{
