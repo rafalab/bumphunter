@@ -17,6 +17,8 @@
     mistaken input and a hard error raised.
     \item Speedup of fwer computations using foreach.
     \item Added boundedClusterMaker.
+    \item bug fix to internal function .getModT (which are not used in
+    the main bumphunter functions).  Now the t-statistics returned a correct.
   }
 }
 
