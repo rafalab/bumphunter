@@ -40,7 +40,7 @@
     s2 <- apply(obj$sigma^2, 2, limma::squeezeVar, obj$df.residual)
     out <- obj$coef
     for (j in 1:ncol(out)) {
-        out[,j] <- out[,j] / obj$stdev.unscaled[j] / s2[[j]]$var.post
+        out[,j] <- out[,j] / obj$stdev.unscaled[j] / sqrt(s2[[j]]$var.post)
     }
     df.total <- obj$df.residual + sapply(s2,"[[","df.prior")
     return(list(t=out, df.total=df.total))
