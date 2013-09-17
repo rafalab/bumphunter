@@ -12,6 +12,7 @@ importMethodsFrom(IRanges, "%in%", as.list, cbind, "colnames<-", diff,
                   runmed, sapply, split, start, table, unlist, which,
                   which.min)
 importMethodsFrom(GenomicRanges, seqnames, sort)
+importFrom(locfit, locfit)
 
 export(bumphunter, bumphunterEngine, clusterMaker, boundedClusterMaker,
        dummyData, getSegments, loessByCluster, pointMatch, regionFinder,

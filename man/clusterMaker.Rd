@@ -14,7 +14,7 @@
 \usage{
 clusterMaker(chr, pos, assumeSorted = FALSE, maxGap = 300)
 boundedClusterMaker(chr, pos, assumeSorted = FALSE,
-                    maxClusterWidth = 1500, maxGap = 300)
+                    maxClusterWidth = 1500, maxGap = 500)
 }
 
 \arguments{
