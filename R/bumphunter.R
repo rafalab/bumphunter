@@ -165,6 +165,7 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
     Lvalue <- cbind(tab$L, abs(tab$value))
 
     chunksize <- ceiling(nrow(Lvalue)/workers)
+    subL <- NULL
     tots <- foreach(subL=iter(Lvalue, by="row", chunksize=chunksize),
                     .combine="cbind", .packages = "bumphunter") %dorng% {
                         apply(subL,1,function(x) {
