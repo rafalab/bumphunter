@@ -59,7 +59,7 @@ fuzzy.match2 <- function(x, M) {
 	# 2) x[i] has a unique nearest range
 
 	if (length(D) > length(X))	# double hits
-		D <- D[cumsum(rle(queryHits(D))$lengths),]
+		D <- D[end(Rle(queryHits(D)))]
 
 	n <- subjectHits(D)	# match indices
 	N <- Y[n]		# nearest ranges
