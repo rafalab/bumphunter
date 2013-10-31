@@ -150,6 +150,7 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
     attributes(nulltabs)[["rng"]] <- NULL
     
     if (verbose) message("[bumphunterEngine] Estimating p-values and FWER.")
+
     L <- V <- A <- as.list(rep(0, B))
     for(i in 1:B) {
         nulltab <- nulltabs[[i]]
@@ -162,23 +163,33 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
     ## for observed length and height
     ## compute the total compute total number of times
     ## it is seen in permutations
-    Lvalue <- cbind(tab$L, abs(tab$value))
 
-    chunksize <- ceiling(nrow(Lvalue)/workers)
-    subL <- NULL
-    tots <- foreach(subL=iter(Lvalue, by="row", chunksize=chunksize),
-                    .combine="cbind", .packages = "bumphunter") %dorng% {
-                        apply(subL,1,function(x) {
-                            res <- sapply(seq(along=V), function(i) {
-                                sum(bumphunter:::greaterOrEqual(L[[i]], x[1]) &
-                                    bumphunter:::greaterOrEqual(abs(V[[i]]), x[2]))
+    computation.tots <- function(tab, V, L) {
+        Lvalue <- cbind(tab$L, abs(tab$value))
+        chunksize <- ceiling(nrow(Lvalue)/workers)
+        subL <- NULL
+        tots <- foreach(subL=iter(Lvalue, by="row", chunksize=chunksize),
+                        .combine="cbind", .packages = "bumphunter") %dorng% {
+                            apply(subL,1,function(x) {
+                                res <- sapply(seq(along=V), function(i) {
+                                    sum(bumphunter:::greaterOrEqual(L[[i]], x[1]) &
+                                        bumphunter:::greaterOrEqual(abs(V[[i]]), x[2]))
+                                })
+                                c(mean(res>0),sum(res))
                             })
-                            c(mean(res>0),sum(res))
-                        })
-                    }
-    attributes(tots)[["rng"]] <- NULL
-    rate1 <- tots[1,]
-    pvalues1 <- tots[2,] / sum(sapply(nulltabs,nrow))
+                        }
+        attributes(tots)[["rng"]] <- NULL
+        rate1 <- tots[1,]
+        pvalues1 <- tots[2,] / sum(sapply(nulltabs,nrow))
+        return(list(rate1 = rate1, pvalues1 = pvalues1))
+    }
+
+    ptime1 <- proc.time()
+    comp <- computation.tots(tab = tab, V=V, L=L)
+    rate1 <- comp$rate1
+    pvalues1 <- comp$pvalues1
+    ptime2 <- proc.time()
+    ## cat(sprintf("tots timing: %s\n", (ptime2 - ptime1)[3]))
 
     ## ## Old tots, keep around since it is easier to read, for vectorizing
     ## tots <- sapply(seq(along=V), function(i) {
@@ -196,17 +207,39 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
     ## ## Now compute pvalues by assuming everything is exchangeable
     ## pvalues1 <- rowSums(tots) / sum(sapply(nulltabs,nrow))
     
-    tots2 <- sapply(seq(along=A), function(i) {
-        sapply(tab$area, function(x) {
-            sum(greaterOrEqual(A[[i]], x[1]))
-        })
-    })
-    if (is.vector(tots2)) {
-        tots2 <- matrix(tots2, nrow=1)
+    computation.tots2 <- function(tab, A) {
+        Avalue <- matrix(tab$area, ncol=1)
+        chunksize <- ceiling(nrow(Avalue)/workers)
+        subA <- NULL
+        tots2 <- t(foreach(subA=iter(Avalue,by="row",chunksize=chunksize),
+                           .combine="cbind",.packages="bumphunter") %dorng% {
+                               sapply(subA, function(x) {
+                                   return(sapply(seq(along = A), function(i) {
+                                       sum(bumphunter:::greaterOrEqual(A[[i]], x[1]))
+                                   }))    
+                               })
+                           })
+        if (is.vector(tots2)) {
+            tots2 <- matrix(tots2, nrow=1)
+        }
+        rate2 <- rowMeans(tots2>0)
+        pvalues2 <- rowSums(tots2)/sum(sapply(nulltabs,nrow))
+        return(list(rate2 = rate2, pvalues2 = pvalues2))
     }
-    rate2 <- rowMeans(tots2>0)
-    pvalues2 <- rowSums(tots2)/sum(sapply(nulltabs,nrow))
-    
+
+    ptime1 <- proc.time()
+    comp <- computation.tots2(tab = tab, A = A)
+    rate2 <- comp$rate2
+    pvalues2 <- comp$pvalues2
+    ptime2 <- proc.time()
+    ## cat(sprintf("tots2 timing: %s\n", (ptime2 - ptime1)[3]))
+
+    ##    tots2 <- sapply(seq(along=A), function(i) {
+    ##    sapply(tab$area, function(x) {
+    ##        sum(greaterOrEqual(A[[i]], x[1]))
+    ##    })
+    ## })
+
     tab$p.value <- pvalues1
     tab$fwer <- rate1
     
