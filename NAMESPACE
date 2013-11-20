@@ -1,18 +1,26 @@
 importFrom(foreach, "%dopar%", foreach, getDoParName, getDoParRegistered,
-           getDoParWorkers, registerDoSEQ)
+           getDoParWorkers, registerDoSEQ, getDoParVersion)
 importFrom(iterators, iter)
 importFrom(itertools, isplitVector)
-importFrom(stats, model.matrix, rnorm)
+importFrom(stats, model.matrix, preplot, rnorm)
 importFrom(doRNG, "%dorng%", doRNGversion, registerDoRNG)
+importFrom(methods, is)
 importClassesFrom(methods, matrix)
 import(matrixStats)
-importMethodsFrom(IRanges, "%in%", as.list, cbind, "colnames<-", diff,
-                  end, ifelse, intersect, lapply, mean, median, ncol,
-                  nearest, nrow, order, quantile, ranges, rank, rbind,
-                  runmed, sapply, split, start, table, unlist, which,
-                  which.min)
-importMethodsFrom(GenomicRanges, seqnames, sort)
+importMethodsFrom(IRanges, "%in%", as.factor, as.list, as.matrix,
+                  "colnames<-", diff, distance, distanceToNearest,
+                  elementLengths, elementMetadata, end, ifelse, mean,
+                  median, nearest, quantile, queryHits, ranges, reduce,
+                  resize, Rle, runmed, split, start, subjectHits, t,
+                  which, which.min, width)
+importFrom(IRanges, CharacterList, IRanges)
+importMethodsFrom(GenomicRanges, GRanges, seqnames, sort)
 importFrom(locfit, locfit)
+importMethodsFrom(BiocGenerics, as.vector, get, is.unsorted, paste,
+                  rownames, strand, tapply)
+importFrom(utils, data, packageDescription)
+importFrom(parallel, mclapply, stopCluster)
+
 
 export(bumphunter, bumphunterEngine, clusterMaker, boundedClusterMaker,
        dummyData, getSegments, loessByCluster, pointMatch, regionFinder,
