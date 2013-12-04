@@ -14,7 +14,7 @@ nearestgene <- function(queries, ignore.strand=TRUE, all=FALSE, useMidpts=FALSE)
 
     ## the reference transcript database, TT
     cat("nearestgene: loading bumphunter hg19 transcript database\n")
-    tt <- data(TT, package="bumphunter")
+    tt <- data(TT, package="bumphunter", envir=environment())
     TT <- get(tt)
 
     ## toss null-coding genes ?
