@@ -2,6 +2,12 @@
 \title{Bumphunter News}
 \encoding{UTF-8}
 
+\section{Version 1.3}{
+  \itemize{
+    \item Fixed NAMESPACE issues.
+  }
+}
+
 \section{Version 1.1}{
   \itemize{
     \item Added NEWS file.
