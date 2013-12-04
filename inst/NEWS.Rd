@@ -2,6 +2,16 @@
 \title{Bumphunter News}
 \encoding{UTF-8}
 
+\section{Version 1.3.5}{
+  \itemize{
+    \item nearestgene() now loads TT.rda into the local environment
+    \item known_transcripts(), and consequently matchGenes(), was
+	yielding mostly NA for the Refseq / 'annotation' column (iff
+	there were multiple refseq ids for the given Entrez/Gene id)
+    \item Fixed data/TT.rda, as the new value of known_transcripts()
+  }
+}
+
 \section{Version 1.3}{
   \itemize{
     \item Fixed NAMESPACE issues.
