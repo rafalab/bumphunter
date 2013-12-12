@@ -59,8 +59,8 @@ cat("entrez ids to gene symbol and refseq id\n")
 
 	map = org.Hs.egREFSEQ
 	which = mappedkeys(map)
-	# take the first of each set of keys - Andrew Jaffe
-	symbols = sapply(as.list(org.Hs.egREFSEQ[which]), "[", 1)
+	symbols = sapply(as.list(org.Hs.egREFSEQ[which]),
+		paste, collapse=" ")
 	refseq = symbols[entrez]	# a handful of NA
 
 	TT = elementLengths(tt)
