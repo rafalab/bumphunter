@@ -1,18 +1,20 @@
 Package: bumphunter
-Version: 1.3.7
+Version: 1.3.8
 Title: Bump Hunter
 Description: Tools for finding bumps in genomic data
-Author: Rafael A. Irizarry, Martin Aryee, Hector Corrada Bravo, Kasper D. Hansen, Harris A. Jaffee
+Author: Rafael A. Irizarry, Martin Aryee, Hector Corrada Bravo, Kasper
+        D. Hansen, Harris A. Jaffee
 Maintainer: Rafael A. Irizarry <rafa@jhu.edu>
-Depends: R (>= 2.10), IRanges, GenomicRanges, foreach, iterators, methods, parallel, locfit
-Suggests: RUnit, BiocGenerics, doParallel, org.Hs.eg.db, TxDb.Hsapiens.UCSC.hg19.knownGene
+Depends: R (>= 2.10), IRanges, GenomicRanges, foreach, iterators,
+        methods, parallel, locfit
+Suggests: RUnit, BiocGenerics, doParallel, org.Hs.eg.db,
+        TxDb.Hsapiens.UCSC.hg19.knownGene
 Imports: matrixStats, limma, doRNG, BiocGenerics, utils
 Collate: AllGenerics.R annotateNearest.R dummyData.R
-	limmaForPermutations.R regionFinder.R smooth.R
-        bumphunter.R
-	nearestgene.R fuzzy.match2.R matchGenes.R pointMatch.R known_transcripts.R
-	dataframe_to.R utils.R
+        limmaForPermutations.R regionFinder.R smooth.R bumphunter.R
+        nearestgene.R fuzzy.match2.R matchGenes.R pointMatch.R
+        known_transcripts.R dataframe_to.R utils.R
 License: Artistic-2.0
 LazyData: yes
 biocViews: DNAMethylation, Epigenetics, Infrastructure,
-        MultipleComparisons
+        MultipleComparison
