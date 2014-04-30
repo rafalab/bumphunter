@@ -106,6 +106,9 @@ the proportion of permutations that had at least on regio as extreme as
 the observed region. We compute p.values and FWER for the area of the
 regions (as opposed to length and value as a pair) as well.
 
+Note that for cases with more than one covariates the permutation
+approach is not recommended. See the vignette for more details.
+
 Parallelization is implemented through the foreach package.
 }
 

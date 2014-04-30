@@ -39,7 +39,9 @@ options(width=70)
 \section*{Introduction}
 
 This package implements the statistical procedure described in \cite{Jaffe:2012} (with some small
-modifications).  Notably, batch effect removal needs additional code.
+modifications).  Notably, batch effect removal 
+and the application of the bootstrap to linear models of Efron and
+Tibshirani  \cite{bootstrap} need additional code.
 
 For any given type of data, it is usually necessary to make a number of choices and/or
 transformations before the bump hunting methodology is ready to be applied.  Typically, these
@@ -95,6 +97,7 @@ location.  We assume that $\beta_1(l)$ will be equal to zero over most of the ge
 identify stretched where $\beta_1(l) \neq 0$, which we call \emph{bumps}.
 
 We want to share information between nearby locations, typically through some form of smoothing.
+
 
 \section*{Creating clusters}
 
@@ -227,6 +230,16 @@ Briefly, the \Rcode{bumphunter} function fits a linear model for each location (
 coefficient of interest is optionally smoothed.  Subsequently, a permutation test is formed for this
 specific coefficient.
 
+Note that the function permits the matrix \Rcode{X} to have more than
+two columns. This can be useful for those wanting to fit models that
+try to adjust for confounders, such as age and sex. However, when
+\Rcode{X} has columns other than those representing an intercept term and
+the covariate of interest, the permutation test approach is not
+recommended. The function will run but give a warning.
+A method based on the bootstrap for linear models of Efron and
+Tibshirani  \cite{bootstrap} may be more appropriate but this is not currently
+implemented. 
+
 \section*{Faster bumphunting with multiple cores}
 
 \Rcode{bumphunter} can be speeded up by using multiple cores.  We use the \Rcode{foreach} package
@@ -262,7 +275,7 @@ This is a cleanup step for the vignette on Windows; typically not needed for use
 <<closeConnetions,results=hide>>=
 bumphunter:::foreachCleanup()
 @
-
+ 
 \section*{SessionInfo}
 
 <<sessionInfo,results=tex,eval=TRUE,echo=FALSE>>=
