@@ -20,6 +20,9 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
                              smoothFunction=locfitByCluster,
                              useWeights=FALSE, B=100, verbose=TRUE, ...){
     ## cutoff = c(L, U)
+    if(ncol(design)>2 & B>0)
+        warning("The use of the permutation test (B>0), is not recommended with multiple covariates, (ncol(design)>2). See vignette for more information.")
+    
     if(!is.matrix(mat))
         stop("'mat' must be a matrix.")
     if(ncol(mat) != nrow(design))
