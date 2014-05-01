@@ -227,8 +227,17 @@ tab$table
 
 Briefly, the \Rcode{bumphunter} function fits a linear model for each location (like \Rcode{lmFit} from the
 \Rpackage{limma} package), focusing on one specific column (coefficient) of the design matrix.  This
-coefficient of interest is optionally smoothed.  Subsequently, a permutation test is formed for this
+coefficient of interest is optionally smoothed.  Subsequently, a
+permutation can be used to test is formed for this
 specific coefficient.
+
+The simplest way to use permutations to create a null distribution is to
+set \code{B}. If the number of samples is large this can be set to a
+large number, such as 1000. Note that this will be slow and we have
+therefore provided parallelization capabilities. In cases were the user
+wants to define the permutations, for example cases in which all
+possible permutations can be enumerated, these can be supplied via the \code{permutation}
+argument. 
 
 Note that the function permits the matrix \Rcode{X} to have more than
 two columns. This can be useful for those wanting to fit models that

@@ -2,7 +2,8 @@ setMethod("bumphunter", signature(object = "matrix"),
           function(object, design, chr=NULL, pos, cluster=NULL,
                    coef=2, cutoff=NULL, pickCutoff=FALSE, pickCutoffQ=0.99,
                    maxGap=500, smooth=FALSE, smoothFunction=locfitByCluster,
-                   useWeights=FALSE, B=100, verbose=TRUE, ...){
+                   useWeights=FALSE,  B=ncol(permutations), permutations=NULL,
+                   verbose=TRUE, ...){
             if(missing(design)) stop("design must be specified")
             if(missing(pos)) stop("If object is a matrix, pos must be specified")
             bumphunterEngine(object, design=design, chr=chr, pos, cluster=cluster,
@@ -10,7 +11,9 @@ setMethod("bumphunter", signature(object = "matrix"),
                              cutoff=cutoff, pickCutoff=pickCutoff, pickCutoffQ=pickCutoffQ,
                              maxGap=maxGap,smooth=smooth,
                              smoothFunction=smoothFunction,
-                             useWeights=useWeights, B=B, verbose=verbose, ...)
+                             useWeights=useWeights, B=B,
+                             permutations=NULL,
+                             verbose=verbose, ...)
           })
 
 bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
@@ -18,8 +21,22 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
                              cutoff=NULL, pickCutoff=FALSE, pickCutoffQ=0.99, 
                              maxGap=500, smooth=FALSE,
                              smoothFunction=locfitByCluster,
-                             useWeights=FALSE, B=100, verbose=TRUE, ...){
+                             useWeights=FALSE, B=ncol(permutations), permutations=NULL,
+                             verbose=TRUE, ...){
     ## cutoff = c(L, U)
+
+    if(is.null(B)) B=0
+    if(!is.matrix(permutations) & !is.null(permutations))
+        stop("permutations must be NULL or a matrix.")
+    if(!is.null(permutations)){
+        if(nrow(design)!=nrow(permutations))
+            stop("Number of rows of 'design' must match number of rows of 'permutations'.")
+        if(B!=ncol(permutations)){
+            warning("Ignoring the supplied B. Using 'ncol(permutations)' instead.")
+            B=ncol(permutations)
+        }
+    }
+    
     if(ncol(design)>2 & B>0)
         warning("The use of the permutation test (B>0), is not recommended with multiple covariates, (ncol(design)>2). See vignette for more information.")
     
@@ -98,12 +115,12 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
     if(B>0){
         if (verbose) message("[bumphunterEngine] Performing ", B, " permutations.")
         if(useWeights && smooth) {
-            tmp <- .getEstimate(mat, design, coef, B, full=TRUE)
+            tmp <- .getEstimate(mat, design, coef, B, permutations, full=TRUE)
             permRawBeta <- tmp$coef
             weights <- tmp$sigma
             rm(tmp)
         } else {
-            permRawBeta <- .getEstimate(mat, design, coef, B, full=FALSE)
+            permRawBeta <- .getEstimate(mat, design, coef, B, permutations, full=FALSE)
             weights <- NULL
         }
         
@@ -253,8 +270,10 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
 
     algorithm <- list(version = packageDescription("bumphunter")$Version, coef = coef,
                      cutoff = cutoff, pickCutoff = pickCutoff, pickCutoffQ = pickCutoffQ,
-                     smooth = smooth, maxGap = maxGap, B = B, useWeights = useWeights,
-                     smoothFunction = deparse(substitute(smoothFunction)))
+                     smooth = smooth, maxGap = maxGap, B = B,
+                      permutations=permutations,
+                      useWeights = useWeights,
+                      smoothFunction = deparse(substitute(smoothFunction)))
     ret <- list(table=tab, coef=rawBeta, fitted=beta,
                 pvaluesMarginal=pvs, null=list(value=V,length=L), algorithm = algorithm)
     class(ret) <- "bumps"
