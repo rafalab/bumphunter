@@ -17,12 +17,14 @@
 \S4method{bumphunter}{matrix}(object, design, chr=NULL, pos, cluster=NULL,
           coef=2, cutoff=NULL, pickCutoff = FALSE, pickCutoffQ = 0.99,
           maxGap=500, smooth=FALSE, smoothFunction=locfitByCluster,
-          useWeights=FALSE, B=100, verbose=TRUE, ...)
+          useWeights=FALSE,  B=ncol(permutations), permutations=NULL,
+          verbose=TRUE, ...)
 
 bumphunterEngine(mat, design, chr = NULL, pos, cluster = NULL,
                  coef = 2, cutoff = NULL, pickCutoff = FALSE, pickCutoffQ = 0.99,
                  maxGap = 500, smooth = FALSE, smoothFunction = locfitByCluster,
-                 useWeights = FALSE, B = 100, verbose = TRUE, ...)
+                 useWeights = FALSE,  B=ncol(permutations), permutations=NULL, 
+                 verbose = TRUE, ...)
 \S3method{print}{bumps}(x, \ldots)
 }
 
@@ -70,10 +72,10 @@ bumphunterEngine(mat, design, chr = NULL, pos, cluster = NULL,
    null distributions. This defaults to 0. If \code{permutations} is
   supplied that defines the number of permutations and \code{B} is
   ignored.}
-\item{permutations} is a matrix with columns providing indexes to be used to 
+\item{permutations}{ is a matrix with columns providing indexes to be used to 
   permute the data and create a null distribution. If this matrix is not supplied and \code{B}>0 then
   these indexes created using the function \code{sample}. }
-  \item{verbose}{
+\item{verbose}{
     logical value. If \code{TRUE}, it writes out some messages
     indicating progress. If \code{FALSE} nothing should be printed.
   }
