@@ -1,10 +1,19 @@
-.getEstimate <- function(mat, design, coef, B=NULL, full=FALSE) {
+.getEstimate <- function(mat, design, coef, B=NULL, permutations=NULL,
+                         full=FALSE) {
     v <- design[,coef]
     A <- design[,-coef, drop=FALSE]
     qa <- qr(A)
     S <- diag(nrow(A)) - tcrossprod(qr.Q(qa))
 
-    vv <- if (is.null(B)) matrix(v, ncol=1) else replicate(B, sample(v))
+    vv <- if (is.null(B)) matrix(v, ncol=1) else{
+        if(is.null(permutations)){
+            replicate(B, sample(v))
+        } else{
+            apply(permutations,2,function(i) v[i])
+        }
+    }
+            
+            
     sv <- S %*% vv
     vsv <- diag(crossprod(vv,sv))
     

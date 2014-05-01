@@ -66,9 +66,13 @@ bumphunterEngine(mat, design, chr = NULL, pos, cluster = NULL,
    point-wise estimates of the profile function will be used as weights
    in the loess smoother \code{loessByCluster}. If the 
    \code{runmedByCluster} smoother is used this argument is ignored.}
-  \item{B}{An integer denoting the number of resamples to use when computing
-    null distributions: 1000 is recommended but can be quite slow if
-    this process is not parallelized.}
+ \item{B}{An integer denoting the number of resamples to use when computing
+   null distributions. This defaults to 0. If \code{permutations} is
+  supplied that defines the number of permutations and \code{B} is
+  ignored.}
+\item{permutations} is a matrix with columns providing indexes to be used to 
+  permute the data and create a null distribution. If this matrix is not supplied and \code{B}>0 then
+  these indexes created using the function \code{sample}. }
   \item{verbose}{
     logical value. If \code{TRUE}, it writes out some messages
     indicating progress. If \code{FALSE} nothing should be printed.
@@ -91,8 +95,20 @@ interest (a common example is case versus control). These estimates are
 then (optionally) smoothed. The smoothing occurs in clusters of
 locations that are \sQuote{close enough}. This gives us an estimate of a
 genomic profile that is 0 when uninteresting. We then take values above
-(in absolute value) \code{cutoff} as candidate regions. Permutations are
-then performed to create null distributions for the candidate regions.
+(in absolute value) \code{cutoff} as candidate regions. Permutations can
+then performed to create null distributions for the candidate
+regions. 
+
+The simplest way to use permutations to create a null distribution is to
+set \code{B}. If the number of samples is large this can be set to a
+large number, such as 1000. Note that this will be slow and we have
+therefore provided parallelization capabilities. In cases were the user
+wants to define the permutations, for example cases in which all
+possible permutations can be enumerated, these can be supplied via the \code{permutation}
+argument. Note that for cases with more than one covariates the permutation
+approach is not generally recommended; the function will run but a
+warning will be given. See the vignette for more details.
+
 
 Uncertainty is assessed via permutations. Each of the B permutations
 will produce an estimated \sQuote{null profile} from which we can define
@@ -102,12 +118,12 @@ higher average value). The \sQuote{p.value} is the percent of candidate
 regions obtained from the permutations that as extreme as the observed
 region. These p-values should be interpreted with care as the
 theoretical proporties are not well understood.  The \sQuote{fwer} is
-the proportion of permutations that had at least on regio as extreme as
+the proportion of permutations that had at least one region as extreme as
 the observed region. We compute p.values and FWER for the area of the
 regions (as opposed to length and value as a pair) as well.
-
 Note that for cases with more than one covariates the permutation
 approach is not recommended. See the vignette for more details.
+
 
 Parallelization is implemented through the foreach package.
 }
