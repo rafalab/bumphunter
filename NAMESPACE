@@ -6,17 +6,19 @@ importFrom(doRNG, "%dorng%")
 importFrom(methods, is)
 importClassesFrom(methods, matrix)
 import(matrixStats)
-importMethodsFrom(IRanges, "%in%", as.factor, as.list, as.matrix,
-                  "colnames<-", diff, distance, distanceToNearest,
-                  elementLengths, elementMetadata, end, ifelse, mean,
-                  median, nearest, quantile, queryHits, ranges, reduce,
-                  resize, Rle, runmed, split, start, subjectHits, t,
+import(BiocGenerics)
+import(S4Vectors)
+importMethodsFrom(IRanges, as.factor, as.list, as.matrix,
+                  diff, distance, distanceToNearest,
+                  elementLengths, end, ifelse, mean,
+                  median, nearest, quantile, ranges, reduce,
+                  resize, Rle, runmed, split, start, t,
                   which, which.min, width)
 importFrom(IRanges, CharacterList, IRanges)
+importFrom(GenomeInfoDb, seqnames)
 importFrom(GenomicRanges, GRanges)
-importMethodsFrom(GenomicRanges, seqnames, sort)
+importMethodsFrom(GenomicRanges, sort)
 importFrom(locfit, locfit)
-import(BiocGenerics)
 importFrom(utils, data, packageDescription)
 importFrom(parallel, mclapply, stopCluster)
 
