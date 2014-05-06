@@ -192,8 +192,8 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
                         .combine="cbind", .packages = "bumphunter") %dorng% {
                             apply(subL,1,function(x) {
                                 res <- sapply(seq(along=V), function(i) {
-                                    sum(bumphunter:::greaterOrEqual(L[[i]], x[1]) &
-                                        bumphunter:::greaterOrEqual(abs(V[[i]]), x[2]))
+                                    sum(greaterOrEqual(L[[i]], x[1]) &
+                                        greaterOrEqual(abs(V[[i]]), x[2]))
                                 })
                                 c(mean(res>0),sum(res))
                             })
@@ -235,7 +235,7 @@ bumphunterEngine <- function(mat, design, chr=NULL, pos, cluster=NULL,
                            .combine="cbind",.packages="bumphunter") %dorng% {
                                sapply(subA, function(x) {
                                    return(sapply(seq(along = A), function(i) {
-                                       sum(bumphunter:::greaterOrEqual(A[[i]], x[1]))
+                                       sum(greaterOrEqual(A[[i]], x[1]))
                                    }))    
                                })
                            })
