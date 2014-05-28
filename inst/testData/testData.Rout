@@ -1,0 +1,119 @@
+
+R version 3.0.1 Patched (2013-06-03 r62859) -- "Good Sport"
+Copyright (C) 2013 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin12.3.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(bumphunter)
+Loading required package: IRanges
+Loading required package: BiocGenerics
+Loading required package: parallel
+
+Attaching package: ‘BiocGenerics’
+
+The following objects are masked from ‘package:parallel’:
+
+    clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
+    clusterExport, clusterMap, parApply, parCapply, parLapply,
+    parLapplyLB, parRapply, parSapply, parSapplyLB
+
+The following object is masked from ‘package:stats’:
+
+    xtabs
+
+The following objects are masked from ‘package:base’:
+
+    anyDuplicated, append, as.data.frame, as.vector, cbind, colnames,
+    duplicated, eval, Filter, Find, get, intersect, lapply, Map,
+    mapply, match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
+    Position, rank, rbind, Reduce, rep.int, rownames, sapply, setdiff,
+    sort, table, tapply, union, unique, unlist
+
+Loading required package: GenomicRanges
+Loading required package: XVector
+Loading required package: foreach
+Loading required package: iterators
+Loading required package: locfit
+locfit 1.5-9.1 	 2013-03-22
+
+Attaching package: ‘locfit’
+
+The following object is masked from ‘package:GenomicRanges’:
+
+    left, right
+
+>   
+> ## Generate dummy data
+> set.seed(123)
+> dat <- dummyData()
+> 
+> ## loessByCluster      
+> loessSmoothed <- loessByCluster(cluster=dat$cluster, y=dat$mat[,1],
++                               bpSpan = 1000, minNum=7, minInSpan=5, maxSpan=1)
+> save(loessSmoothed, file="../unitTests/loessSmoothed.rda")
+> 
+> ## runmedByCluster
+> runmedSmoothed <- runmedByCluster(cluster=dat$cluster, y=dat$mat[,1],  k=5, endrule="constant")
+> save(runmedSmoothed, file="../unitTests/runmedSmoothed.rda")
+> 
+> ## bumphunter test 1
+> set.seed(123)
+> bumpsTest1 <- bumphunter (dat$mat, design=dat$design, chr=dat$chr, pos=dat$pos, cluster=dat$cluster,
++                           coef=2, cutoff=0.28, smooth=TRUE, B=500,
++                           verbose=TRUE, smoothFunction=loessByCluster)
+bumphunterEngine: Using a single core (backend: doSEQ, version: 1.4.1)
+bumphunterEngine: Computing coefficients.
+bumphunterEngine: Smoothing coefficients.
+Loading required package: pkgmaker
+Loading required package: registry
+
+Attaching package: ‘pkgmaker’
+
+The following object is masked from ‘package:IRanges’:
+
+    new2
+
+bumphunterEngine: Performing 500 permutations.
+bumphunterEngine: Computing marginal permutation p-values.
+bumphunterEngine: Smoothing permutation coefficients.
+bumphunterEngine: cutoff: 0.28
+bumphunterEngine: Finding regions.
+bumphunterEngine: Computing regions for each permutation.
+bumphunterEngine: Estimating p-values and FWER.
+> save(bumpsTest1, file="../unitTests/bumpsTest1.rda")
+> 
+> ## bumphunter test 2: chr unspecified
+> set.seed(123)
+> bumpsTest2 <- bumphunter (dat$mat, design=dat$design, pos=dat$pos, cluster=dat$cluster,
++                           coef=2, cutoff=0.28, maxGap=500, smooth=TRUE, B=500,
++                           verbose=TRUE, smoothFunction=loessByCluster)
+bumphunterEngine: Using a single core (backend: doSEQ, version: 1.4.1)
+bumphunterEngine: Computing coefficients.
+bumphunterEngine: Smoothing coefficients.
+bumphunterEngine: Performing 500 permutations.
+bumphunterEngine: Computing marginal permutation p-values.
+bumphunterEngine: Smoothing permutation coefficients.
+bumphunterEngine: cutoff: 0.28
+bumphunterEngine: Finding regions.
+bumphunterEngine: Computing regions for each permutation.
+bumphunterEngine: Estimating p-values and FWER.
+> save(bumpsTest2, file="../unitTests/bumpsTest2.rda")
+> 
+> 
+> 
+> proc.time()
+   user  system elapsed 
+  9.171   0.123   9.283 

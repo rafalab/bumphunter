@@ -1,0 +1,31 @@
+importFrom(foreach, "%dopar%", foreach, getDoParName, getDoParRegistered,
+           getDoParWorkers, registerDoSEQ, getDoParVersion)
+importFrom(iterators, iter)
+importFrom(stats, model.matrix, preplot, rnorm)
+importFrom(doRNG, "%dorng%")
+importFrom(methods, is)
+importClassesFrom(methods, matrix)
+import(matrixStats)
+import(BiocGenerics)
+import(S4Vectors)
+importMethodsFrom(IRanges, as.factor, as.list, as.matrix,
+                  diff, distance, distanceToNearest,
+                  elementLengths, end, ifelse, mean,
+                  median, nearest, quantile, ranges, reduce,
+                  resize, Rle, runmed, split, start, t,
+                  which, which.min, width)
+importFrom(IRanges, CharacterList, IRanges)
+importFrom(GenomeInfoDb, seqnames)
+importFrom(GenomicRanges, GRanges)
+importMethodsFrom(GenomicRanges, sort)
+importFrom(locfit, locfit)
+importFrom(utils, data, packageDescription)
+importFrom(parallel, mclapply, stopCluster)
+
+
+export(bumphunter, bumphunterEngine, clusterMaker, boundedClusterMaker,
+       dummyData, getSegments, loessByCluster, pointMatch, regionFinder,
+       regionMatch, annotateNearest, runmedByCluster, smoother,
+       matchGenes, locfitByCluster)
+exportMethods(bumphunter)
+S3method(print,bumps)
