@@ -18,3 +18,4 @@ License: Artistic-2.0
 LazyData: yes
 biocViews: DNAMethylation, Epigenetics, Infrastructure,
         MultipleComparison
+
