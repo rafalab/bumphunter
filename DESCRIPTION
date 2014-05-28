@@ -4,7 +4,7 @@ Title: Bump Hunter
 Description: Tools for finding bumps in genomic data
 Author: Rafael A. Irizarry, Martin Aryee, Hector Corrada Bravo, Kasper
         D. Hansen, Harris A. Jaffee
-Maintainer: Rafael A. Irizarry <rafa@jhu.edu>
+Maintainer: Rafael A. Irizarry <rafa@jimmy.harvard.edu>
 Depends: R (>= 2.10), S4Vectors, IRanges, GenomeInfoDb, GenomicRanges,
         foreach, iterators, methods, parallel, locfit
 Suggests: RUnit, BiocGenerics, doParallel, org.Hs.eg.db,
