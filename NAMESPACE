@@ -8,11 +8,11 @@ importClassesFrom(methods, matrix)
 import(matrixStats)
 import(BiocGenerics)
 import(S4Vectors)
-importMethodsFrom(IRanges, as.factor, as.list, as.matrix,
+importMethodsFrom(IRanges, as.list, as.matrix,
                   diff, distance, distanceToNearest,
-                  elementLengths, end, ifelse, mean,
+                  elementLengths, end, mean,
                   median, nearest, quantile, ranges, reduce,
-                  resize, Rle, runmed, split, start, t,
+                  resize, runmed, split, start, t,
                   which, which.min, width)
 importFrom(IRanges, CharacterList, IRanges)
 importFrom(GenomeInfoDb, seqnames)
