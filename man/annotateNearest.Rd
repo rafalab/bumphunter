@@ -42,8 +42,8 @@ matchGenes(x, build, ...)
 
 \details{
 The name \code{matchGenes} is provided for backward compatibility.
-The preferred call is to \code{nearest} with \code{subject} set to
-the build name.
+The preferred call is to \code{annotateNearest} with \code{subject}
+set to the build name.
 \code{annotateNearest} and \code{matchGenes} are basically wrappers for
 \code{nearest(select="arbitrary")} (or \code{nearest(select="all")} with
 \code{matchGenes(all=TRUE)}) with specialized annotation of the result.
