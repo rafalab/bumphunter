@@ -14,17 +14,9 @@
   
 }
 \usage{
-\S4method{bumphunter}{matrix}(object, design, chr=NULL, pos, cluster=NULL,
-          coef=2, cutoff=NULL, pickCutoff = FALSE, pickCutoffQ = 0.99,
-          maxGap=500, nullMethod=c("permutation","bootstrap"),smooth=FALSE, smoothFunction=locfitByCluster,
-          useWeights=FALSE, B=ncol(permutations), permutations=NULL,
-          verbose=TRUE, ...)
+\S4method{bumphunter}{matrix}(object, design, chr=NULL, pos, cluster=NULL,coef=2, cutoff=NULL, pickCutoff = FALSE, pickCutoffQ = 0.99, maxGap=500, nullMethod=c("permutation","bootstrap"),smooth=FALSE,smoothFunction=locfitByCluster, useWeights=FALSE, B=ncol(permutations), permutations=NULL,verbose=TRUE, ...)
 
-bumphunterEngine(mat, design, chr = NULL, pos, cluster = NULL,
-                 coef = 2, cutoff = NULL, pickCutoff = FALSE, pickCutoffQ = 0.99,
-                 maxGap = 500, nullMethod=c("permutation","bootstrap"), smooth = FALSE, smoothFunction = locfitByCluster,
-                 useWeights = FALSE, B=ncol(permutations), permutations=NULL,
-                 verbose = TRUE, ...)
+bumphunterEngine(mat, design, chr = NULL, pos, cluster = NULL, coef = 2, cutoff = NULL, pickCutoff = FALSE, pickCutoffQ = 0.99, maxGap = 500, nullMethod=c("permutation","bootstrap"), smooth = FALSE, smoothFunction = locfitByCluster, useWeights = FALSE, B=ncol(permutations), permutations=NULL, verbose = TRUE, ...)
 \S3method{print}{bumps}(x, \ldots)
 }
 
