@@ -307,3 +307,7 @@ bumphunterEngine<-function(mat, design, chr = NULL, pos, cluster = NULL, coef = 
     return(outList)
 }
 
+
+print.bumps <- function(x, ...) {
+    cat(sprintf("a 'bumps' object with %s bumps\n", nrow(x$table)))
+}
