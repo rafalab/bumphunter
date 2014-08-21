@@ -137,7 +137,7 @@ bumphunterEngine<-function(mat, design, chr = NULL, pos, cluster = NULL, coef = 
                 bootIndexes=replicate(B, sample(1:ncol(mat)), simplify=TRUE)}
             tmp <- foreach(bootstraps = iter(bootIndexes, by = "column", chunksize = chunksize),
 				.combine = "cbind", .packages = "bumphunter") %dorng%
-				{apply(bootstraps, 2, function(x) {getBootEst(null,r_ij,bootIndex=x,mod=design,outInd=coef,needfull=useWeights)})}
+				{apply(bootstraps, 2, function(x) {.getBootEst(null,r_ij,bootIndex=x,mod=design,outInd=coef,needfull=useWeights)})}
 			if (useWeights && smooth) {
 				bootRawBeta <- do.call(Map, c(cbind, tmp))$beta
 				weights <- do.call(Map, c(cbind, tmp))$sigma
