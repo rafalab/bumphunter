@@ -71,8 +71,10 @@ bumphunterEngine(mat, design, chr = NULL, pos, cluster = NULL, coef = 2, cutoff 
   supplied that defines the number of permutations/bootstraps and \code{B} is
   ignored.}
 \item{permutations}{ is a matrix with columns providing indexes to be used to
-  scramble the data and create a null distribution. If this matrix is not supplied and \code{B}>0 then
-  these indexes created using the function \code{sample}. }
+  scramble the data and create a null distribution when
+  \code{nullMethod} is set to  permutations. If the bootstrap approach is used this argument is
+  ignored. If this matrix is not supplied and \code{B}>0 then
+  these indexes are created using the function \code{sample}. }
 \item{verbose}{
     logical value. If \code{TRUE}, it writes out some messages
     indicating progress. If \code{FALSE} nothing should be printed.
