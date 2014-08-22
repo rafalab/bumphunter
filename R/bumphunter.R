@@ -1,17 +1,21 @@
 setMethod("bumphunter", signature(object = "matrix"),
           function(object, design, chr=NULL, pos, cluster=NULL,
                    coef=2, cutoff=NULL, pickCutoff=FALSE, pickCutoffQ=0.99,
-                   maxGap=500, nullMethod=c("permutation","bootstrap"),smooth=FALSE,
+                   maxGap=500,
+                   nullMethod=c("permutation","bootstrap"), smooth=FALSE,
                    smoothFunction=locfitByCluster,
                    useWeights=FALSE, B=ncol(permutations), permutations=NULL,
                    verbose=TRUE, ...){
               nullMethod  <- match.arg(nullMethod)
               if(missing(design)) stop("design must be specified")
               if(missing(pos)) stop("If object is a matrix, pos must be specified")
-              bumphunterEngine(object, design=design, chr=chr, pos, cluster=cluster,
+              bumphunterEngine(object, design=design, chr=chr, pos,
+                               cluster=cluster,
                                coef=coef,
-                               cutoff=cutoff, pickCutoff=pickCutoff, pickCutoffQ=pickCutoffQ,
-                               maxGap=maxGap,nullMethod=nullMethod,smooth=smooth,
+                               cutoff=cutoff, pickCutoff=pickCutoff,
+                               pickCutoffQ=pickCutoffQ,
+                               maxGap=maxGap,nullMethod=nullMethod,
+                               smooth=smooth,
                                smoothFunction=smoothFunction,
                                useWeights=useWeights, B=B,
                                permutations=NULL,
@@ -19,12 +23,18 @@ setMethod("bumphunter", signature(object = "matrix"),
           })
 
 
-bumphunterEngine<-function(mat, design, chr = NULL, pos, cluster = NULL, coef = 2,
-                           cutoff = NULL, pickCutoff = FALSE, pickCutoffQ = 0.99,
+bumphunterEngine<-function(mat, design, chr = NULL, pos,
+                           cluster = NULL, coef = 2,
+                           cutoff = NULL, pickCutoff = FALSE,
+                           pickCutoffQ = 0.99,
                            maxGap = 500,
                            nullMethod = c("permutation","bootstrap"),
-                           smooth = FALSE, smoothFunction = locfitByCluster, useWeights = FALSE,
-                           B = ncol(permutations), permutations = NULL, verbose = TRUE, ...){
+                           smooth = FALSE,
+                           smoothFunction = locfitByCluster,
+                           useWeights = FALSE,
+                           B = ncol(permutations),
+                           permutations = NULL,
+                           verbose = TRUE, ...){
     nullMethod  <- match.arg(nullMethod)
     if (is.null(B))  B = 0
     if (!is.matrix(permutations) & !is.null(permutations)) stop("permutations must be NULL or a matrix.")
@@ -127,28 +137,52 @@ bumphunterEngine<-function(mat, design, chr = NULL, pos, cluster = NULL, coef = 
         if (nullMethod == "bootstrap"){
             message("[bumphunterEngine] Performing ", B, " bootstraps.")
             qr.X <- qr(design)
-            r_ij <- t(tcrossprod( diag(nrow(design)) - tcrossprod(qr.Q(qr.X)),  mat))
+            resids <- t(tcrossprod( diag(nrow(design)) - tcrossprod(qr.Q(qr.X)),  mat))
+
+            ##rescale residuals
+            h <- diag(tcrossprod(qr.Q( qr(design))))
+            resids <- t(t(resids)/sqrt(1-h))
+
+            ##create the null model to which we add bootstrap resids
             design0 <- design[,-coef,drop=FALSE]
-            qr.X <- qr(design0)
-            null <- t(tcrossprod(tcrossprod(qr.Q(qr.X)), mat))
+            qr.X0 <- qr(design0)
+            null <- t(tcrossprod(tcrossprod(qr.Q(qr.X0)), mat))
+
+            ##Now do the boostraps
             chunksize <- ceiling(B/workers) 
-            bootIndexes<-permutations
-            if((is.null(bootIndexes))){
-                bootIndexes=replicate(B, sample(1:ncol(mat)), simplify=TRUE)}
+            bootIndexes<-replicate(B, sample(1:ncol(mat),replace=TRUE),simplify=TRUE)
+            
             tmp <- foreach(bootstraps = iter(bootIndexes, by = "column", chunksize = chunksize),
-				.combine = "cbind", .packages = "bumphunter") %dorng%
-				{apply(bootstraps, 2, function(x) {.getBootEst(null,r_ij,bootIndex=x,mod=design,outInd=coef,needfull=useWeights)})}
-			if (useWeights && smooth) {
-				bootRawBeta <- do.call(Map, c(cbind, tmp))$beta
-				weights <- do.call(Map, c(cbind, tmp))$sigma
-			} else {
-                            bootRawBeta <- tmp
-				weights <- NULL
-			}
-		NullBeta<-bootRawBeta
-		rm(tmp)
-		rm(bootRawBeta)
-                    }	
+                           .combine = "cbind", .packages = "bumphunter") %dorng% {
+                               apply(bootstraps, 2, function(bootIndex){
+                                   ##create a null model
+                                   matstar <- null+resids[,bootIndex]
+                                   ##compute the null beta estimate
+                                   coef <- backsolve(qr.R(qr.X),crossprod(qr.Q(qr.X),t(matstar)))[2,]            
+                                   if (useWeights){
+                                       ##compute sigma
+                                       sigma <- rowSums(t(tcrossprod( diag(nrow(design)) - tcrossprod(qr.Q(qr.X)),  matstar))^2)
+                                       sigma <-
+                                           sqrt(sigma/(nrow(design)-qr.X$rank))
+                                       outList <- list(coef=coef,sigma=sigma)
+                                   } else {
+                                       outList <- coef
+                                   }
+                                   return(outList)
+                               })
+                           }
+            
+            if (useWeights && smooth) {
+                bootRawBeta <- do.call(Map, c(cbind, tmp))$coef
+                weights <- do.call(Map, c(cbind, tmp))$sigma
+            } else {
+                bootRawBeta <- tmp
+                weights <- NULL
+            }
+            NullBeta<-bootRawBeta
+            rm(tmp)
+            rm(bootRawBeta)
+        }	
         if (verbose)
             message("[bumphunterEngine] Computing marginal ",nullMethod," p-values.")
         sumGreaterOrEqual <- rowSums(greaterOrEqual(abs(NullBeta),
@@ -272,39 +306,6 @@ bumphunterEngine<-function(mat, design, chr = NULL, pos, cluster = NULL, coef = 
         null = list(value = V, length = L), algorithm = algorithm)
     class(ret) <- "bumps"
     return(ret)
-}
-
-
-
-###Auxiliary function to run the bootstrap approach
-.getBootEst<-function(nullfit,obsres,bootIndex=NULL,mod=design,outInd=coef,needfull=useWeights){
-    ##nullfit: the fitted values from the null model (without outcome)
-    ##obsres: the residuals from the observed fit
-    ##bootIndex: optional list of scrambled indices for residuals
-    ##mod: design matrix
-    ##outInd: the column corresponding to the outcome of interest in mod
-
-    qr.X <- qr(mod)
-    h <- diag(tcrossprod(qr.Q(qr.X)))
-    obsres <- t(t(obsres)/sqrt(1-h))
-
-    ## resample columns, rescale 
-    if(is.null(bootIndex)) {bootIndex <- sample(1:ncol(r_ij_0))}
-    obsres <- obsres[,bootIndex]
-    obsres <- t(t(obsres)*sqrt(1-h))
-	
-    ##  create null methylation matrix by adding residuals to fitted values
-    ## we put it in obsres to avoid creating a new matrix
-    obsres <- nullfit + obsres
-    
-    ## get regression coefficients from null data
-    if (needfull){
-	tmp <- .getEstimate(obsres, mod, outInd,full=TRUE)
-	outList <- list(beta=tmp$coef, sigma = tmp$sigma)} else {
-            tmp <- .getEstimate(obsres, mod, outInd,full=FALSE)
-            outList <- tmp}
-    
-    return(outList)
 }
 
 
