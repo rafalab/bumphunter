@@ -148,7 +148,7 @@ epigenetic epidemiology studies. International Journal of Epidemiology
 }
 
 \author{
-Rafael A. Irizarry, Martin J. Aryee and Kasper D. Hansen
+Rafael A. Irizarry, Martin J. Aryee, Kasper D. Hansen, and Shan Andrews.
 }
 
 \examples{
