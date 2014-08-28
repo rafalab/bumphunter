@@ -26,6 +26,6 @@ importFrom(parallel, mclapply, stopCluster)
 export(bumphunter, bumphunterEngine, clusterMaker, boundedClusterMaker,
        dummyData, getSegments, loessByCluster, pointMatch, regionFinder,
        regionMatch, annotateNearest, runmedByCluster, smoother,
-       matchGenes, locfitByCluster)
+       matchGenes, locfitByCluster, known_transcripts)
 exportMethods(bumphunter)
 S3method(print,bumps)
