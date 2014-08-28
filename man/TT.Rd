@@ -8,7 +8,9 @@ namely those with Entrez ID gene identifiers associated.
 }
 \usage{data(TT)}
 \format{
-  A \code{\link[GenomicRanges]{GRanges}} object with 8 metadata
+  A \code{list} (see \code{known_transcripts}) whose
+  \code{transcripts} slot is a
+  \code{\link[GenomicRanges]{GRanges}} object with 8 metadata
   columns, "CSS" (coding start), "CSE" (coding end), "Tx" (transcript  
   name), "Entrez" (Entrez ID), "Gene" (gene name), "Refseq" (Refseq
   number), "Nexons" (number of exons), and "Exons" (the exons themselves,
@@ -16,6 +18,6 @@ namely those with Entrez ID gene identifiers associated.
   even on minus strands where their "start" and "end" meanings are
   reversed.  Similarly with the exons.
 }
-\source{the result of \code{bumphunter:::known_transcripts()}
+\source{the value of \code{bumphunter::known_transcripts()}
 }
 \keyword{hg19, known transcripts}

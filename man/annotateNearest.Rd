@@ -23,15 +23,22 @@ matchGenes(x, build, ...)
     and, optionally, \code{chr} or \code{seqnames}.}
   \item{subject}{For \code{annotateNearest} to operate in
     \code{matchGenes} mode, a single word indicating the desired
-    species/build; this is currently limited to \code{hg19}.
+    species/build, currently limited to \code{hg19}.
     Otherwise, an object of the same class as \code{x}.}
   \item{annotate}{Whether to annotate the result.}
   \item{build}{For example, \code{hg19}.}
   \item{\dots}{For \code{matchGenes} or \code{matchGenes} mode,
 	\code{promoterDist} (default \code{2500}), \code{verbose}
-	(\code{TRUE}), \code{all} (\code{FALSE}), and \code{mc.cores}
-	(\code{1}).  \code{mc.cores} is crucial for parallelizing
-	the annotation, assuming available  hardware facilities.
+	(\code{TRUE}), \code{all} (\code{FALSE}),
+	\code{coding_only} (\code{FALSE}), \code{reference} (\code{NULL}),
+	and \code{mc.cores} (\code{1}).
+	\code{coding_only}, if \code{TRUE}, instructs \code{matchGenes}
+	to avoid returning non-coding (nearest) elements of the
+	\code{\link[bumphunter]{TT}} database.
+	\code{reference} may be a user-supplied transcript
+	database such as returned by \code{known_transcripts}.
+	\code{mc.cores} is crucial for parallelizing the annotation,
+	assuming available hardware facilities.
 	Note that the default is NOT \code{getOption("mc.cores", 2L)},
 	yet, which leaves the explicit decision to the user.
 	\code{up} and \code{down} limits on the nearest gene location
@@ -42,8 +49,9 @@ matchGenes(x, build, ...)
 
 \details{
 The name \code{matchGenes} is provided for backward compatibility.
-The preferred call is to \code{annotateNearest} with \code{subject}
-set to the build name.
+The preferred call going forward will be to \code{annotateNearest}
+with \code{subject} set to the build name (currently limited to "hg19",
+but see the \code{reference} argument to \code{matchGenes}).
 \code{annotateNearest} and \code{matchGenes} are basically wrappers for
 \code{nearest(select="arbitrary")} (or \code{nearest(select="all")} with
 \code{matchGenes(all=TRUE)}) with specialized annotation of the result.
