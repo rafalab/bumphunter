@@ -5,22 +5,35 @@ shrink_to_midpoints <- function(x) {
 }
 
 ## hg19 only, up/down/r not supported
-nearestgene <- function(queries, ignore.strand=TRUE, all=FALSE, useMidpts=FALSE){
+nearestgene <- function(queries, ignore.strand=TRUE, all=FALSE,
+	useMidpts=FALSE, coding_only=FALSE, reference=NULL) {
     q <- dataframe_to_GRanges(queries)
 
     ## shrink queries to their mid*point*, if integral, otherwise an interval of length 1
     if (useMidpts)
 	q <- shrink_to_midpoints(q)
 
-    ## the reference transcript database, TT
-    cat("nearestgene: loading bumphunter hg19 transcript database\n")
-    tt <- data(TT, package="bumphunter", envir=environment())
-    TT <- get(tt)
-
-    ## toss null-coding genes ?
-    ## annotation = elementMetadata(TT)
-    ## no_coding_region = which(is.na(annotation$CSS))
-    ## TT = TT[-no_coding_region,]
+    ## the reference transcript database
+    # either or a GRanges or a list whose 3rd element is a GRanges
+    if (is.list(reference))	# as made by known_transcripts
+	reference <- reference$transcripts
+    if (is.null(reference)) {
+	cat("nearestgene: loading bumphunter hg19 transcript database\n")
+	tt <- data(TT, package="bumphunter", envir=environment())
+	TT <- get(tt)
+	TT <- TT$transcripts
+	## toss non-coding genes?
+	if (coding_only) {
+		cat("tossing non-coding transcripts...\n")
+		annotation <- elementMetadata(TT)
+		no_coding_region <- which(is.na(annotation$CSS))
+		TT <- TT[-no_coding_region,]
+    	}
+    }
+    else {
+	TT <- reference		# from above, or possibly ad hoc
+	cat("nearestgene: got", length(TT), "user-supplied transcripts\n")
+    }
     
     ## nearest transcripts
     cat("finding nearest transcripts...\n")
