@@ -12,12 +12,19 @@
 # 'matchGenes' now defined in annotateNearest.R
 .matchGenes <- function(object, build="hg19",
 		promoterDist=2500, verbose=TRUE, all=FALSE,
+		coding_only=FALSE, reference=NULL,
 		queries=NULL, Tx=NULL,
 		genes=NULL, nexons=NULL, EXONS=NULL, job=0, mc.cores=1) {
 
  if(is.null(genes)) {
   if(verbose) cat("Matching regions to genes.\n")
-  X <- nearestgene(object, all=all)	# list of either 2 or 3
+
+  #X <- nearestgene(object, all=all)	# list of either 2 or 3
+  # for Andrew Jaffe
+  X <- nearestgene(object, all=all,
+	coding_only=coding_only,
+	reference=reference)	# list of either 2 or 3
+
   NN <- X$N	# X$d not used here; X$N is a GRangesList
   if (all)
 	stopifnot(length(NN) >= nrow(object))
