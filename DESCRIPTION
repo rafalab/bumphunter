@@ -1,14 +1,17 @@
 Package: bumphunter
-Version: 1.5.5
-Title: Bump Hunter
+Version: 1.5.6
+Title: Bump Hunter 
 Description: Tools for finding bumps in genomic data
-Author: Rafael A. Irizarry, Martin Aryee, Hector Corrada Bravo, Kasper
-        D. Hansen, Harris A. Jaffee
-Maintainer: Rafael A. Irizarry <rafa@jimmy.harvard.edu>
+Authors@R: c(person(c("Rafael", "A."), "Irizarry", role = c("cre","aut"), email = "rafa@jimmy.harvard.edu"),
+             person("Martin", "Ayree", role = "aut"),
+	     person(c("Kasper", "Daniel"), "Hansen", role = "aut"),
+	     person(c("Hector", "Corrada"), "Hansen", role = "aut"),
+	     person("Shan", "Andrews", role = "ctb"),
+ 	     person(c("Andrew", "E."), "Jaffe", role = "ctb"),
+	     person("Harris", "Jaffee", role = "ctb"))
 Depends: R (>= 2.10), S4Vectors, IRanges, GenomeInfoDb, GenomicRanges,
         foreach, iterators, methods, parallel, locfit
-Suggests: RUnit, BiocGenerics, doParallel, org.Hs.eg.db,
-        TxDb.Hsapiens.UCSC.hg19.knownGene
+Suggests: RUnit, doParallel, org.Hs.eg.db, TxDb.Hsapiens.UCSC.hg19.knownGene
 Imports: matrixStats, limma, doRNG, BiocGenerics, utils
 Collate: AllGenerics.R annotateNearest.R dummyData.R
         limmaForPermutations.R regionFinder.R smooth.R bumphunter.R
@@ -16,6 +19,7 @@ Collate: AllGenerics.R annotateNearest.R dummyData.R
         known_transcripts.R dataframe_to.R utils.R
 License: Artistic-2.0
 LazyData: yes
+URL: https://github.com/ririzarr/bumphunter
 biocViews: DNAMethylation, Epigenetics, Infrastructure,
         MultipleComparison
 
