@@ -158,7 +158,7 @@ require(doParallel)
 registerDoParallel(cores = 2)
 # Find bumps
 bumps <- bumphunter(dat$mat, design=dat$design, chr=dat$chr, pos=dat$pos,
-                    cluster=dat$cluster, coef=2, cutoff= 0.28, nullMethod="bootstrap"
+                    cluster=dat$cluster, coef=2, cutoff= 0.28, nullMethod="bootstrap",
                     smooth=TRUE, B=250, verbose=TRUE,
                     smoothFunction=loessByCluster)
 bumps
