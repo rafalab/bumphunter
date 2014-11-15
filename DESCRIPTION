@@ -5,7 +5,7 @@ Description: Tools for finding bumps in genomic data
 Authors@R: c(person(c("Rafael", "A."), "Irizarry", role = c("cre","aut"), email = "rafa@jimmy.harvard.edu"),
              person("Martin", "Ayree", role = "aut"),
 	     person(c("Kasper", "Daniel"), "Hansen", role = "aut"),
-	     person(c("Hector", "Corrada"), "Hansen", role = "aut"),
+	     person(c("Hector", "Corrada"), "Bravo", role = "aut"),
 	     person("Shan", "Andrews", role = "ctb"),
  	     person(c("Andrew", "E."), "Jaffe", role = "ctb"),
 	     person("Harris", "Jaffee", role = "ctb"))
