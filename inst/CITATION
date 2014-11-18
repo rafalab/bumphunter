@@ -1,0 +1,42 @@
+c(bibentry(
+    bibtype = "Article",
+    key = "bumphunter",
+    author = c(person(given = c("Andrew","E."), family = "Jaffe"),
+        person(given = "Peter", family = "Murakami"),
+        person(given = "Hwajin", family = "Lee"),
+        person(given = c("Jeffrey","T."), family= "Leek"),
+        person(given = c("Daniele","M."), family= "Fallin"),
+        person(c("Andrew", "P."), "Feinberg"),
+        person(c("Rafael", "A."), "Irizarry")),
+    title = "Bump hunting to identify differentially methylated regions in epigenetic epidemiology studies",
+    journal = "International journal of epidemiology",
+    year = "2012",
+    volume = "41",
+    number = "1",
+    pages = "200--209",
+    doi="10.1093/ije/dyr238",
+    pubmed = "22422453"),
+  bibentry(
+      bibtype = "Article",
+      key = "minfi",
+      title = "Minfi: A flexible and comprehensive Bioconductor package for the analysis of Infinium DNA Methylation microarrays",
+      author = c(
+          person(c("Martin", "J."), "Aryee"),
+          person(c("Andrew", "E."), "Jaffe"),
+          person("Hector", "Corrada-Bravo"),
+          person("Christine", "Ladd-Acosta"),
+          person(c("Andrew", "P."), "Feinberg"),
+          person(c("Kasper", "D."), "Hansen"),
+          person(c("Rafael", "A."), "Irizarry")
+          ),
+      year = 2014,
+      journal = "Bioinformatics",
+      volume = "30",
+      number = "10",
+      pages = "1363--1369",
+      doi = "10.1093/bioinformatics/btu049",
+      pubmed = "24478339",
+      header = "More details are given in:")
+  )
+
+ 
