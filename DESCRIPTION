@@ -1,5 +1,5 @@
 Package: bumphunter
-Version: 1.7.2
+Version: 1.7.3
 Title: Bump Hunter 
 Description: Tools for finding bumps in genomic data
 Authors@R: c(person(c("Rafael", "A."), "Irizarry", role = c("cre","aut"), email = "rafa@jimmy.harvard.edu"),
@@ -13,10 +13,9 @@ Depends: R (>= 2.10), S4Vectors, IRanges, GenomeInfoDb, GenomicRanges,
         foreach, iterators, methods, parallel, locfit
 Suggests: RUnit, doParallel, org.Hs.eg.db, TxDb.Hsapiens.UCSC.hg19.knownGene
 Imports: matrixStats, limma, doRNG, BiocGenerics, utils
-Collate: AllGenerics.R annotateNearest.R dummyData.R
+Collate: AllGenerics.R dummyData.R
         limmaForPermutations.R regionFinder.R smooth.R bumphunter.R
-        nearestgene.R fuzzy.match2.R matchGenes.R pointMatch.R
-        known_transcripts.R dataframe_to.R utils.R
+        matchGenes.R utils.R
 License: Artistic-2.0
 LazyData: yes
 URL: https://github.com/ririzarr/bumphunter
