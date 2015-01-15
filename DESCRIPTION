@@ -23,6 +23,7 @@ Suggests:
     RUnit,
     doParallel,
     org.Hs.eg.db,
+    org.Cf.eg.db,
     TxDb.Hsapiens.UCSC.hg19.knownGene,
     GenomicFeatures,
     testthat
