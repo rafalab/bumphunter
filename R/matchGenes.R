@@ -1,11 +1,11 @@
 annotateNearest <- function(x, subject, annotate=TRUE, ...) {
 
-    if (is.data.frame(x)) x <- makeGRangesFromDataFrame(subject)
+    if (is.data.frame(x)) x <- makeGRangesFromDataFrame(x)
     
     if(is.data.frame(subject)) subject <- makeGRangesFromDataFrame(subject)
     
     if(class(x)!="GRanges" | class(subject)!="GRanges")
-        stop("x and subject must be GRanges or a data.frame with columnames chr, start and end.")
+        stop("x and subject must be GRanges or a data.frame with column names chr, start and end.")
     
     dots <- list(...)
     names.dots <- names(dots)
@@ -106,8 +106,8 @@ annotateTranscripts <-function(txdb, annotationPackage=NULL, by=c("tx","gene"),c
     if(!require(annotationPackage,character.only=TRUE)){
         if(requireAnnotation){
             stop("Can't load ",annotationPackage,".\nMake sure library is installed.\nAnd make sure the species argument follows the convention here http://www.bioconductor.org/packages/release/data/annotation/.\nFor example for human use Hs")}else{
-                message("Could not load",annotationPackage,". Will continue without annotation")
-                annotationPacakge <- NULL
+                message("Could not load ",annotationPackage,". Will continue without annotation")
+                annotationPackage <- NULL
             }
     }
     
@@ -197,8 +197,8 @@ annotateTranscripts <-function(txdb, annotationPackage=NULL, by=c("tx","gene"),c
         Gene <- Rle(genes, TT)
         Refseq <- Rle(refseq, TT)
     } else {
-        Gene <- Rle(seq(along=tt))
-        Refseq <- Rle(seq(along=tt))
+        Gene <- Rle(NA, sum(TT))
+        Refseq <- Rle(NA, sum(TT))
     }
 
     transcripts=GRanges(ranges=IRanges(start=TSS, end=TSE),
@@ -219,8 +219,8 @@ matchGenes <- function(x,subject, type=c("any","fiveprime"),
     if(attributes(subject)$description!="annotatedTranscripts")
         stop("subject must be the output of function annotateTranscripts or have attribute(subject)$description=\"annotatedTranscripts\".")
     
-    if (is.data.frame(x)) x <- makeGRangesFromDataFrame(subject)
-    if(class(x)!="GRanges") stop("x must be GRanges or a data.frame with columnames chr, start and end.")
+    if (is.data.frame(x)) x <- makeGRangesFromDataFrame(x)
+    if(class(x)!="GRanges") stop("x must be GRanges or a data.frame with column names chr, start and end.")
 
     type=match.arg(type)
     
@@ -231,14 +231,14 @@ matchGenes <- function(x,subject, type=c("any","fiveprime"),
     }
     
     ind <- which(!is.na(map))
-    dist <- rep(NA,length(map))
-    dist[ind] <- distance(x[ind,],subject[map[ind],])
-    
-    dist[ind] <- dist[ind]*ifelse(
-        (strand(subject[map[ind],])=="+" &
-         end(subject[map[ind],]) < start(x[ind,])) |
-        (strand(subject[map[ind],])=="-" &
-         start(subject[map[ind],]) > end(x[ind,])),-1,1)
+#    dist <- rep(NA,length(map))
+#    dist[ind] <- distance(x[ind,],subject[map[ind],])
+#    
+#    dist[ind] <- dist[ind]*ifelse(
+#        (strand(subject[map[ind],])=="+" &
+#         end(subject[map[ind],]) < start(x[ind,])) |
+#        (strand(subject[map[ind],])=="-" &
+#         start(subject[map[ind],]) > end(x[ind,])),-1,1)
     
     type=rep("",length(x))
     subtype=rep("",length(x))
@@ -269,13 +269,15 @@ matchGenes <- function(x,subject, type=c("any","fiveprime"),
         
         if(verbose & j%%100==0) cat(".")
         
+        TS = start(subject)[i]
+        TE = end(subject)[i]
+        geneL[j] = TE-TS
         if(!is.na(subject$CSS[i])){
-            TS = start(subject)[i]
-            TE = end(subject)[i]
-            geneL[j]=TE-TS
             CS = subject$CSS[i]
             CE = subject$CSE[i]
             codingL[j]=CE-CS
+        } else {
+            CS <- CE <- codingL <- NA
         }
         exons <- subject[i,]$Exons[[1]]
         Exons <- cbind(start(exons), end(exons))
@@ -284,7 +286,7 @@ matchGenes <- function(x,subject, type=c("any","fiveprime"),
         S = start(x[j,])
         E = end(x[j,])
         
-        type[j]=""
+#        type[j]=""
         
         if(S <= TS & E >= TE){
             type[j]="covers"
