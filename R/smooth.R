@@ -31,7 +31,7 @@ smoother <- function(y, x=NULL, cluster, weights=NULL,
         sm <- smoothFunction(y=y[idx,], x=x[idx], cluster=cluster[idx],
                              weights=weights[idx,], verbose=verbose, ...)
         c(sm, list(idx = idx))
-    }   
+    }
     
     attributes(ret)[["rng"]] <- NULL
     ## Paste together results from different workers
@@ -72,7 +72,7 @@ locfitByCluster <- function(y, x = NULL, cluster, weights = NULL,
     for(i in seq(along=Indexes)) {
         if(verbose) if(i %% 1e4 == 0) cat(".")
         Index <- Indexes[[i]]
-        if(clusterL[i] >= minNum) {
+        if(clusterL[i] >= minNum & sum(rowSums(is.na(y[Index,,drop=FALSE]))==0) >= minNum)  {
             nn <- minInSpan / length(Index)
             for(j in 1:ncol(y)) {
                 sdata <- data.frame(pos = x[Index],
