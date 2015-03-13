@@ -1,24 +1,40 @@
 Package: bumphunter
-Version: 1.7.4
-Title: Bump Hunter 
+Version: 1.7.6
+Title: Bump Hunter
 Description: Tools for finding bumps in genomic data
-Authors@R: c(person(c("Rafael", "A."), "Irizarry", role = c("cre","aut"), email = "rafa@jimmy.harvard.edu"),
-             person("Martin", "Aryee", role = "aut"),
-	     person(c("Kasper", "Daniel"), "Hansen", role = "aut"),
-	     person(c("Hector", "Corrada"), "Bravo", role = "aut"),
-	     person("Shan", "Andrews", role = "ctb"),
- 	     person(c("Andrew", "E."), "Jaffe", role = "ctb"),
-	     person("Harris", "Jaffee", role = "ctb"))
-Depends: R (>= 2.10), S4Vectors, IRanges, GenomeInfoDb, GenomicRanges,
-        foreach, iterators, methods, parallel, locfit
-Suggests: RUnit, doParallel, org.Hs.eg.db, TxDb.Hsapiens.UCSC.hg19.knownGene
-Imports: matrixStats, limma, doRNG, BiocGenerics, utils
-Collate: AllGenerics.R dummyData.R
-        limmaForPermutations.R regionFinder.R smooth.R bumphunter.R
-        matchGenes.R utils.R
+Authors@R: c(person(c("Rafael", "A."), "Irizarry", role = c("cre","aut"), email
+    = "rafa@jimmy.harvard.edu"), person("Martin", "Aryee", role = "aut"),
+    person(c("Kasper", "Daniel"), "Hansen", role = "aut"), person(c("Hector",
+    "Corrada"), "Bravo", role = "aut"), person("Shan", "Andrews", role =
+    "ctb"), person(c("Andrew", "E."), "Jaffe", role = "ctb"), person("Harris",
+    "Jaffee", role = "ctb"), person("Leonardo", "Collado-Torres", role="ctb"))
+Depends:
+    R (>= 2.10),
+    S4Vectors,
+    IRanges,
+    GenomeInfoDb,
+    GenomicRanges,
+    foreach,
+    iterators,
+    methods,
+    parallel,
+    locfit
+Suggests:
+    testthat,
+    RUnit,
+    doParallel,
+    org.Hs.eg.db,
+    TxDb.Hsapiens.UCSC.hg19.knownGene
+Imports:
+    matrixStats,
+    limma,
+    doRNG,
+    BiocGenerics,
+    utils,
+    GenomicFeatures,
+    AnnotationDbi
 License: Artistic-2.0
 LazyData: yes
 URL: https://github.com/ririzarr/bumphunter
 biocViews: DNAMethylation, Epigenetics, Infrastructure,
-        MultipleComparison
-
+    MultipleComparison
