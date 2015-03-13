@@ -24,12 +24,14 @@ The subject.  An \code{IRanges} or \code{GenomicRanges} object, or a
 Whether to annotate the result.
 }
   \item{\dots}{
-Arguments passed along to \code{nearest}.
+Arguments passed along to \code{nearest}. 
 }
 }
 \details{
 This function runs \code{\link[IRanges]{nearest}} and then annotates the
-nearest hit. 
+nearest hit. Note that the nearest subject range to a given query may not be
+unique and we arbitrarily chose one as done by default by
+\code{\link[IRanges]{nearest}}.
 }
 \value{
 A data frame with columns \code{c("distance", "subjectHits", "type",
@@ -54,22 +56,22 @@ Harris Jaffee, Peter Murakami and Rafael A. Irizarry
 }
 
 \seealso{
-\code{\link[IRanges]{nearest}}, \code{\link{matchGenes} 
+\code{\link[IRanges]{nearest}}, \code{\link{matchGenes}} 
 }
 
 \examples{
-query <- IRanges(c(1, 4, 9), c(5, 7, 10))
-subject <- IRanges(c(2, 2, 10), c(2, 3, 12))
+query <- GRanges(seqnames = 'chr1', IRanges(c(1, 4, 9), c(5, 7, 10)))
+subject <- GRanges('chr1', IRanges(c(2, 2, 10), c(2, 3, 12)))
 nearest(query, subject)
 distanceToNearest(query, subject)
-#
+
 ## showing 'cover' and 'disjoint', and 'amountOverlap'
 annotateNearest(query, subject)
-#
+
 ## showing 'inside' and 'insideDist', and 'amountOverlap'
 annotateNearest(subject, query)
-annotateNearest(IRanges(3,3), IRanges(2,5))
-annotateNearest(IRanges(3,4), IRanges(2,5))
-annotateNearest(IRanges(4,4), IRanges(2,5))
-#
+annotateNearest(GRanges('chr1', IRanges(3,3)), GRanges('chr1', IRanges(2,5)))
+annotateNearest(GRanges('chr1', IRanges(3,4)), GRanges('chr1', IRanges(2,5)))
+annotateNearest(GRanges('chr1', IRanges(4,4)), GRanges('chr1', IRanges(2,5)))
+
 }

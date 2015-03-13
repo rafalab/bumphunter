@@ -33,8 +33,8 @@ matchGenes(x, subject, type = c("any", "fiveprime"), promoterDist = 2500, skipEx
     code slightly faster.
   }
   \item{verbose}{
-    logical value. If ‘TRUE’, it writes out some messages
-    indicating progress. If ‘FALSE’ nothing should be printed.
+    logical value. If 'TRUE', it writes out some messages
+    indicating progress. If 'FALSE' nothing should be printed.
   }
 }
 \details{
@@ -58,7 +58,7 @@ matchGenes(x, subject, type = c("any", "fiveprime"), promoterDist = 2500, skipEx
   nearest transcript, so may be different from the distance computed by
   \code{nearest} to that transcript, as a range.
 
-\\item{name}{Symbol of nearest gene}
+\item{name}{Symbol of nearest gene}
 \item{annotation}{RefSeq ID}
 \item{description}{a factor with levels \code{c("upstream", "promoter",
 	"overlaps 5'", "inside intron", "inside exon", "covers exon(s)",
@@ -81,9 +81,6 @@ matchGenes(x, subject, type = c("any", "fiveprime"), promoterDist = 2500, skipEx
 \item{codingL}{the coding length}
 \item{Entrez}{Entrez ID of closest gene}
 \item{subjectHits}{Index in subject of hit}
-}
-\references{
-%% ~put references to the literature/web site here ~
 }
 \author{
 Harris Jaffee, Peter Murakami and Rafael A. Irizarry
