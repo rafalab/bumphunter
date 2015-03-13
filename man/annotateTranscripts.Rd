@@ -9,7 +9,6 @@ Annotate transcripts
 \usage{
 annotateTranscripts(txdb, annotationPackage = NULL, by = c("tx","gene"), codingOnly=FALSE, verbose = TRUE, requireAnnotation = FALSE)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{txdb}{
     A \code{TxDb} database object such as \code{TxDb.Hsapiens.UCSC.hg19.knownGene}
@@ -28,8 +27,8 @@ annotateTranscripts(txdb, annotationPackage = NULL, by = c("tx","gene"), codingO
   }
   
   \item{verbose}{
-    logical value. If ‘TRUE’, it writes out some messages
-    indicating progress. If ‘FALSE’ nothing should be printed.
+    logical value. If 'TRUE', it writes out some messages
+    indicating progress. If 'FALSE' nothing should be printed.
   }
   \item{requireAnnotation}{
     logical value. If 'TRUE' function will stop if no annotation package
