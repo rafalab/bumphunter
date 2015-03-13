@@ -1,9 +1,9 @@
 Package: bumphunter
-Version: 1.7.4
+Version: 1.7.5
 Title: Bump Hunter
 Description: Tools for finding bumps in genomic data
 Authors@R: c(person(c("Rafael", "A."), "Irizarry", role = c("cre","aut"), email
-    = "rafa@jimmy.harvard.edu"), person("Martin", "Ayree", role = "aut"),
+    = "rafa@jimmy.harvard.edu"), person("Martin", "Aryee", role = "aut"),
     person(c("Kasper", "Daniel"), "Hansen", role = "aut"), person(c("Hector",
     "Corrada"), "Bravo", role = "aut"), person("Shan", "Andrews", role =
     "ctb"), person(c("Andrew", "E."), "Jaffe", role = "ctb"), person("Harris",
@@ -20,19 +20,19 @@ Depends:
     parallel,
     locfit
 Suggests:
+    testthat,
     RUnit,
     doParallel,
     org.Hs.eg.db,
-    org.Cf.eg.db,
-    TxDb.Hsapiens.UCSC.hg19.knownGene,
-    GenomicFeatures,
-    testthat
+    TxDb.Hsapiens.UCSC.hg19.knownGene
 Imports:
     matrixStats,
     limma,
     doRNG,
     BiocGenerics,
-    utils
+    utils,
+    GenomicFeatures,
+    AnnotationDbi
 License: Artistic-2.0
 LazyData: yes
 URL: https://github.com/ririzarr/bumphunter
