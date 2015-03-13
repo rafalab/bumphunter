@@ -74,3 +74,19 @@ test_that('Match genes', {
     expect_that(sum(matched_rev$description %in% c('downstream', 'upstream')), equals(6))
     expect_that(matchGenes(data.frame(start = start(head(can_genes)), end = end(head(can_genes)), chr = seqnames(head(can_genes)), strand = strand(head(can_genes))), can_genes), equals(matched))
 })
+
+
+## Testing https://github.com/ririzarr/bumphunter/issues/4
+library('GenomicRanges')
+library('TxDb.Hsapiens.UCSC.hg19.knownGene')
+txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene
+query <- GRanges('chr21', IRanges(22115534, 22115894), strand = "*")
+genes <- annotateTranscripts(txdb = txdb)
+res <- matchGenes(x = query, subject = genes)
+
+test_that('NA bug', {
+    expect_that(as.character(res$UTR), equals('inside transcription region'))
+    expect_that(res$insideDistance, equals(0))
+    expect_that(as.character(res$description), equals('inside exon'))
+})
+

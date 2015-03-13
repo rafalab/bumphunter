@@ -407,22 +407,37 @@ matchGenes <- function(x,subject, type=c("any","fiveprime"),
             
             ctype[j]="inside transcription region"
             
-            if(S<CS & E<CS){
-                if(Strand==1) ctype[j]="5' UTR" else ctype[j]="3'UTR"
+            if(!is.na(CS)) {
+                if(S<CS & E<CS){
+                    if(Strand==1) ctype[j]="5' UTR" else ctype[j]="3'UTR"
+                }
             }
             
-            if(S>CE & E>CE){
-                if(Strand==-1) ctype[j]="5' UTR" else ctype[j]="3'UTR"
+            
+            if(!is.na(CE)) {
+                if(S>CE & E>CE){
+                    if(Strand==-1) ctype[j]="5' UTR" else ctype[j]="3'UTR"
+                }
             }
-            if(S<CS & E>CE){
-                ctype[j]="covers coding region"
+            
+            if(!is.na(CS) & !is.na(CE)) {
+                if(S<CS & E>CE){
+                    ctype[j]="covers coding region"
+                }
             }
-            if(S<CS & E>CS){
-                if(Strand==1) ctype[j]="overlaps 5' UTR" else ctype[j]="overlaps 3'UTR"
+            
+            if(!is.na(CS)) {
+                if(S<CS & E>CS){
+                    if(Strand==1) ctype[j]="overlaps 5' UTR" else ctype[j]="overlaps 3'UTR"
+                }
             }
-            if(S<CE & E>CE){
-                if(Strand==-1) ctype[j]="overlaps 5' UTR" else ctype[j]="overlaps 3'UTR"
+            
+            if(!is.na(CE)) {
+                if(S<CE & E>CE){
+                    if(Strand==-1) ctype[j]="overlaps 5' UTR" else ctype[j]="overlaps 3'UTR"
+                }
             }
+            
             
         }
     ##    if(TE-TS<10^5){##graphical check
