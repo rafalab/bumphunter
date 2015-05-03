@@ -28,12 +28,12 @@ test_that('Annotate Nearest', {
 
 ## Canis Familiaris case
 library('GenomicFeatures')
-system.time(can_txdb <- makeTranscriptDbFromUCSC("canFam3", "refGene"))
+system.time(can_txdb <- makeTxDbFromUCSC("canFam3", "refGene"))
 #    user  system elapsed 
 #  70.588   1.002 123.785 
 
 ## Using a smaller set is not significantly faster
-# system.time(can_txdb <- makeTranscriptDbFromUCSC('canFam3', 'refGene', transcript_ids = c('NM_001193298', 'NM_001002949', 'NM_001080724', 'NM_001003268', 'NM_001252259', 'NM_001012395', 'NM_001286958', 'NM_001284493', 'NM_001122602', 'NM_001003021')))
+# system.time(can_txdb <- makeTxDbFromUCSC('canFam3', 'refGene', transcript_ids = c('NM_001193298', 'NM_001002949', 'NM_001080724', 'NM_001003268', 'NM_001252259', 'NM_001012395', 'NM_001286958', 'NM_001284493', 'NM_001122602', 'NM_001003021')))
 #   user  system elapsed 
 # 61.193   1.035 117.035 
 
