@@ -2,6 +2,14 @@
 \title{Bumphunter News}
 \encoding{UTF-8}
 
+\section{Version 1.9}{
+  \itemize{
+    \item Fixed bug in the bootstrap method for bumphunter. The
+  coefficient for which inference was calculated was always 2 instead of
+  the coefficient coef passed as an argument.
+  }
+}
+
 \section{Version 1.3}{
   \itemize{
     \item Fixed NAMESPACE issues.
