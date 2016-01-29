@@ -1,5 +1,5 @@
 Package: bumphunter
-Version: 1.9.3
+Version: 1.9.4
 Title: Bump Hunter
 Description: Tools for finding bumps in genomic data
 Authors@R: c(person(c("Rafael", "A."), "Irizarry", role = c("cre","aut"), email
@@ -10,7 +10,7 @@ Authors@R: c(person(c("Rafael", "A."), "Irizarry", role = c("cre","aut"), email
     "Jaffee", role = "ctb"), person("Leonardo", "Collado-Torres", role="ctb"))
 Depends:
     R (>= 2.10),
-    S4Vectors (>= 0.7.20),
+    S4Vectors (>= 0.9.25),
     IRanges (>= 2.3.23),
     GenomeInfoDb,
     GenomicRanges,
