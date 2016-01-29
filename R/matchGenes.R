@@ -171,10 +171,10 @@ annotateTranscripts <-function(txdb, annotationPackage=NULL, by=c("tx","gene"),c
     ## exon groups of interest in transcript order,
     ## and sorted "left to right" within each group
     Exons <- reduce(ranges(ee)[txx])
-    Nexons <- elementLengths(Exons)
+    Nexons <- elementNROWS(Exons)
 
     ##now annotate genes
-    if(by=="tx") TT <- elementLengths(tt) else TT <- rep(1,length(tt))
+    if(by=="tx") TT <- elementNROWS(tt) else TT <- rep(1,length(tt))
     Entrez <- Rle(entrez, TT)
 
     Tx <- txx
