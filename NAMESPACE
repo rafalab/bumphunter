@@ -10,7 +10,7 @@ import(BiocGenerics)
 import(S4Vectors)
 importMethodsFrom(IRanges, as.list, as.matrix,
                   diff, distance, distanceToNearest,
-                  elementLengths, end, mean,
+                  end, mean,
                   median, nearest, quantile, ranges, reduce,
                   resize, runmed, start, t,
                   which, which.min, width)
