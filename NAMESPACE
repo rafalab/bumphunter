@@ -12,7 +12,7 @@ importMethodsFrom(IRanges, as.list, as.matrix,
                   diff, distance, distanceToNearest,
                   end, mean,
                   median, nearest, quantile, ranges, reduce,
-                  resize, runmed, start, t,
+                  resize, runmed, start,
                   which, which.min, width)
 importFrom(IRanges, CharacterList, IRanges)
 importFrom(GenomeInfoDb, seqnames)
