@@ -94,7 +94,7 @@ annotateTranscripts <-function(txdb, annotationPackage=NULL, by=c("tx","gene"),c
     if( class(txdb)!="TxDb") stop("txdb must be of class TxDb")
 
     if(is.null(annotationPackage)){
-        species <- species(txdb)
+        species <- organism(txdb)
         species <- strsplit(species," ")[[1]]
         species <- paste0(substr(species[1],1,1),
                           tolower(substr(species[2],1,1)))
