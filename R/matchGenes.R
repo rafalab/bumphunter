@@ -94,18 +94,18 @@ annotateTranscripts <-function(txdb, annotationPackage=NULL, by=c("tx","gene"),c
     if( class(txdb)!="TxDb") stop("txdb must be of class TxDb")
 
     if(is.null(annotationPackage)){
-        species <- species(txdb)
-        species <- strsplit(species," ")[[1]]
-        species <- paste0(substr(species[1],1,1),
-                          tolower(substr(species[2],1,1)))
-        annotationPackage <-  paste("org",species,"eg.db",sep=".")
+        organism <- organism(txdb)
+        organism <- strsplit(organism," ")[[1]]
+        organism <- paste0(substr(organism[1],1,1),
+                           tolower(substr(organism[2],1,1)))
+        annotationPackage <-  paste("org",organism,"eg.db",sep=".")
         if(verbose)
             message(sprintf("No annotationPackage supplied. Trying %s.",annotationPackage))
     }  
 
     if(!require(annotationPackage,character.only=TRUE)){
         if(requireAnnotation){
-            stop("Can't load ",annotationPackage,".\nMake sure library is installed.\nAnd make sure the species argument follows the convention here http://www.bioconductor.org/packages/release/data/annotation/.\nFor example for human use Hs")}else{
+            stop("Can't load ",annotationPackage,".\nMake sure library is installed.\nAnd make sure the organism argument follows the convention here http://www.bioconductor.org/packages/release/data/annotation/.\nFor example for human use Hs")}else{
                 message("Could not load ",annotationPackage,". Will continue without annotation")
                 annotationPackage <- NULL
             }
