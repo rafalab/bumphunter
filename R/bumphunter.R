@@ -98,7 +98,7 @@ bumphunterEngine<-function(mat, design, chr = NULL, pos,
         tmp <- .getEstimate(mat = mat, design = design,
                             coef = coef, full = TRUE)
         rawBeta <- tmp$coef
-        weights <- tmp$sigma
+        weights <- 1/tmp$sigma
         rm(tmp)
     } else {
         rawBeta <- .getEstimate(mat = mat, design = design, coef = coef,
