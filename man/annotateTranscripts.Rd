@@ -16,7 +16,7 @@ annotateTranscripts(txdb, annotationPackage = NULL, by = c("tx","gene"), codingO
   \item{annotationPackage}{
     An annotation data package from which to obtain gene/transcript
     annotation. For example \code{org.Hs.eg.db}. If none is provided the
-    function tries to infer it from \code{species(txdb)} and if it can't it
+    function tries to infer it from \code{organism(txdb)} and if it can't it
     proceeds without annotation unless \code{ requireAnnotation = TRUE}.
   }
   \item{by}{
