@@ -7,7 +7,7 @@ Annotate transcripts
 Annotate transcripts
 }
 \usage{
-annotateTranscripts(txdb, annotationPackage = NULL, by = c("tx","gene"), codingOnly=FALSE, verbose = TRUE, requireAnnotation = FALSE)
+annotateTranscripts(txdb, annotationPackage = NULL, by = c("tx","gene"), codingOnly=FALSE, verbose = TRUE, requireAnnotation = FALSE, mappingInfo = NULL, simplifyGeneID = FALSE)
 }
 \arguments{
   \item{txdb}{
@@ -34,6 +34,17 @@ annotateTranscripts(txdb, annotationPackage = NULL, by = c("tx","gene"), codingO
     logical value. If 'TRUE' function will stop if no annotation package
     is successfully loaded.
   }
+  \item{mappingInfo}{
+    a named list with elements 'column', 'keytype' and 'multiVals'. If specified
+    this information will be used with \link[AnnotationDbi]{mapIds} when mapping
+    the gene ids using \code{annotationPackage}. This is useful when working
+    with a \code{txdb} object from ENSEMBL or GENCODE among other databases.
+  }
+  \item{simplifyGeneID}{
+    logical value. If 'TRUE', gene ids will be shortened to before a dot is
+    present in the id. This is useful for changing GENCODE gene ids to
+    ENSEMBL ids.
+  }
 }
 \details{
   This function prepares a \code{GRanges} for the \code{\link{matchGenes}}
@@ -51,7 +62,8 @@ annotateTranscripts(txdb, annotationPackage = NULL, by = c("tx","gene"), codingO
   number of exons, \code{Exons} is an \code{IRanges} with the exon information.
 }
 \author{
-  Harris Jaffee and Rafael A. Irizarry
+  Harris Jaffee and Rafael A. Irizarry.
+  'mappingInfo' and 'simplifyGeneID' contributed by Leonardo Collado-Torres.
 }
 
 \seealso{
