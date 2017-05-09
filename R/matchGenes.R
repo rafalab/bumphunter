@@ -89,7 +89,7 @@ annotateNearest <- function(x, subject, annotate=TRUE, ...) {
 #######################################################
 #######################################################
 
-annotateTranscripts <-function(txdb, annotationPackage=NULL, by=c("tx","gene"),codingOnly=FALSE,verbose=TRUE,requireAnnotation=FALSE){
+annotateTranscripts <-function(txdb, annotationPackage=NULL, by=c("tx","gene"),codingOnly=FALSE,verbose=TRUE,requireAnnotation=FALSE, mappingInfo = NULL, simplifyGeneID = FALSE){
 
     if( class(txdb)!="TxDb") stop("txdb must be of class TxDb")
 
@@ -136,7 +136,9 @@ annotateTranscripts <-function(txdb, annotationPackage=NULL, by=c("tx","gene"),c
     strand <- unlist(CharacterList(strand(tt)))
     
     RR <- ranges(tt)
-    entrez <- names(RR)
+    ## Useful for switching Gencode IDs to Ensembl IDs
+    if(simplifyGeneID) names(RR) <- gsub('\\..*', '', names(RR))
+    geneid <- names(RR)
     ## starts / ends (left/right endpoints):
     TSS <- unlist(start(RR))
     TSE <- unlist(end(RR))
@@ -175,24 +177,30 @@ annotateTranscripts <-function(txdb, annotationPackage=NULL, by=c("tx","gene"),c
 
     ##now annotate genes
     if(by=="tx") TT <- elementNROWS(tt) else TT <- rep(1,length(tt))
-    Entrez <- Rle(entrez, TT)
+    Geneid <- Rle(geneid, TT)
 
     Tx <- txx
 
     if(!is.null(annotationPackage)){
         if(verbose) message("Annotating genes.")
+            
+        if(!is.null(mappingInfo)) {
+            stopifnot(all(c('column', 'keytype', 'multiVals') %in% names(mappingInfo)))
+            geneid <- mapIds(get(annotationPackage), keys = geneid, column= mappingInfo$column, keytype = mappingInfo$keytype, multiVals = mappingInfo$multiVals)
+        }
+        
 
         ##Annotate transcrtipt
         ##cant use select cause map is not 1-1 
-        map <- get(gsub("\\.db", "SYMBOL",annotationPackage))
+        map <- get(gsub("\\.db", "SYMBOL", annotationPackage))
         which <- mappedkeys(map)
         symbols <- sapply(as.list(map[which]), paste, collapse=" ")
-        genes <- symbols[entrez]	
+        genes <- symbols[geneid]	
         
-        map <- get(gsub("\\.db", "REFSEQ",annotationPackage))
+        map <- get(gsub("\\.db", "REFSEQ", annotationPackage))
         which <- mappedkeys(map)
         symbols <- sapply(as.list(map[which]), paste, collapse=" ")
-        refseq <- symbols[entrez]	# a handful of NA
+        refseq <- symbols[geneid]	# a handful of NA
         
         Gene <- Rle(genes, TT)
         Refseq <- Rle(refseq, TT)
@@ -204,12 +212,11 @@ annotateTranscripts <-function(txdb, annotationPackage=NULL, by=c("tx","gene"),c
     transcripts=GRanges(ranges=IRanges(start=TSS, end=TSE),
         seqnames=chr, strand=strand,
         seqinfo=seqinfo,
-        CSS, CSE, Tx, Entrez, Gene, Refseq, Nexons, Exons)
+        CSS, CSE, Tx, Geneid, Gene, Refseq, Nexons, Exons)
     if(codingOnly) transcripts <- transcripts[!is.na(values(transcripts)$CSS),]
     attributes(transcripts)$description <- "annotatedTranscripts"
     return(transcripts)
 }
-
 
 matchGenes <- function(x,subject, type=c("any","fiveprime"),
                        promoterDist=2500,
@@ -252,13 +259,13 @@ matchGenes <- function(x,subject, type=c("any","fiveprime"),
     subdist=rep(0,length(x))
     genenames=rep("",length(x))
     geneannotation=rep("",length(x))
-    entrez=rep("",length(x))
+    geneid=rep("",length(x))
     strands=rep("",length(x))
 
     
     genenames[ind]<-as.character(values(subject[map[ind],])$Gene)
     geneannotation[ind]<-as.character(values(subject[map[ind],])$Refseq)
-    entrez[ind]<-as.character(values(subject[map[ind],])$Entrez)
+    geneid[ind]<-as.character(values(subject[map[ind],])$Geneid)
     nexons[ind] <- values(subject[map[ind],])$Nexons
     strands[ind] <- as.character(strand(subject[map[ind],]))
     
@@ -476,9 +483,7 @@ matchGenes <- function(x,subject, type=c("any","fiveprime"),
                       strand=strands,
                       geneL=geneL,
                       codingL=codingL,
-                      Entrez=entrez,
+                      Geneid=geneid,
                       subjectHits=map)
     return(tmp)
-}
-
-                               
+}                               
