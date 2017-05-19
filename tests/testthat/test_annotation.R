@@ -70,7 +70,7 @@ test_that('Match genes', {
     expect_that(matchGenes(test3, can_genes)$distance, equals(matched$distance + floor((width(test) - 10) / 2)))
     expect_that(matchGenes(head(can_genes), can_genes, type = 'fiveprime')$subjectHits, equals(1:6))
     expect_that(matchGenes(head(can_genes_NA), can_genes_NA)[, 3:ncol(matched)], equals(matched[, 3:ncol(matched)]))
-    expect_that(is.na(matched_rev$codingL[which(matched_rev$Entrez == 104797479)]), equals(TRUE))
+    expect_that(is.na(matched_rev$codingL[which(matched_rev$Geneid == 104797479)]), equals(TRUE))
     expect_that(sum(matched_rev$description %in% c('downstream', 'upstream')), equals(6))
     expect_that(matchGenes(data.frame(start = start(head(can_genes)), end = end(head(can_genes)), chr = seqnames(head(can_genes)), strand = strand(head(can_genes))), can_genes), equals(matched))
 })
@@ -90,3 +90,32 @@ test_that('NA bug', {
     expect_that(as.character(res$description), equals('inside exon'))
 })
 
+
+## Test using a GENCODE v25 txdb object
+## Details from https://github.com/rafalab/bumphunter/issues/15
+
+library('rtracklayer')
+## Get the raw data
+gr <- import('ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_25/gencode.v25.annotation.gtf.gz')
+
+## Subset and add the chromosome length info
+gr_small <- keepSeqlevels(gr, c('chrY', 'chrM'), pruning.mode = 'tidy')
+hg38_chrominfo <- fetchExtendedChromInfoFromUCSC("hg38")
+new_info <- hg38_chrominfo$UCSC_seqlength[match(seqlevels(gr_small),
+    hg38_chrominfo$UCSC_seqlevel)]
+
+## Create a small TxDb object
+txdb <- makeTxDbFromGRanges(gr_small)
+
+ann <- annotateTranscripts(txdb, annotationPackage = 'org.Hs.eg.db',
+    mappingInfo = list('column' = 'ENTREZID', 'keytype' = 'ENSEMBL',
+    'multiVals' = 'first'), simplifyGeneID = TRUE)
+
+## Annotate some dummy regions
+genes_gencode <- matchGenes(ann[which(ann$Gene == 'CD99')], ann)
+
+## Check the reuslt
+test_that('Gencode v25 genes', {
+    expect_equal(unique(gr_small[grepl(genes_gencode$Geneid[1], gr_small$gene_id)]$gene_name), unique(genes_gencode$name))
+    expect_equal('CD99', unique(genes_gencode$name))
+})
