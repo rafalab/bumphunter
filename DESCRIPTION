@@ -38,3 +38,4 @@ LazyData: yes
 URL: https://github.com/ririzarr/bumphunter
 biocViews: DNAMethylation, Epigenetics, Infrastructure,
     MultipleComparison
+RoxygenNote: 6.0.1
