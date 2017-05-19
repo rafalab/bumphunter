@@ -24,6 +24,7 @@ importFrom(utils, data, packageDescription)
 importFrom(parallel, mclapply, stopCluster)
 importFrom(GenomicFeatures, exonsBy, cdsBy, transcriptsBy)
 importFrom(AnnotationDbi, mappedkeys)
+importMethodsFrom(AnnotationDbi, mapIds)
 
 export(bumphunter, bumphunterEngine, clusterMaker, boundedClusterMaker,
        dummyData, getSegments, 
