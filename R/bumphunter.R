@@ -224,7 +224,7 @@ bumphunterEngine<-function(mat, design, chr = NULL, pos,
     chunksize <- ceiling(B/workers)
     subMat <- NULL
     nulltabs <- foreach(subMat = iter(permBeta, by = "col", chunksize = chunksize),
-        .combine = "c", .packages = "bumphunter", .verbose=TRUE) %dorng% {
+        .combine = "c", .packages = "bumphunter") %dorng% {
         apply(subMat, 2, regionFinder, chr = chr, pos = pos,
             cluster = cluster, cutoff = cutoff, ind = Index,
             verbose = FALSE)
