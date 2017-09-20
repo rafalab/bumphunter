@@ -12,8 +12,9 @@ annotateNearest <- function(x, subject, annotate=TRUE, ...) {
     if ("select" %in% names.dots && dots$select == "all")
 	stop("select=\"all\" not supported (yet)")
     
+
     # find nearests
-    NN <- nearest(x, subject, ...)
+    NN <- smarterNearest(x, subject, ...)
     nearest_exists <- !is.na(NN)
 
     # full return value
@@ -232,9 +233,9 @@ matchGenes <- function(x,subject, type=c("any","fiveprime"),
     type=match.arg(type)
     
     if(type=="fiveprime"){
-        map <- nearest(x,resize(subject,width=1))
+        map <- smarterNearest(x,resize(subject,width=1))
     } else{
-        map <- nearest(x,subject)
+        map <- smarterNearest(x,subject)
     }
     
     ind <- which(!is.na(map))
@@ -346,7 +347,7 @@ matchGenes <- function(x,subject, type=c("any","fiveprime"),
         if( type[j]%in%c("overlaps 5'","overlaps 3'","inside") & !skipExons ){
             
             ir=IRanges(start=c(S,E),width=1)
-            map2 = nearest(ir, exons)
+            map2 = smarterNearest(ir, exons)
             dist2<-distance(ir,exons[map2])
             pos <- start(ir) ##start end the same
             dist2 <- dist2*ifelse(
@@ -487,3 +488,27 @@ matchGenes <- function(x,subject, type=c("any","fiveprime"),
                       subjectHits=map)
     return(tmp)
 }                               
+
+
+poverlapWidth <- function(query, subject)  {
+  overlap_score <- pmin(end(query), end(subject)) - 
+    pmax(start(query), start(subject)) + 1L
+  
+  pmax(overlap_score, 0L)
+}
+
+smarterNearest <- function(x, subject)  {
+  hits <- nearest(x, subject, select="all")
+  mcols(hits)$ovwidth <- poverlapWidth(x[queryHits(hits)],subject[subjectHits(hits)])
+  
+  partitioning <- PartitioningByEnd(queryHits(hits),NG=queryLength(hits))
+  ovwidth <- relist(mcols(hits)$ovwidth, partitioning)
+  hits <- hits[unlist(ovwidth==max(ovwidth))]
+  selectHits(hits, select="arbitrary")
+}
+
+
+
+
+
+
