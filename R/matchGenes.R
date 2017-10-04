@@ -12,7 +12,6 @@ annotateNearest <- function(x, subject, annotate=TRUE, ...) {
     if ("select" %in% names.dots && dots$select == "all")
 	stop("select=\"all\" not supported (yet)")
     
-
     # find nearests
     NN <- smarterNearest(x, subject, ...)
     nearest_exists <- !is.na(NN)
@@ -489,7 +488,6 @@ matchGenes <- function(x,subject, type=c("any","fiveprime"),
     return(tmp)
 }                               
 
-
 poverlapWidth <- function(query, subject)  {
   overlap_score <- pmin(end(query), end(subject)) - 
     pmax(start(query), start(subject)) + 1L
@@ -506,9 +504,4 @@ smarterNearest <- function(x, subject)  {
   hits <- hits[unlist(ovwidth==max(ovwidth))]
   selectHits(hits, select="arbitrary")
 }
-
-
-
-
-
 
