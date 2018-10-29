@@ -96,7 +96,7 @@ test_that('NA bug', {
 
 library('rtracklayer')
 ## Get the raw data
-gr <- import('ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_25/gencode.v25.annotation.gtf.gz')
+gr <- import('ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_25/gencode.v25.annotation.gtf.gz')
 
 ## Subset and add the chromosome length info
 gr_small <- keepSeqlevels(gr, c('chrY', 'chrM'), pruning.mode = 'tidy')
