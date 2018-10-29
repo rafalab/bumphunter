@@ -8,6 +8,7 @@ importClassesFrom(methods, matrix)
 import(matrixStats)
 import(BiocGenerics)
 import(S4Vectors)
+importFrom(IRanges,PartitioningByEnd)
 importMethodsFrom(IRanges, as.list, as.matrix,
                   diff, distance, distanceToNearest,
                   end, mean,
