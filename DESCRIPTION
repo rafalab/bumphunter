@@ -9,11 +9,7 @@ Authors@R: c(person(c("Rafael", "A."), "Irizarry", role = c("cre","aut"), email
     "ctb"), person(c("Andrew", "E."), "Jaffe", role = "ctb"), person("Harris",
     "Jaffee", role = "ctb"), person("Leonardo", "Collado-Torres", role="ctb"))
 Depends:
-<<<<<<< HEAD
-    R (>= 2.10),
-=======
     R (>= 3.5),
->>>>>>> 09343aa... Updated URL for gencode
     S4Vectors (>= 0.9.25),
     IRanges (>= 2.3.23),
     GenomeInfoDb,
@@ -36,7 +32,8 @@ Imports:
     BiocGenerics,
     utils,
     GenomicFeatures,
-    AnnotationDbi
+    AnnotationDbi,
+    stats
 License: Artistic-2.0
 LazyData: yes
 URL: https://github.com/ririzarr/bumphunter
