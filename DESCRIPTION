@@ -1,5 +1,5 @@
 Package: bumphunter
-Version: 1.24.1
+Version: 1.24.2
 Title: Bump Hunter
 Description: Tools for finding bumps in genomic data
 Authors@R: c(person(c("Rafael", "A."), "Irizarry", role = c("cre","aut"), email
