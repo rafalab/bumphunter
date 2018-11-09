@@ -27,8 +27,8 @@ test_that('Annotate Nearest', {
 # genes <- annotateTranscripts(TxDb.Hsapiens.UCSC.hg19.knownGene)
 
 ## Canis Familiaris case
-library('GenomicFeatures')
-system.time(can_txdb <- makeTxDbFromUCSC("canFam3", "refGene"))
+# library('GenomicFeatures')
+# system.time(can_txdb <- makeTxDbFromUCSC("canFam3", "refGene"))
 #    user  system elapsed 
 #  70.588   1.002 123.785 
 
