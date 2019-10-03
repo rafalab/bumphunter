@@ -16,14 +16,14 @@ importMethodsFrom(IRanges, as.list, as.matrix,
                   resize, runmed, start,
                   which, which.min, width)
 importFrom(IRanges, CharacterList, IRanges)
-importFrom(GenomeInfoDb, seqnames)
+importFrom(GenomeInfoDb, seqnames, seqinfo)
 importFrom(GenomicRanges, GRanges, makeGRangesFromDataFrame)
 importMethodsFrom(GenomicRanges, sort)
 importFrom(locfit, locfit)
 importFrom(locfit, lp)
 importFrom(utils, data, packageDescription)
 importFrom(parallel, mclapply, stopCluster)
-importFrom(GenomicFeatures, exonsBy, cdsBy, transcriptsBy)
+importFrom(GenomicFeatures, exonsBy, cdsBy, transcriptsBy, genes)
 importFrom(AnnotationDbi, mappedkeys)
 importMethodsFrom(AnnotationDbi, mapIds)
 
