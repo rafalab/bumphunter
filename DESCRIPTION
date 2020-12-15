@@ -1,3 +1,4 @@
+Package: bumphunter
 Version: 1.33.0
 Title: Bump Hunter
 Description: Tools for finding bumps in genomic data
