@@ -36,7 +36,7 @@ annotateTranscripts(txdb, annotationPackage = NULL, by = c("tx","gene"), codingO
   }
   \item{mappingInfo}{
     a named list with elements 'column', 'keytype' and 'multiVals'. If specified
-    this information will be used with \link[AnnotationDbi]{mapIds} when mapping
+    this information will be used with \code{\link{mapIds}} when mapping
     the gene ids using \code{annotationPackage}. This is useful when working
     with a \code{txdb} object from ENSEMBL or GENCODE among other databases.
   }
