@@ -1,5 +1,5 @@
 Package: bumphunter
-Version: 1.32.0
+Version: 1.33.0
 Title: Bump Hunter
 Description: Tools for finding bumps in genomic data
 Authors@R: c(person(c("Rafael", "A."), "Irizarry", role = "aut", email
@@ -38,7 +38,7 @@ Imports:
     stats
 License: Artistic-2.0
 LazyData: yes
-URL: https://github.com/ririzarr/bumphunter
+URL: https://github.com/rafalab/bumphunter
 biocViews: DNAMethylation, Epigenetics, Infrastructure,
     MultipleComparison, ImmunoOncology
 RoxygenNote: 6.1.1
