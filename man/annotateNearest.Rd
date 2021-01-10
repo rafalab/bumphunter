@@ -28,10 +28,10 @@ Arguments passed along to \code{nearest}.
 }
 }
 \details{
-This function runs \code{\link[IRanges]{nearest}} and then annotates the
+This function runs \code{\link[IRanges:nearest-methods]{IRanges::nearest()}} and then annotates the
 nearest hit. Note that the nearest subject range to a given query may not be
 unique and we arbitrarily chose one as done by default by
-\code{\link[IRanges]{nearest}}.
+\code{\link[IRanges:nearest-methods]{IRanges::nearest()}}.
 }
 \value{
 A data frame with columns \code{c("distance", "subjectHits", "type",
@@ -56,7 +56,7 @@ Harris Jaffee, Peter Murakami and Rafael A. Irizarry
 }
 
 \seealso{
-\code{\link[IRanges]{nearest}}, \code{\link{matchGenes}} 
+\code{\link[IRanges:nearest-methods]{IRanges::nearest()}}, \code{\link{matchGenes}} 
 }
 
 \examples{

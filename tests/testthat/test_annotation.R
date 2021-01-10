@@ -100,7 +100,7 @@ gr <- import('ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_25
 
 ## Subset and add the chromosome length info
 gr_small <- keepSeqlevels(gr, c('chrY', 'chrM'), pruning.mode = 'tidy')
-hg38_chrominfo <- fetchExtendedChromInfoFromUCSC("hg38")
+hg38_chrominfo <- getChromInfoFromUCSC("hg38")
 new_info <- hg38_chrominfo$UCSC_seqlength[match(seqlevels(gr_small),
     hg38_chrominfo$UCSC_seqlevel)]
 

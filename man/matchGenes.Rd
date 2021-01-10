@@ -38,7 +38,7 @@ matchGenes(x, subject, type = c("any", "fiveprime"), promoterDist = 2500, skipEx
   }
 }
 \details{
- This function runs \code{\link[IRanges]{nearest}} and then annotates
+ This function runs \code{\link[IRanges:nearest-methods]{IRanges::nearest()}} and then annotates
  the the relationship between the region and the transcript/gene that is
  closest. Many details are provided on this relationship as described in
  the next section. 
@@ -52,7 +52,7 @@ matchGenes(x, subject, type = c("any", "fiveprime"), promoterDist = 2500, skipEx
   owning the transcript determined (or chosen by \code{nearest}) to be
   nearest the query. Note that  the nearest gene to a given
   query, in column 3, may not be unique and we arbitrarily chose one as
-  done by default by \code{\link[IRanges]{nearest}}.
+  done by default by \code{\link[IRanges:nearest-methods]{IRanges::nearest()}}.
   
   The "distance" column is the distance from the query to the 5' end of the
   nearest transcript, so may be different from the distance computed by
