@@ -91,12 +91,12 @@ test_that('NA bug', {
 })
 
 
-## Test using a GENCODE v25 txdb object
+## Test using a GENCODE v36 txdb object
 ## Details from https://github.com/rafalab/bumphunter/issues/15
 
 library('rtracklayer')
 ## Get the raw data
-gr <- import('ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_25/gencode.v25.annotation.gtf.gz')
+gr <- import('http://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_36/gencode.v36.annotation.gtf.gz')
 
 ## Subset and add the chromosome length info
 gr_small <- keepSeqlevels(gr, c('chrY', 'chrM'), pruning.mode = 'tidy')
@@ -115,7 +115,7 @@ ann <- annotateTranscripts(txdb, annotationPackage = 'org.Hs.eg.db',
 genes_gencode <- matchGenes(ann[which(ann$Gene == 'CD99')], ann)
 
 ## Check the reuslt
-test_that('Gencode v25 genes', {
+test_that('Gencode v36 genes', {
     expect_equal(unique(gr_small[grepl(genes_gencode$Geneid[1], gr_small$gene_id)]$gene_name), unique(genes_gencode$name))
     expect_equal('CD99', unique(genes_gencode$name))
 })
