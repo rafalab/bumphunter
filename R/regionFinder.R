@@ -73,6 +73,8 @@ getSegments <- function(x, f = NULL, cutoff=quantile(abs(x), 0.99), assumeSorted
 }
 
 clusterMaker <- function(chr, pos, assumeSorted = FALSE, maxGap=300){
+
+    if( (any(is.na(chr))) || (any(is.na(pos))) ) stop("NAs found in chr and/or pos vector(s). Please replace NA values in chr and/or pos vector(s) to actual chromosome names and genomic locations. ")
     
     nonaIndex <- which(!is.na(chr) & !is.na(pos))
     Indexes <- split(nonaIndex, chr[nonaIndex])
@@ -138,6 +140,9 @@ regionFinder <- function(x, chr, pos, cluster=NULL, y=x, summary=mean,
 
 boundedClusterMaker <- function(chr, pos, assumeSorted = FALSE,
                                 maxClusterWidth = 1500, maxGap = 500) {
+
+    if( (any(is.na(chr))) || (any(is.na(pos))) ) stop("NAs found in chr and/or pos vector(s). Please replace NA values in chr and/or pos vector(s) to actual chromosome names and genomic locations. ")
+
     nonaIndex <- which(!is.na(chr) & !is.na(pos))
     Indexes <- split(nonaIndex, chr[nonaIndex])
     clusterIDs <- rep(NA, length(chr))
