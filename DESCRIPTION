@@ -26,8 +26,7 @@ Suggests:
     RUnit,
     doParallel,
     org.Hs.eg.db,
-    TxDb.Hsapiens.UCSC.hg19.knownGene,
-    txdbmaker
+    TxDb.Hsapiens.UCSC.hg19.knownGene
 Imports:
     matrixStats,
     limma,
