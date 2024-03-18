@@ -27,7 +27,7 @@ test_that('Annotate Nearest', {
 # genes <- annotateTranscripts(TxDb.Hsapiens.UCSC.hg19.knownGene)
 
 ## Canis Familiaris case
-# library('GenomicFeatures')
+# library('txdbmaker')
 # system.time(can_txdb <- makeTxDbFromUCSC("canFam3", "refGene"))
 #    user  system elapsed 
 #  70.588   1.002 123.785 
@@ -105,7 +105,7 @@ new_info <- hg38_chrominfo$UCSC_seqlength[match(seqlevels(gr_small),
     hg38_chrominfo$UCSC_seqlevel)]
 
 ## Create a small TxDb object
-txdb <- makeTxDbFromGRanges(gr_small)
+txdb <- txdbmaker::makeTxDbFromGRanges(gr_small)
 
 ann <- annotateTranscripts(txdb, annotationPackage = 'org.Hs.eg.db',
     mappingInfo = list('column' = 'ENTREZID', 'keytype' = 'ENSEMBL',
