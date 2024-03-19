@@ -3,7 +3,7 @@ Version: 1.45.1
 Title: Bump Hunter
 Description: Tools for finding bumps in genomic data
 Authors@R: c(person(c("Rafael", "A."), "Irizarry", role = "aut", email
-    = "rafa@jimmy.harvard.edu"), person("Martin", "Aryee", role = "aut"),
+    = "rafa@ds.dfci.harvard.edu"), person("Martin", "Aryee", role = "aut"),
     person(c("Kasper", "Daniel"), "Hansen", role = "aut"), person(c("Hector",
     "Corrada"), "Bravo", role = "aut"), person("Shan", "Andrews", role =
     "ctb"), person(c("Andrew", "E."), "Jaffe", role = "ctb"), person("Harris",
